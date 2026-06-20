@@ -12,7 +12,7 @@ export default function HomePage() {
   // Mock data for dashboard menu blocks
   const features = [
     {
-      title: "Practice Sets",
+      title: "Test your ability",
       desc: "Manage and run your interactive flashcard collection arrays.",
       icon: <Layers className="w-6 h-6 text-[#5A67FF]" />,
     },
@@ -22,7 +22,7 @@ export default function HomePage() {
       icon: <LayoutGrid className="w-6 h-6 text-indigo-500" />,
     },
     {
-      title: "System Parameters",
+      title: "Settings",
       desc: "Fine-tune application localizations and workspace configurations.",
       icon: <Settings className="w-6 h-6 text-neutral-500" />,
     },
@@ -37,7 +37,7 @@ export default function HomePage() {
             J
           </div>
           <span className="font-bold text-lg text-neutral-800 tracking-tight">
-            Workspace
+            Home
           </span>
         </div>
 
@@ -64,14 +64,13 @@ export default function HomePage() {
         <section className="w-full bg-gradient-to-br from-blue-600 to-indigo-600 rounded-3xl p-8 md:p-12 text-white relative overflow-hidden shadow-lg">
           <div className="relative z-10 max-w-md space-y-4">
             <span className="bg-white/20 text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full backdrop-blur-md">
-              Dashboard Overview
+              Title Example
             </span>
             <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight leading-tight">
-              Welcome back to your dashboard hub!
+              This is example Header
             </h1>
             <p className="text-sm opacity-90 leading-relaxed font-medium">
-              Everything is set up and configured correctly. Select a practice
-              deck below or navigate into options blocks.
+              This is exmple content
             </p>
             <div className="pt-2">
               <button className="bg-white text-[#5A67FF] hover:bg-neutral-100 font-bold text-sm px-5 py-3 rounded-xl tracking-wide shadow-md transition-all flex items-center space-x-2 cursor-pointer active:scale-95">
@@ -89,7 +88,7 @@ export default function HomePage() {
         {/* 3. Features Metric Block Matrix Grid */}
         <section className="space-y-6">
           <h2 className="text-xl font-extrabold text-neutral-800 tracking-tight">
-            Available Layout Modules
+            What to do
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
