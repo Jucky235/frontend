@@ -34,6 +34,13 @@ export interface Exam {
   updatedAt: string;
 }
 
+export interface SubmitExamPayload {
+  examId: string;
+  answers: Record<string, string>;
+  startedAt: string;
+  submittedAt: string;
+}
+
 export const examApiSlice = baseApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getExams: builder.query<Exam[], void>({
@@ -56,7 +63,16 @@ export const examApiSlice = baseApiSlice.injectEndpoints({
       }),
       providesTags: (result, error, id) => [{ type: "Exam", id }],
     }),
+    submitExam: builder.mutation<any, SubmitExamPayload>({
+      invalidatesTags: [{ type: "Exam", id: "LIST" }],
+      query: (body) => ({
+        url: "/exams/submit",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
-export const { useGetExamsQuery, useGetExamByIdQuery } = examApiSlice;
+export const { useGetExamsQuery, useGetExamByIdQuery, useSubmitExamMutation } =
+  examApiSlice;

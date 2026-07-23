@@ -3,9 +3,9 @@ import { Lock } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom"; // Or next/navigation depending on your framework
+import { useNavigate } from "react-router-dom";
 
-// 1. Import your validation schemas and redux slices
+// Import your validation schemas and redux slices
 import { loginSchema, type LoginFormData } from "@/validadtion/login";
 import { useLoginMutation } from "@/redux/auth/authApiSlice";
 import { setCredentials } from "@/redux/auth/authSlice";
@@ -15,7 +15,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const [login, { isLoading }] = useLoginMutation();
 
-  // 2. Initialize React Hook Form connected to your Zod schema
+  // Initialize React Hook Form connected to your Zod schema
   const {
     register,
     handleSubmit,
@@ -28,21 +28,20 @@ export default function LoginPage() {
     },
   });
 
-  // 3. Connect form data submission straight to Redux network actions
+  // Connect form data submission straight to Redux network actions
   const onSubmit = async (data: LoginFormData) => {
     try {
       const result = await login(data).unwrap();
 
-      // Save user payload and token details globally inside store memory
+      // 1. Save user payload and token details globally inside store memory
       dispatch(
         setCredentials({
           user: result.user,
-          token: result.accessToken,
+          token: result.accessToken, // Maps back-end accessToken to state.auth.token
         }),
       );
 
-      localStorage.setItem("token", result.accessToken);
-
+      // 2. Head directly to workspace hub
       navigate("/");
     } catch (error: any) {
       alert(`Đăng nhập thất bại: ${error?.data?.message || "Có lỗi xảy ra"}`);
@@ -51,7 +50,7 @@ export default function LoginPage() {
 
   return (
     <div className="relative min-h-screen w-full bg-white font-inter overflow-x-hidden flex flex-col justify-between pb-8">
-      {/* 1. Top Decorative Blob Backdrop */}
+      {/* Top Decorative Blob Backdrop */}
       <div className="absolute top-0 right-0 left-0 h-[38vh] bg-gradient-to-br from-blue-600 to-indigo-600 rounded-b-[35%] md:rounded-b-[45%] flex flex-col justify-center px-10 text-white shadow-lg">
         <p className="text-xl font-medium tracking-wide opacity-90">
           Welcome Back,
@@ -64,7 +63,7 @@ export default function LoginPage() {
 
       <div className="h-[40vh]" />
 
-      {/* 2. Main Input Form Container */}
+      {/* Main Input Form Container */}
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex-1 w-full max-w-md mx-auto px-8 flex flex-col justify-start space-y-6"
@@ -78,7 +77,7 @@ export default function LoginPage() {
             <input
               type="text"
               placeholder="example@domain.com"
-              {...register("email")} // Bind register directly to the form engine
+              {...register("email")}
               className="w-full bg-transparent text-sm text-neutral-800 placeholder-neutral-400 outline-none pt-1"
             />
           </div>
@@ -98,7 +97,7 @@ export default function LoginPage() {
             <input
               type="password"
               placeholder="Enter password"
-              {...register("password")} // Bind register
+              {...register("password")}
               className="w-full bg-transparent text-sm text-neutral-800 placeholder-neutral-400 outline-none pt-1 pr-2"
             />
             <Lock
@@ -113,11 +112,10 @@ export default function LoginPage() {
           )}
         </div>
 
-        {/* 3. Toggle/Checkbox Switch Row */}
+        {/* Toggle/Checkbox Switch Row */}
         <div className="flex items-center justify-between pt-1">
           <div className="flex items-center space-x-3">
             <label className="relative inline-flex items-center cursor-pointer">
-              {/* Optional: If you want to use remember-me, register it or leave it as standard state */}
               <input type="checkbox" className="sr-only peer" />
               <div className="w-9 h-5 bg-neutral-300 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-500" />
             </label>
@@ -134,7 +132,7 @@ export default function LoginPage() {
           </a>
         </div>
 
-        {/* 4. Action Login Button */}
+        {/* Action Login Button */}
         <div className="pt-4">
           <button
             type="submit"
@@ -146,9 +144,8 @@ export default function LoginPage() {
         </div>
       </form>
 
-      {/* 5. Bottom Social Sign-in Bar */}
       <div className="w-full max-w-xs mx-auto flex items-center justify-center space-x-8 pt-8">
-        {/* Your social buttons icons */}
+        {/* Social target injections */}
       </div>
     </div>
   );

@@ -9,27 +9,34 @@ interface AuthState {
   token: string | null;
 }
 
+// 1. Read directly from localStorage on application startup
 const initialState: AuthState = {
-  user: null,
-  token: null,
+  user: JSON.parse(localStorage.getItem("user") || "null"),
+  token: localStorage.getItem("token") || null,
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    // Call this when login succeeds to save credentials globally
     setCredentials: (
       state,
       action: PayloadAction<{ user: AuthState["user"]; token: string }>,
     ) => {
       state.user = action.payload.user;
       state.token = action.payload.token;
+
+      // 2. Synchronize to localStorage to survive page updates
+      localStorage.setItem("token", action.payload.token);
+      localStorage.setItem("user", JSON.stringify(action.payload.user));
     },
-    // Call this to clear out credentials on logout
     logOut: (state) => {
       state.user = null;
       state.token = null;
+
+      // 3. Wipe clean on sign-out
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
     },
   },
 });

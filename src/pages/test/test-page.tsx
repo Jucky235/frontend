@@ -6,32 +6,34 @@ import {
   selectAnswer,
   resetExamState,
 } from "@/redux/exam/examSlice";
-import { useGetExamByIdQuery } from "@/redux/exam/examApiSlice";
+import {
+  useGetExamByIdQuery,
+  useSubmitExamMutation,
+} from "@/redux/exam/examApiSlice";
 import {
   CheckCircle2,
   RefreshCw,
   ChevronLeft,
-  Play,
-  Pause,
   Volume2,
-  Image as ImageIcon,
+  Square,
 } from "lucide-react";
 
 export default function TestPage() {
-  const { id: routeId } = useParams<{ id: string }>();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  // 🌟 INJECTED: Fallback to your specific exam ID if one isn't in the URL yet!
-  const id = routeId || "f64a1834-f62c-474c-bf33-a13e992a137b";
+  // 1. Fetch live data & declare mutation hook from backend api slice
+  const { data: exam, isLoading, error } = useGetExamByIdQuery(id!);
+  const [submitExam, { isLoading: isSubmitting }] = useSubmitExamMutation();
 
-  // 1. Fetch live data from backend
-  const { data: exam, isLoading, error } = useGetExamByIdQuery(id);
-
-  // 2. Fetch tracking metrics from Redux
+  // 2. Fetch tracking metrics from Redux and local React state
   const selections = useAppSelector((state) => state.exam.userAnswers);
   const [isSubmitted, setIsSubmitted] = React.useState(false);
   const [score, setScore] = React.useState(0);
+  const [startTime, setStartTime] = React.useState<string>(
+    new Date().toISOString(),
+  );
 
   // Audio Player State
   const [playingAudioId, setPlayingAudioId] = React.useState<string | null>(
@@ -39,10 +41,11 @@ export default function TestPage() {
   );
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
 
-  // Initialize slice when test loads
+  // Initialize slice when test loads or resets
   React.useEffect(() => {
     if (id) {
       dispatch(startExam({ examId: id }));
+      setStartTime(new Date().toISOString()); // Track when the exam session actually initializes
     }
     return () => {
       dispatch(resetExamState());
@@ -68,23 +71,41 @@ export default function TestPage() {
     dispatch(selectAnswer({ questionId, answer: optionKey }));
   };
 
-  const handleSubmitExam = (e: React.FormEvent) => {
+  // Modern Asynchronous Submit Handler targeting history storage
+  const handleSubmitExam = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!exam?.questions) return;
+    if (!exam?.questions || isSubmitting) return;
 
-    let finalScore = 0;
-    exam.questions.forEach((q) => {
-      if (selections[q.id] === q.right_answer) finalScore += 1;
-    });
+    const submissionTime = new Date().toISOString();
 
-    setScore(finalScore);
-    setIsSubmitted(true);
-    audioRef.current?.pause();
-    setPlayingAudioId(null);
+    try {
+      // 1. Fire the RTK Mutation to persist history metrics securely to database via API
+      await submitExam({
+        examId: id,
+        answers: selections,
+        startedAt: startTime,
+        submittedAt: submissionTime,
+      }).unwrap();
+
+      // 2. Compute local visual states for seamless score card transition styles
+      let finalScore = 0;
+      exam.questions.forEach((q) => {
+        if (selections[q.id] === q.right_answer) finalScore += 1;
+      });
+
+      setScore(finalScore);
+      setIsSubmitted(true);
+      audioRef.current?.pause();
+      setPlayingAudioId(null);
+    } catch (err) {
+      console.error("Submission failed:", err);
+      alert("Đã xảy ra lỗi khi nộp bài lên hệ thống. Vui lòng thử lại!");
+    }
   };
 
   const handleResetExam = () => {
     dispatch(startExam({ examId: id }));
+    setStartTime(new Date().toISOString()); // Refresh session window
     setIsSubmitted(false);
     setScore(0);
     audioRef.current?.pause();
@@ -124,7 +145,7 @@ export default function TestPage() {
             <span>Back</span>
           </button>
           <span className="text-xs font-bold uppercase tracking-widest text-neutral-400 bg-neutral-200/60 px-3 py-1 rounded-md">
-            {exam.name} {/* Real dynamic title! */}
+            {exam.name}
           </span>
         </div>
 
@@ -150,7 +171,10 @@ export default function TestPage() {
                   Score
                 </span>
                 <span className="text-xl font-black text-neutral-800">
-                  {Math.round((score / exam.questions.length) * 100)}%
+                  {exam.questions.length > 0
+                    ? Math.round((score / exam.questions.length) * 100)
+                    : 0}
+                  %
                 </span>
               </div>
               <button
@@ -168,7 +192,7 @@ export default function TestPage() {
         <form onSubmit={handleSubmitExam} className="space-y-6">
           {exam.questions.map((q, qIdx) => {
             const userSelection = selections[q.id];
-            const isCurrentAudioPlaying = playingAudioId === q.id;
+            const isPlaying = playingAudioId === q.id;
 
             return (
               <div
@@ -180,16 +204,54 @@ export default function TestPage() {
                   <span className="text-sm font-black text-indigo-500 bg-indigo-50 w-6 h-6 rounded-md flex items-center justify-center shrink-0 mt-0.5">
                     {qIdx + 1}
                   </span>
-                  <h2 className="text-base font-bold text-neutral-800 leading-snug">
-                    {q.content}
-                  </h2>
-                </div>
+                  <div className="space-y-4 w-full">
+                    <h2 className="text-base font-bold text-neutral-800 leading-snug">
+                      {q.content}
+                    </h2>
 
-                {/* Optional Media Handlers could go here (if you add imageUrl/audioUrl to schema later) */}
+                    {/* AUDIO PLAYER COMPONENT (Nếu câu hỏi có audioPath) */}
+                    {q.audioPath && (
+                      <div className="flex items-center pt-1">
+                        <button
+                          type="button"
+                          onClick={() => handleToggleAudio(q.id, q.audioPath!)}
+                          className={`flex items-center space-x-2 text-xs font-bold px-4 py-2 rounded-xl transition-all cursor-pointer select-none border border-neutral-200 ${
+                            isPlaying
+                              ? "bg-rose-50 text-rose-600 border-rose-200"
+                              : "bg-neutral-50 text-neutral-700 hover:bg-neutral-100"
+                          }`}
+                        >
+                          {isPlaying ? (
+                            <>
+                              <Square className="w-4 h-4 fill-current" />
+                              <span>Stop Audio</span>
+                            </>
+                          ) : (
+                            <>
+                              <Volume2 className="w-4 h-4" />
+                              <span>Play Audio</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    )}
+
+                    {/* IMAGE CONTAINER COMPONENT (Nếu câu hỏi có imagePath) */}
+                    {q.imagePath && (
+                      <div className="w-full max-w-md bg-neutral-100 border border-neutral-200 rounded-xl overflow-hidden shadow-xs">
+                        <img
+                          src={q.imagePath}
+                          alt={`Question visual illustration ${qIdx + 1}`}
+                          className="w-full h-auto object-cover block"
+                          loading="lazy"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
 
                 {/* 2. Dynamic JSON Options Loop */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                  {/* Object.entries maps over your DB {"A": "since", "B": "during"} JSON block */}
                   {Object.entries(q.options as Record<string, string>).map(
                     ([optKey, optText]) => {
                       const isSelected = userSelection === optKey;
@@ -229,9 +291,9 @@ export default function TestPage() {
                           type="button"
                           key={optKey}
                           onClick={() => handleSelectOption(q.id, optKey)}
-                          disabled={isSubmitted}
+                          disabled={isSubmitting}
                           className={`border rounded-xl p-3.5 flex items-center space-x-3 text-left transition-all font-medium text-sm text-neutral-700 select-none ${
-                            !isSubmitted
+                            !isSubmitted && !isSubmitting
                               ? "cursor-pointer active:scale-[0.99]"
                               : "cursor-default"
                           } ${optionStyle}`}
@@ -266,13 +328,20 @@ export default function TestPage() {
             <div className="pt-2">
               <button
                 type="submit"
-                disabled={
-                  Object.keys(selections).length < exam.questions.length
-                }
-                className="w-full bg-[#5A67FF] hover:bg-indigo-600 disabled:bg-neutral-300 disabled:cursor-not-allowed text-white font-bold text-base py-4 rounded-xl tracking-wide transition-all shadow-md cursor-pointer"
+                disabled={isSubmitting}
+                className="w-full bg-[#5A67FF] hover:bg-indigo-600 disabled:bg-neutral-300 disabled:cursor-not-allowed text-white font-bold text-base py-4 rounded-xl tracking-wide transition-all shadow-md cursor-pointer flex items-center justify-center"
               >
-                Submit Exam ({Object.keys(selections).length}/
-                {exam.questions.length})
+                {isSubmitting ? (
+                  <>
+                    <RefreshCw className="w-5 h-5 animate-spin mr-2" />
+                    Submitting results...
+                  </>
+                ) : (
+                  <>
+                    Submit Exam ({Object.keys(selections).length}/
+                    {exam.questions.length})
+                  </>
+                )}
               </button>
             </div>
           )}
