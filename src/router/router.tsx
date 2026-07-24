@@ -11,7 +11,7 @@ import CourseManagementPage from "@/pages/dashboard/course-management-page";
 import ExamListPage from "@/pages/test/test-list-page";
 import ExamResultPage from "@/pages/test/test-result-page";
 import EditDeckPage from "@/pages/flashcards/edit-deck-page";
-import { Edit } from "lucide-react";
+import { AdminRoute } from "@/router/AdminRoute"; // Import the guard
 
 export const router = createBrowserRouter([
   {
@@ -42,14 +42,25 @@ export const router = createBrowserRouter([
     path: "/flashcards-list",
     element: <FlashcardsListPage />,
   },
+
+  //
   {
     path: "/dashboard/user",
-    element: <UserManagementPage />,
+    element: (
+      <AdminRoute>
+        <UserManagementPage />
+      </AdminRoute>
+    ),
   },
   {
     path: "/dashboard/course",
-    element: <CourseManagementPage />,
+    element: (
+      <AdminRoute>
+        <CourseManagementPage />
+      </AdminRoute>
+    ),
   },
+
   {
     path: "/test",
     element: <ExamListPage />,
