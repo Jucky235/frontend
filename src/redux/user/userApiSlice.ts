@@ -149,5 +149,5 @@ export const {
   useUpdateUserProfileMutation,
   useGetUserHistoryQuery,
   useChangePasswordMutation,
-  useDeleteUserMutation, // 👈 Export hook xóa user
+  useDeleteUserMutation,
 } = userApiSlice;

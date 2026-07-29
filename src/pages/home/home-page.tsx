@@ -1,130 +1,114 @@
-import * as React from "react";
 import {
-  LogOut,
-  LayoutGrid,
   Layers,
-  Settings,
-  ArrowRight,
-  User,
+  LayoutGrid,
+  MessageSquare,
+  Trophy,
+  BookOpen,
+  Brain,
 } from "lucide-react";
+import Header from "@/components/organism/common/Header";
+import Footer from "@/components/organism/common/Footer";
+import HeroBanner, {
+  type BannerSlide,
+} from "@/components/organism/home/HeroBanner";
+import FeatureCard, {
+  type FeatureItem,
+} from "@/components/organism/common/FeatureCard";
 
 export default function HomePage() {
-  // Mock data for dashboard menu blocks
-  const features = [
+  // Hero Banner Slider Data
+  const bannerSlides: BannerSlide[] = [
+    {
+      id: 1,
+      badgeText: "Welcome Back",
+      title: "Master English Exams & Vocabulary",
+      description:
+        "Practice with verified questions, flashcards, and real-time performance tracking designed to boost your score.",
+      buttonText: "Start Learning",
+      onButtonClick: () => console.log("Start Learning clicked"),
+    },
+    {
+      id: 2,
+      badgeText: "Community",
+      title: "Join Study Groups & Leaderboards",
+      description:
+        "Compete with learners worldwide, share study tips, and track your rank in real time.",
+      buttonText: "View Leaderboard",
+      onButtonClick: () => console.log("View Leaderboard clicked"),
+    },
+    {
+      id: 3,
+      badgeText: "New Feature",
+      title: "Interactive Grammar Courses",
+      description:
+        "Dive into comprehensive lessons with step-by-step guidance tailored for all skill levels.",
+      buttonText: "Explore Courses",
+      onButtonClick: () => console.log("Explore Courses clicked"),
+    },
+  ];
+
+  // Updated Features with tailored descriptions and icons
+  const features: FeatureItem[] = [
     {
       title: "Test your ability",
-      desc: "Manage and run your interactive flashcard collection arrays.",
+      desc: "Challenging practice exams designed to evaluate your current proficiency level.",
       icon: <Layers className="w-6 h-6 text-[#5A67FF]" />,
     },
     {
-      title: "Performance Monitor",
-      desc: "Analyze your learning completion statistics and scores.",
-      icon: <LayoutGrid className="w-6 h-6 text-indigo-500" />,
+      title: "Test your memory with words",
+      desc: "Interactive flashcard decks and spaced-repetition drills to master vocabulary fast.",
+      icon: <Brain className="w-6 h-6 text-indigo-500" />,
     },
     {
-      title: "Settings",
-      desc: "Fine-tune application localizations and workspace configurations.",
-      icon: <Settings className="w-6 h-6 text-neutral-500" />,
+      title: "Joining the chat",
+      desc: "Connect with native speakers and fellow learners in active study channels.",
+      icon: <MessageSquare className="w-6 h-6 text-[#5A67FF]" />,
+    },
+    {
+      title: "Compete with others",
+      desc: "Climb monthly leaderboards, earn achievement badges, and track your progress.",
+      icon: <Trophy className="w-6 h-6 text-amber-500" />,
+    },
+    {
+      title: "Understand more with courses",
+      desc: "Structured lessons covering core grammar, reading comprehension, and listening skills.",
+      icon: <BookOpen className="w-6 h-6 text-indigo-500" />,
+    },
+    {
+      title: "Discuss, share your own ideas",
+      desc: "Engage in community forums to ask questions, post tips, and exchange study material.",
+      icon: <LayoutGrid className="w-6 h-6 text-[#5A67FF]" />,
     },
   ];
 
   return (
     <div className="min-h-screen w-full bg-neutral-50 font-inter flex flex-col justify-between">
-      {/* 1. Dynamic Top Navigation Hub Bar */}
-      <header className="w-full bg-white border-b border-neutral-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50 shadow-xs">
-        <div className="flex items-center space-x-2">
-          <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-extrabold text-lg shadow-md">
-            J
-          </div>
-          <span className="font-bold text-lg text-neutral-800 tracking-tight">
-            Home
-          </span>
-        </div>
+      <Header />
 
-        <div className="flex items-center space-x-4">
-          <button
-            type="button"
-            className="w-9 h-9 bg-neutral-100 rounded-full flex items-center justify-center text-neutral-600 hover:bg-neutral-200 transition-colors"
-          >
-            <User className="w-4 h-4" />
-          </button>
-          <button
-            type="button"
-            className="flex items-center space-x-1.5 text-sm font-semibold text-neutral-500 hover:text-red-500 transition-colors px-2 py-1"
-          >
-            <LogOut className="w-4 h-4" />
-            <span className="hidden sm:inline">Logout</span>
-          </button>
-        </div>
-      </header>
-
-      {/* 2. Main Layout Container Area */}
       <main className="flex-1 w-full max-w-5xl mx-auto px-6 py-10 flex flex-col space-y-12">
-        {/* Banner Hero Intro Segment */}
-        <section className="w-full bg-gradient-to-br from-blue-600 to-indigo-600 rounded-3xl p-8 md:p-12 text-white relative overflow-hidden shadow-lg">
-          <div className="relative z-10 max-w-md space-y-4">
-            <span className="bg-white/20 text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full backdrop-blur-md">
-              Title Example
-            </span>
-            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight leading-tight">
-              This is example Header
-            </h1>
-            <p className="text-sm opacity-90 leading-relaxed font-medium">
-              This is exmple content
-            </p>
-            <div className="pt-2">
-              <button className="bg-white text-[#5A67FF] hover:bg-neutral-100 font-bold text-sm px-5 py-3 rounded-xl tracking-wide shadow-md transition-all flex items-center space-x-2 cursor-pointer active:scale-95">
-                <span>Get Started</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
+        {/* Hero Slider Banner */}
+        <HeroBanner slides={bannerSlides} autoPlayInterval={6000} />
 
-          {/* Abstract background blobs to tie down into login screen style guidelines */}
-          <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-indigo-500 rounded-full opacity-30 blur-2xl pointer-events-none" />
-          <div className="absolute top-0 right-0 w-32 h-32 bg-white rounded-bl-full opacity-10 pointer-events-none" />
-        </section>
-
-        {/* 3. Features Metric Block Matrix Grid */}
+        {/* Feature Cards Grid */}
         <section className="space-y-6">
-          <h2 className="text-xl font-extrabold text-neutral-800 tracking-tight">
-            What to do
-          </h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-extrabold text-neutral-800 tracking-tight">
+              What to do
+            </h2>
+            <span className="text-xs font-semibold text-neutral-400">
+              Pick a learning activity
+            </span>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {features.map((item, index) => (
-              <div
-                key={index}
-                className="bg-white border border-neutral-200/80 hover:border-indigo-200 p-6 rounded-2xl transition-all shadow-xs hover:shadow-md group flex flex-col justify-between space-y-4"
-              >
-                <div className="space-y-3">
-                  <div className="w-12 h-12 bg-neutral-100 group-hover:bg-indigo-50 rounded-xl flex items-center justify-center transition-colors">
-                    {item.icon}
-                  </div>
-                  <h3 className="text-base font-bold text-neutral-800 group-hover:text-[#5A67FF] transition-colors">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs text-neutral-500 leading-relaxed font-medium">
-                    {item.desc}
-                  </p>
-                </div>
-
-                <div className="pt-2">
-                  <span className="text-xs font-bold text-[#5A67FF] inline-flex items-center space-x-1 cursor-pointer">
-                    <span>Open Module</span>
-                    <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
-                  </span>
-                </div>
-              </div>
+              <FeatureCard key={index} {...item} />
             ))}
           </div>
         </section>
       </main>
 
-      {/* 4. Footer Baseline Component Group */}
-      <footer className="w-full bg-white border-t border-neutral-200 py-6 text-center text-xs text-neutral-400 font-medium">
-        &copy; 2026 Workspace System. All rights reserved.
-      </footer>
+      <Footer />
     </div>
   );
 }

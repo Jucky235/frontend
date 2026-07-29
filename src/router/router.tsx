@@ -12,6 +12,10 @@ import ExamListPage from "@/pages/test/test-list-page";
 import ExamResultPage from "@/pages/test/test-result-page";
 import EditDeckPage from "@/pages/flashcards/edit-deck-page";
 import { AdminRoute } from "@/router/AdminRoute"; // Import the guard
+import NewsPage from "@/pages/home/news-page";
+import ChatPage from "@/pages/community/chat-page";
+import ForumPage from "@/pages/community/forum-page";
+import FAQPage from "@/pages/help/faq-page";
 
 export const router = createBrowserRouter([
   {
@@ -25,6 +29,10 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: <HomePage />,
+  },
+  {
+    path: "/news",
+    element: <NewsPage />,
   },
   {
     path: "/test/:id",
@@ -72,5 +80,17 @@ export const router = createBrowserRouter([
   {
     path: "/deck/edit",
     element: <EditDeckPage />,
+  },
+  {
+    path: "/chat",
+    element: <ChatPage />,
+  },
+  {
+    path: "/forum",
+    element: <ForumPage />,
+  },
+  {
+    path: "/faq",
+    element: <FAQPage />,
   },
 ]);

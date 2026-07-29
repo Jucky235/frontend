@@ -17,18 +17,51 @@ import {
   Pencil,
   Trash2,
 } from "lucide-react";
-import { useGetUsersQuery } from "@/redux/user/userApiSlice"; // Adjust path to userApiSlice
+import {
+  useGetUsersQuery,
+  useDeleteUserMutation,
+} from "@/redux/user/userApiSlice";
+import ConfirmModal from "@/components/organism/common/ConfirmModal";
+import {
+  ToastContainer,
+  type ToastMessage,
+} from "@/components/organism/common/Toast";
+import { useState } from "react";
 
 export default function UserManagementPage() {
   const [page, setPage] = React.useState(1);
   const [limit] = React.useState(10);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [debouncedSearch, setDebouncedSearch] = React.useState("");
+  // 1. Toast State
+  const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
+  // Helper function to trigger a toast
+  const addToast = (
+    type: "success" | "error" | "info" | "warning",
+    title: string,
+    message?: string,
+  ) => {
+    const id = Date.now().toString();
+    setToasts((prev) => [...prev, { id, type, title, message }]);
+  };
+
+  const removeToast = (id: string) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  };
   // Track which user's dropdown menu is open
   const [openDropdownId, setOpenDropdownId] = React.useState<
     string | number | null
   >(null);
+
+  // Track which user is currently being deleted via API
+  const [deletingUserId, setDeletingUserId] = React.useState<
+    string | number | null
+  >(null);
+
+  // State for ConfirmModal control
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
+  const [userToDelete, setUserToDelete] = React.useState<any | null>(null);
 
   // Close dropdown when clicking anywhere outside
   React.useEffect(() => {
@@ -59,6 +92,9 @@ export default function UserManagementPage() {
     search: debouncedSearch,
   });
 
+  // RTK Query Mutation for deletion
+  const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
+
   const users = data?.data || [];
   const pagination = data?.pagination;
 
@@ -69,19 +105,52 @@ export default function UserManagementPage() {
   const handleViewDetails = (user: any) => {
     setOpenDropdownId(null);
     console.log("View details for user:", user);
-    // Add your view modal or navigation logic here
   };
 
   const handleEditUser = (user: any) => {
     setOpenDropdownId(null);
     console.log("Edit user:", user);
-    // Add your edit modal logic here
   };
 
-  const handleDeleteUser = (user: any) => {
+  // Open modal confirmation step
+  const handleOpenDeleteModal = (user: any) => {
     setOpenDropdownId(null);
-    console.log("Delete user:", user);
-    // Add your delete mutation logic here
+    setUserToDelete(user);
+    setIsDeleteModalOpen(true);
+  };
+
+  // Actual wired deletion handler called by modal confirmation
+  const handleConfirmDelete = async () => {
+    if (!userToDelete) return;
+
+    try {
+      setDeletingUserId(userToDelete.id);
+      await deleteUser(userToDelete.id).unwrap();
+
+      if (users.length === 1 && page > 1) {
+        setPage((prev) => prev - 1);
+      }
+
+      // Trigger Success Toast
+      addToast(
+        "success",
+        "Action Success",
+        `User ${userToDelete.name || userToDelete.email} was successfully deleted.`,
+      );
+    } catch (err) {
+      console.error("Failed to delete user:", err);
+
+      // Trigger Error Toast
+      addToast(
+        "error",
+        "Action Failed",
+        "Failed to delete user. Please try again.",
+      );
+    } finally {
+      setDeletingUserId(null);
+      setIsDeleteModalOpen(false);
+      setUserToDelete(null);
+    }
   };
 
   return (
@@ -249,108 +318,124 @@ export default function UserManagementPage() {
                     </td>
                   </tr>
                 ) : users.length > 0 ? (
-                  users.map((user: any) => (
-                    <tr
-                      key={user.id}
-                      className="hover:bg-neutral-50/50 transition-colors group"
-                    >
-                      {/* Name & Email Identity Column */}
-                      <td className="px-6 py-4">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 rounded-lg bg-neutral-100 group-hover:bg-indigo-50 flex items-center justify-center text-neutral-500 group-hover:text-[#5A67FF] transition-colors font-bold text-xs uppercase">
-                            {user.name ? user.name.charAt(0) : "U"}
+                  users.map((user: any) => {
+                    const isCurrentDeleting =
+                      isDeleting && deletingUserId === user.id;
+
+                    return (
+                      <tr
+                        key={user.id}
+                        className={`hover:bg-neutral-50/50 transition-colors group ${
+                          isCurrentDeleting
+                            ? "opacity-50 pointer-events-none"
+                            : ""
+                        }`}
+                      >
+                        {/* Name & Email Identity Column */}
+                        <td className="px-6 py-4">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-8 h-8 rounded-lg bg-neutral-100 group-hover:bg-indigo-50 flex items-center justify-center text-neutral-500 group-hover:text-[#5A67FF] transition-colors font-bold text-xs uppercase">
+                              {user.name ? user.name.charAt(0) : "U"}
+                            </div>
+                            <div>
+                              <p className="font-bold text-neutral-800">
+                                {user.name || "N/A"}
+                              </p>
+                              <p className="text-[11px] text-neutral-400 flex items-center space-x-1 mt-0.5">
+                                <Mail className="w-3 h-3" />
+                                <span>{user.email}</span>
+                              </p>
+                            </div>
                           </div>
-                          <div>
-                            <p className="font-bold text-neutral-800">
-                              {user.name || "N/A"}
-                            </p>
-                            <p className="text-[11px] text-neutral-400 flex items-center space-x-1 mt-0.5">
-                              <Mail className="w-3 h-3" />
-                              <span>{user.email}</span>
-                            </p>
-                          </div>
-                        </div>
-                      </td>
+                        </td>
 
-                      {/* Role Column */}
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${
-                            user.role?.name === "ADMIN"
-                              ? "bg-purple-50 text-purple-600 border border-purple-100"
-                              : "bg-indigo-50 text-[#5A67FF] border border-indigo-100"
-                          }`}
-                        >
-                          {user.role?.name || "USER"}
-                        </span>
-                      </td>
+                        {/* Role Column */}
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span
+                            className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${
+                              user.role?.name === "ADMIN"
+                                ? "bg-purple-50 text-purple-600 border border-purple-100"
+                                : "bg-indigo-50 text-[#5A67FF] border border-indigo-100"
+                            }`}
+                          >
+                            {user.role?.name || "USER"}
+                          </span>
+                        </td>
 
-                      {/* Phone Number Column */}
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-neutral-600 font-medium">
-                          {user.phoneNumber || "—"}
-                        </span>
-                      </td>
+                        {/* Phone Number Column */}
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="text-neutral-600 font-medium">
+                            {user.phoneNumber || "—"}
+                          </span>
+                        </td>
 
-                      {/* Joined Date Column */}
-                      <td className="px-6 py-4 whitespace-nowrap text-neutral-500">
-                        {new Date(user.createdAt).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </td>
+                        {/* Joined Date Column */}
+                        <td className="px-6 py-4 whitespace-nowrap text-neutral-500">
+                          {new Date(user.createdAt).toLocaleDateString(
+                            "en-US",
+                            {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            },
+                          )}
+                        </td>
 
-                      {/* Action Dropdown Menu Column */}
-                      <td className="px-6 py-4 text-center whitespace-nowrap relative action-menu-container">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setOpenDropdownId(
-                              openDropdownId === user.id ? null : user.id,
-                            )
-                          }
-                          className="w-7 h-7 inline-flex items-center justify-center text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 rounded-lg transition-all cursor-pointer"
-                        >
-                          <MoreVertical className="w-4 h-4" />
-                        </button>
-
-                        {/* Popover Dropdown Menu */}
-                        {openDropdownId === user.id && (
-                          <div className="absolute right-6 top-12 w-44 bg-white border border-neutral-200 rounded-xl shadow-lg z-50 py-1.5 text-left animate-in fade-in zoom-in-95 duration-100">
+                        {/* Action Dropdown Menu Column */}
+                        <td className="px-6 py-4 text-center whitespace-nowrap relative action-menu-container">
+                          {isCurrentDeleting ? (
+                            <Loader2 className="w-4 h-4 animate-spin text-red-500 mx-auto" />
+                          ) : (
                             <button
                               type="button"
-                              onClick={() => handleViewDetails(user)}
-                              className="w-full px-3.5 py-2 text-xs font-semibold text-neutral-700 hover:bg-neutral-50 flex items-center space-x-2 transition-colors"
+                              onClick={() =>
+                                setOpenDropdownId(
+                                  openDropdownId === user.id ? null : user.id,
+                                )
+                              }
+                              className="w-7 h-7 inline-flex items-center justify-center text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 rounded-lg transition-all cursor-pointer"
                             >
-                              <Eye className="w-3.5 h-3.5 text-neutral-400" />
-                              <span>View Details</span>
+                              <MoreVertical className="w-4 h-4" />
                             </button>
+                          )}
 
-                            <button
-                              type="button"
-                              onClick={() => handleEditUser(user)}
-                              className="w-full px-3.5 py-2 text-xs font-semibold text-neutral-700 hover:bg-neutral-50 flex items-center space-x-2 transition-colors"
-                            >
-                              <Pencil className="w-3.5 h-3.5 text-neutral-400" />
-                              <span>Edit User</span>
-                            </button>
+                          {/* Popover Dropdown Menu */}
+                          {openDropdownId === user.id && (
+                            <div className="absolute right-6 top-12 w-44 bg-white border border-neutral-200 rounded-xl shadow-lg z-50 py-1.5 text-left animate-in fade-in zoom-in-95 duration-100">
+                              <button
+                                type="button"
+                                onClick={() => handleViewDetails(user)}
+                                className="w-full px-3.5 py-2 text-xs font-semibold text-neutral-700 hover:bg-neutral-50 flex items-center space-x-2 transition-colors"
+                              >
+                                <Eye className="w-3.5 h-3.5 text-neutral-400" />
+                                <span>View Details</span>
+                              </button>
 
-                            <div className="my-1 border-t border-neutral-100" />
+                              <button
+                                type="button"
+                                onClick={() => handleEditUser(user)}
+                                className="w-full px-3.5 py-2 text-xs font-semibold text-neutral-700 hover:bg-neutral-50 flex items-center space-x-2 transition-colors"
+                              >
+                                <Pencil className="w-3.5 h-3.5 text-neutral-400" />
+                                <span>Edit User</span>
+                              </button>
 
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteUser(user)}
-                              className="w-full px-3.5 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 flex items-center space-x-2 transition-colors"
-                            >
-                              <Trash2 className="w-3.5 h-3.5 text-red-500" />
-                              <span>Delete User</span>
-                            </button>
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  ))
+                              <div className="my-1 border-t border-neutral-100" />
+
+                              <button
+                                type="button"
+                                onClick={() => handleOpenDeleteModal(user)}
+                                className="w-full px-3.5 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 flex items-center space-x-2 transition-colors"
+                              >
+                                <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                                <span>Delete User</span>
+                              </button>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })
                 ) : (
                   <tr>
                     <td
@@ -403,10 +488,28 @@ export default function UserManagementPage() {
         </div>
       </main>
 
+      {/* Confirmation Modal */}
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        title="Delete User"
+        description={`Are you sure you want to delete ${
+          userToDelete?.name || userToDelete?.email || "this user"
+        }? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        isLoading={isDeleting}
+        onConfirm={handleConfirmDelete}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setUserToDelete(null);
+        }}
+      />
+
       {/* Footer */}
       <footer className="w-full bg-white border-t border-neutral-200 py-6 text-center text-xs text-neutral-400 font-medium">
         &copy; 2026 Workspace System. All rights reserved.
       </footer>
+      <ToastContainer toasts={toasts} onDismiss={removeToast} />
     </div>
   );
 }
