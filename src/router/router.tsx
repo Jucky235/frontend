@@ -16,6 +16,8 @@ import NewsPage from "@/pages/home/news-page";
 import ChatPage from "@/pages/community/chat-page";
 import ForumPage from "@/pages/community/forum-page";
 import FAQPage from "@/pages/help/faq-page";
+import NewsManagementPage from "@/pages/dashboard/news-management-page";
+import NewsContentPage from "@/pages/home/news-content-page";
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +35,10 @@ export const router = createBrowserRouter([
   {
     path: "/news",
     element: <NewsPage />,
+  },
+  {
+    path: "/news/:id",
+    element: <NewsContentPage />,
   },
   {
     path: "/test/:id",
@@ -92,5 +98,9 @@ export const router = createBrowserRouter([
   {
     path: "/faq",
     element: <FAQPage />,
+  },
+  {
+    path: "/dashboard/news",
+    element: <NewsManagementPage />,
   },
 ]);

@@ -2,14 +2,16 @@ import { configureStore } from "@reduxjs/toolkit";
 import { baseApiSlice } from "./apiSlice";
 import authReducer from "./auth/authSlice";
 import examReducer from "./exam/examSlice";
-import userReducer from "./user/userSlice"; // 1. Import your user reducer
+import userReducer from "./user/userSlice";
+import newsReducer from "./news/newsSlice";
 
 export const store = configureStore({
   reducer: {
     [baseApiSlice.reducerPath]: baseApiSlice.reducer,
     auth: authReducer,
     exam: examReducer,
-    user: userReducer, // 2. Mount it under the 'user' key
+    user: userReducer,
+    news: newsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(baseApiSlice.middleware),

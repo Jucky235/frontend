@@ -1,109 +1,65 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Calendar,
-  Clock,
   ArrowRight,
   Sparkles,
   Search,
   BookOpen,
+  Loader2,
+  Eye,
 } from "lucide-react";
 import Header from "@/components/organism/common/Header";
 import Footer from "@/components/organism/common/Footer";
+import { useGetNewsQuery, type NewsData } from "@/redux/news/newsApiSlice";
 
-export interface Article {
-  id: string | number;
-  title: string;
-  excerpt: string;
-  category: "Updates" | "Exams" | "Community" | "Tips";
-  date: string;
-  readTime: string;
-  imageUrl?: string;
-  featured?: boolean;
-}
-
-const ARTICLES: Article[] = [
-  {
-    id: 1,
-    title: "Introducing New Interactive Speaking Practice & Mock Exams",
-    excerpt:
-      "We are excited to launch our brand-new AI-assisted speaking practice module and timed IELTS & TOEFL mock exams designed to simulate real test conditions.",
-    category: "Updates",
-    date: "Jul 28, 2026",
-    readTime: "4 min read",
-    imageUrl:
-      "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=1000",
-    featured: true,
-  },
-  {
-    id: 2,
-    title: "5 Proven Strategies to Boost Your Vocabulary Retainability",
-    excerpt:
-      "Discover how spaced repetition algorithms and context-based flashcards can double your word retention rate in under 30 days.",
-    category: "Tips",
-    date: "Jul 24, 2026",
-    readTime: "6 min read",
-    imageUrl:
-      "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&q=80&w=600",
-  },
-  {
-    id: 3,
-    title: "August Leaderboard Tournament Season Starts Next Week",
-    excerpt:
-      "Get ready to compete! Compete with thousands of learners globally, climb the monthly ranks, and earn exclusive profile badges.",
-    category: "Community",
-    date: "Jul 20, 2026",
-    readTime: "3 min read",
-    imageUrl:
-      "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=600",
-  },
-  {
-    id: 4,
-    title: "Understanding the 2026 Updated Scoring Criteria for Grammar Tests",
-    excerpt:
-      "A complete breakdown of how test items are evaluated and practical examples to help you avoid common traps.",
-    category: "Exams",
-    date: "Jul 15, 2026",
-    readTime: "5 min read",
-    imageUrl:
-      "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=600",
-  },
-  {
-    id: 5,
-    title: "Community Spotlight: How Alex Reached Band 8.5 in 3 Months",
-    excerpt:
-      "Read Alex's personal study routine, daily practice breakdown, and recommended resource stack.",
-    category: "Community",
-    date: "Jul 10, 2026",
-    readTime: "7 min read",
-    imageUrl:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=600",
-  },
+const CATEGORIES = [
+  { label: "All", value: "ALL" },
+  { label: "Updates", value: "SYSTEM_UPDATE" },
+  { label: "Exams", value: "EXAM_TIPS" },
+  { label: "Community", value: "ANNOUNCEMENT" },
+  { label: "Tips", value: "GENERAL" },
+  { label: "Featured", value: "FEATURED" },
 ];
 
-const CATEGORIES = ["All", "Updates", "Exams", "Community", "Tips"];
-
 export default function NewsPage() {
-  const [selectedCategory, setSelectedCategory] = React.useState("All");
+  const navigate = useNavigate();
+  const [selectedCategory, setSelectedCategory] = React.useState("ALL");
   const [searchQuery, setSearchQuery] = React.useState("");
 
-  // Separate featured article from regular list
-  const featuredArticle = ARTICLES.find((item) => item.featured) || ARTICLES[0];
+  // Fetch published news articles dynamically from backend API
+  const {
+    data: newsResponse,
+    isLoading,
+    isError,
+  } = useGetNewsQuery({
+    page: 1,
+    limit: 20,
+    search: searchQuery.trim() ? searchQuery : undefined,
+  });
 
-  // Filter articles based on selected category and search input
-  const filteredArticles = ARTICLES.filter((article) => {
+  const allArticles: NewsData[] = newsResponse?.data ?? [];
+
+  // Filter only published articles for end users
+  const publishedArticles = allArticles.filter(
+    (item) => item.status === "PUBLISHED",
+  );
+
+  // Identify featured article (fallback to first article if no explicitly marked featured post exists)
+  const featuredArticle =
+    publishedArticles.find((item) => item.category === "FEATURED") ||
+    publishedArticles[0];
+
+  // Filter remaining articles by category and ensure featured article isn't duplicated in grid
+  const filteredArticles = publishedArticles.filter((article) => {
     const matchesCategory =
-      selectedCategory === "All" || article.category === selectedCategory;
-    const matchesSearch =
-      article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      article.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
+      selectedCategory === "ALL" || article.category === selectedCategory;
 
-    return (
-      matchesCategory && matchesSearch && article.id !== featuredArticle.id
-    );
+    return matchesCategory && article.id !== featuredArticle?.id;
   });
 
   return (
-    <div className="min-h-screen w-full bg-neutral-50 font-inter flex flex-col justify-between">
+    <div className="min-h-screen w-full bg-neutral-50 font-inter flex flex-col justify-between select-none">
       <Header />
 
       <main className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-10">
@@ -122,153 +78,207 @@ export default function NewsPage() {
           </p>
         </div>
 
-        {/* Featured Article Banner */}
-        {featuredArticle && (
-          <section className="bg-white border border-neutral-200/80 rounded-3xl overflow-hidden shadow-xs hover:shadow-md transition-shadow group">
-            <div className="grid grid-cols-1 md:grid-cols-2">
-              <div className="h-56 md:h-full relative overflow-hidden bg-neutral-100">
-                <img
-                  src={featuredArticle.imageUrl}
-                  alt={featuredArticle.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-
-              <div className="p-6 sm:p-8 flex flex-col justify-between space-y-4">
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-3 text-xs font-bold">
-                    <span className="bg-[#5A67FF]/10 text-[#5A67FF] px-2.5 py-1 rounded-full">
-                      {featuredArticle.category}
-                    </span>
-                    <span className="text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full flex items-center space-x-1">
-                      <Sparkles className="w-3 h-3" />
-                      <span>Featured Post</span>
-                    </span>
-                  </div>
-
-                  <h2 className="text-xl sm:text-2xl font-extrabold text-neutral-800 tracking-tight leading-snug group-hover:text-[#5A67FF] transition-colors">
-                    {featuredArticle.title}
-                  </h2>
-
-                  <p className="text-xs sm:text-sm text-neutral-600 line-clamp-3 leading-relaxed">
-                    {featuredArticle.excerpt}
-                  </p>
-                </div>
-
-                <div className="pt-4 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-400 font-semibold">
-                  <div className="flex items-center space-x-4">
-                    <span className="flex items-center space-x-1">
-                      <Calendar className="w-3.5 h-3.5" />
-                      <span>{featuredArticle.date}</span>
-                    </span>
-                    <span className="flex items-center space-x-1">
-                      <Clock className="w-3.5 h-3.5" />
-                      <span>{featuredArticle.readTime}</span>
-                    </span>
-                  </div>
-
-                  <button className="text-[#5A67FF] font-bold flex items-center space-x-1 hover:underline">
-                    <span>Read Article</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </section>
+        {/* Loading Spinner */}
+        {isLoading && (
+          <div className="py-20 flex flex-col items-center justify-center space-y-3 text-neutral-400">
+            <Loader2 className="w-8 h-8 animate-spin text-[#5A67FF]" />
+            <p className="text-xs font-bold">Loading news & articles...</p>
+          </div>
         )}
 
-        {/* Filter Controls & Search Bar */}
-        <section className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2">
-          {/* Category Tabs */}
-          <div className="flex items-center space-x-2 overflow-x-auto pb-2 sm:pb-0 w-full sm:w-auto scrollbar-none">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-                  selectedCategory === cat
-                    ? "bg-[#5A67FF] text-white shadow-xs"
-                    : "bg-white text-neutral-600 border border-neutral-200/80 hover:bg-neutral-100"
-                }`}
+        {/* Error Fallback */}
+        {isError && (
+          <div className="bg-rose-50 border border-rose-200 rounded-2xl p-6 text-center text-rose-700 text-xs font-bold">
+            Failed to load news articles. Please check your network connection
+            or backend server.
+          </div>
+        )}
+
+        {!isLoading && !isError && (
+          <>
+            {/* Featured Article Banner */}
+            {featuredArticle && (
+              <section
+                onClick={() => navigate(`/news/${featuredArticle.id}`)}
+                className="bg-white border border-neutral-200/80 rounded-3xl overflow-hidden shadow-xs hover:shadow-md transition-shadow group cursor-pointer"
               >
-                {cat}
-              </button>
-            ))}
-          </div>
-
-          {/* Search Input */}
-          <div className="relative w-full sm:w-64 shrink-0">
-            <Search className="w-4 h-4 text-neutral-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Search news..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-white border border-neutral-200/80 rounded-xl text-xs font-medium text-neutral-800 focus:outline-none focus:border-[#5A67FF] transition-colors"
-            />
-          </div>
-        </section>
-
-        {/* Articles Grid */}
-        <section className="space-y-6">
-          {filteredArticles.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredArticles.map((article) => (
-                <article
-                  key={article.id}
-                  className="bg-white border border-neutral-200/80 rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer"
-                >
-                  <div>
-                    {/* Card Thumbnail */}
-                    <div className="h-44 w-full overflow-hidden bg-neutral-100 relative">
+                <div className="grid grid-cols-1 md:grid-cols-2">
+                  <div className="h-56 md:h-full relative overflow-hidden bg-neutral-100">
+                    {featuredArticle.thumbnail ? (
                       <img
-                        src={article.imageUrl}
-                        alt={article.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        src={featuredArticle.thumbnail}
+                        alt={featuredArticle.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
-                      <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-[#5A67FF] text-[10px] font-extrabold px-2.5 py-1 rounded-md shadow-xs">
-                        {article.category}
-                      </span>
-                    </div>
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-neutral-300">
+                        <BookOpen className="w-12 h-12" />
+                      </div>
+                    )}
+                  </div>
 
-                    {/* Card Body */}
-                    <div className="p-5 space-y-2.5">
-                      <h3 className="text-base font-extrabold text-neutral-800 line-clamp-2 group-hover:text-[#5A67FF] transition-colors leading-snug">
-                        {article.title}
-                      </h3>
-                      <p className="text-xs text-neutral-500 line-clamp-2 leading-relaxed font-medium">
-                        {article.excerpt}
+                  <div className="p-6 sm:p-8 flex flex-col justify-between space-y-4">
+                    <div className="space-y-3">
+                      <div className="flex items-center space-x-3 text-xs font-bold">
+                        <span className="bg-[#5A67FF]/10 text-[#5A67FF] px-2.5 py-1 rounded-full">
+                          {featuredArticle.category}
+                        </span>
+                        <span className="text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full flex items-center space-x-1">
+                          <Sparkles className="w-3 h-3" />
+                          <span>Featured Post</span>
+                        </span>
+                      </div>
+
+                      <h2 className="text-xl sm:text-2xl font-extrabold text-neutral-800 tracking-tight leading-snug group-hover:text-[#5A67FF] transition-colors">
+                        {featuredArticle.title}
+                      </h2>
+
+                      <p className="text-xs sm:text-sm text-neutral-600 line-clamp-3 leading-relaxed">
+                        {featuredArticle.summary || featuredArticle.content}
                       </p>
                     </div>
-                  </div>
 
-                  {/* Card Footer */}
-                  <div className="px-5 pb-5 pt-2 flex items-center justify-between text-[11px] font-semibold text-neutral-400 border-t border-neutral-50/80 mt-2">
-                    <span className="flex items-center space-x-1">
-                      <Calendar className="w-3 h-3" />
-                      <span>{article.date}</span>
-                    </span>
-                    <span className="flex items-center space-x-1">
-                      <Clock className="w-3 h-3" />
-                      <span>{article.readTime}</span>
-                    </span>
+                    <div className="pt-4 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-400 font-semibold">
+                      <div className="flex items-center space-x-4">
+                        <span className="flex items-center space-x-1">
+                          <Calendar className="w-3.5 h-3.5" />
+                          <span>
+                            {featuredArticle.publishedAt
+                              ? new Date(
+                                  featuredArticle.publishedAt,
+                                ).toLocaleDateString()
+                              : "Recently"}
+                          </span>
+                        </span>
+                        <span className="flex items-center space-x-1">
+                          <Eye className="w-3.5 h-3.5" />
+                          <span>{featuredArticle.viewsCount} views</span>
+                        </span>
+                      </div>
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/news/${featuredArticle.id}`);
+                        }}
+                        className="text-[#5A67FF] font-bold flex items-center space-x-1 hover:underline cursor-pointer"
+                      >
+                        <span>Read Article</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
-                </article>
-              ))}
-            </div>
-          ) : (
-            <div className="bg-white border border-neutral-200/80 rounded-2xl p-12 text-center space-y-3">
-              <BookOpen className="w-8 h-8 text-neutral-300 mx-auto" />
-              <h3 className="text-base font-bold text-neutral-700">
-                No articles found
-              </h3>
-              <p className="text-xs text-neutral-400">
-                Try adjusting your search query or selecting a different
-                category.
-              </p>
-            </div>
-          )}
-        </section>
+                </div>
+              </section>
+            )}
+
+            {/* Filter Controls & Search Bar */}
+            <section className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2">
+              {/* Category Tabs */}
+              <div className="flex items-center space-x-2 overflow-x-auto pb-2 sm:pb-0 w-full sm:w-auto scrollbar-none">
+                {CATEGORIES.map((cat) => (
+                  <button
+                    key={cat.value}
+                    onClick={() => setSelectedCategory(cat.value)}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                      selectedCategory === cat.value
+                        ? "bg-[#5A67FF] text-white shadow-xs"
+                        : "bg-white text-neutral-600 border border-neutral-200/80 hover:bg-neutral-100"
+                    }`}
+                  >
+                    {cat.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Search Input */}
+              <div className="relative w-full sm:w-64 shrink-0">
+                <Search className="w-4 h-4 text-neutral-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  placeholder="Search news..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-9 pr-4 py-2 bg-white border border-neutral-200/80 rounded-xl text-xs font-medium text-neutral-800 focus:outline-none focus:border-[#5A67FF] transition-colors"
+                />
+              </div>
+            </section>
+
+            {/* Articles Grid */}
+            <section className="space-y-6">
+              {filteredArticles.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredArticles.map((article) => (
+                    <article
+                      key={article.id}
+                      onClick={() => navigate(`/news/${article.id}`)}
+                      className="bg-white border border-neutral-200/80 rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer"
+                    >
+                      <div>
+                        {/* Card Thumbnail */}
+                        <div className="h-44 w-full overflow-hidden bg-neutral-100 relative">
+                          {article.thumbnail ? (
+                            <img
+                              src={article.thumbnail}
+                              alt={article.title}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-neutral-300">
+                              <BookOpen className="w-8 h-8" />
+                            </div>
+                          )}
+                          <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-[#5A67FF] text-[10px] font-extrabold px-2.5 py-1 rounded-md shadow-xs">
+                            {article.category}
+                          </span>
+                        </div>
+
+                        {/* Card Body */}
+                        <div className="p-5 space-y-2.5">
+                          <h3 className="text-base font-extrabold text-neutral-800 line-clamp-2 group-hover:text-[#5A67FF] transition-colors leading-snug">
+                            {article.title}
+                          </h3>
+                          <p className="text-xs text-neutral-500 line-clamp-2 leading-relaxed font-medium">
+                            {article.summary || article.content}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Card Footer */}
+                      <div className="px-5 pb-5 pt-2 flex items-center justify-between text-[11px] font-semibold text-neutral-400 border-t border-neutral-50/80 mt-2">
+                        <span className="flex items-center space-x-1">
+                          <Calendar className="w-3 h-3" />
+                          <span>
+                            {article.publishedAt
+                              ? new Date(
+                                  article.publishedAt,
+                                ).toLocaleDateString()
+                              : "Recently"}
+                          </span>
+                        </span>
+                        <span className="flex items-center space-x-1">
+                          <Eye className="w-3 h-3" />
+                          <span>{article.viewsCount} views</span>
+                        </span>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <div className="bg-white border border-neutral-200/80 rounded-2xl p-12 text-center space-y-3">
+                  <BookOpen className="w-8 h-8 text-neutral-300 mx-auto" />
+                  <h3 className="text-base font-bold text-neutral-700">
+                    No articles found
+                  </h3>
+                  <p className="text-xs text-neutral-400">
+                    Try adjusting your search query or selecting a different
+                    category.
+                  </p>
+                </div>
+              )}
+            </section>
+          </>
+        )}
 
         {/* Newsletter CTA Subscription */}
         <section className="w-full bg-gradient-to-br from-blue-600 to-indigo-600 rounded-3xl p-8 text-white relative overflow-hidden shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
@@ -293,7 +303,6 @@ export default function NewsPage() {
             </button>
           </div>
 
-          {/* Abstract Blobs */}
           <div className="absolute -bottom-10 -right-10 w-48 h-48 bg-indigo-500 rounded-full opacity-30 blur-2xl pointer-events-none" />
         </section>
       </main>
