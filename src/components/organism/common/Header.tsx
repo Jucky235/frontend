@@ -1,3 +1,4 @@
+import { useNavigate, Link } from "react-router-dom";
 import {
   Search,
   MessageSquare,
@@ -39,19 +40,32 @@ interface HeaderProps {
 }
 
 export default function Header({
-  navItems = [
+  navItems,
+  chatCount = 0,
+  notificationCount = 13,
+  avatarUrl = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=250",
+  onSearchClick,
+  onLogout,
+  onProfileClick,
+  onSettingsClick,
+  onLanguageSelect,
+}: HeaderProps) {
+  const navigate = useNavigate();
+
+  // Default nav items using react-router-dom's navigate
+  const defaultNavItems: NavItem[] = [
     {
       label: "home",
       children: [
         {
           label: "News",
           icon: <BookOpen className="w-3.5 h-3.5" />,
-          onClick: () => (window.location.href = "/exams/practice"),
+          onClick: () => navigate("/news"),
         },
         {
           label: "Teams",
           icon: <FileText className="w-3.5 h-3.5" />,
-          onClick: () => (window.location.href = "/exams/mock"),
+          onClick: () => navigate("/exams/mock"),
         },
       ],
       active: true,
@@ -63,17 +77,17 @@ export default function Header({
         {
           label: "Exam Listing",
           icon: <BookOpen className="w-3.5 h-3.5" />,
-          onClick: () => (window.location.href = "/test"),
+          onClick: () => navigate("/test"),
         },
         {
           label: "Course Listing",
           icon: <FileText className="w-3.5 h-3.5" />,
-          onClick: () => (window.location.href = "/exams/mock"),
+          onClick: () => navigate("/exams/mock"),
         },
         {
           label: "Flashcard Listing",
           icon: <FileText className="w-3.5 h-3.5" />,
-          onClick: () => (window.location.href = "/exams/mock"),
+          onClick: () => navigate("/exams/mock"),
         },
       ],
     },
@@ -83,12 +97,12 @@ export default function Header({
         {
           label: "Global Leaderboard",
           icon: <Award className="w-3.5 h-3.5" />,
-          onClick: () => (window.location.href = "/rankings/global"),
+          onClick: () => navigate("/rankings/global"),
         },
         {
           label: "Monthly League",
           icon: <Award className="w-3.5 h-3.5" />,
-          onClick: () => (window.location.href = "/rankings/monthly"),
+          onClick: () => navigate("/rankings/monthly"),
         },
       ],
     },
@@ -98,12 +112,12 @@ export default function Header({
         {
           label: "Forums",
           icon: <Users className="w-3.5 h-3.5" />,
-          onClick: () => (window.location.href = "/community/groups"),
+          onClick: () => navigate("/community/groups"),
         },
         {
           label: "Chat",
           icon: <MessageSquare className="w-3.5 h-3.5" />,
-          onClick: () => (window.location.href = "/community/forum"),
+          onClick: () => navigate("/community/forum"),
         },
       ],
     },
@@ -113,30 +127,24 @@ export default function Header({
         {
           label: "FAQ & Docs",
           icon: <HelpCircle className="w-3.5 h-3.5" />,
-          onClick: () => (window.location.href = "/help/faq"),
+          onClick: () => navigate("/help/faq"),
         },
         {
           label: "Report",
           icon: <HelpCircle className="w-3.5 h-3.5" />,
-          onClick: () => (window.location.href = "/help/faq"),
+          onClick: () => navigate("/help/faq"),
         },
         {
           label: "Rules",
           icon: <HelpCircle className="w-3.5 h-3.5" />,
-          onClick: () => (window.location.href = "/help/faq"),
+          onClick: () => navigate("/help/faq"),
         },
       ],
     },
-  ],
-  chatCount = 0,
-  notificationCount = 13,
-  avatarUrl = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=250",
-  onSearchClick,
-  onLogout,
-  onProfileClick,
-  onSettingsClick,
-  onLanguageSelect,
-}: HeaderProps) {
+  ];
+
+  const activeNavItems = navItems || defaultNavItems;
+
   // Menu items for Profile Dropdown
   const profileMenuItems: DropdownItem[] = [
     {
@@ -183,16 +191,16 @@ export default function Header({
         {/* Left Side: Logo & Navigation Links */}
         <div className="flex items-center space-x-6">
           {/* Logo */}
-          <a
-            href="/"
+          <Link
+            to="/"
             className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-base tracking-tighter shadow-sm hover:scale-105 transition-transform"
           >
             Eng
-          </a>
+          </Link>
 
           {/* Navigation Items */}
           <nav className="hidden lg:flex items-center space-x-6 text-xs font-bold lowercase tracking-wide">
-            {navItems.map((item, index) => {
+            {activeNavItems.map((item, index) => {
               const hasDropdown = item.children && item.children.length > 0;
 
               return hasDropdown ? (
@@ -221,10 +229,11 @@ export default function Header({
                 />
               ) : (
                 /* Nav Item WITHOUT Dropdown */
-                <a
+                <button
                   key={index}
-                  href={item.href || "#"}
-                  className={`relative py-5 transition-colors ${
+                  type="button"
+                  onClick={() => item.href && navigate(item.href)}
+                  className={`relative py-5 transition-colors cursor-pointer ${
                     item.active
                       ? "text-[#5A67FF]"
                       : "text-neutral-500 hover:text-neutral-800"
@@ -234,7 +243,7 @@ export default function Header({
                   {item.active && (
                     <span className="absolute bottom-0 left-0 w-full h-[3px] bg-[#5A67FF] rounded-full shadow-xs" />
                   )}
-                </a>
+                </button>
               );
             })}
 

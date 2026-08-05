@@ -1,4 +1,4 @@
-import { baseApiSlice } from "../apiSlice"; // Adjusted path to step up one directory level
+import { baseApiSlice } from "../apiSlice";
 
 export type ExamCategory = "TOEIC";
 export type ExamStatus = "ACTIVE" | "INACTIVE" | "OUTDATED";
@@ -17,8 +17,24 @@ export interface Question {
   options: QuestionOptions;
   right_answer: string;
   category: ExamCategory;
-  explanation: string | null;
-  topicNumber: number | null;
+  partNumber?: number | null; // Added partNumber
+  explanation?: string | null;
+  imagePath?: string | null;
+  audioPath?: string | null;
+  topicNumber?: number | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ExamPart {
+  id: string;
+  examId: string;
+  partNumber: number; // e.g., 1, 2, 3...
+  name: string; // e.g., "Part 1: Photographs"
+  instructions?: string | null;
+  audioPath?: string | null;
+  sortOrder: number;
+  questions: Question[];
   createdAt: string;
   updatedAt: string;
 }
@@ -29,7 +45,8 @@ export interface Exam {
   category: ExamCategory;
   time: number;
   status: ExamStatus;
-  questions?: Question[];
+  parts?: ExamPart[]; // Added multi-part support
+  questions?: Question[]; // Fallback list if parts aren't grouped
   createdAt: string;
   updatedAt: string;
 }
@@ -61,7 +78,7 @@ export const examApiSlice = baseApiSlice.injectEndpoints({
         url: `/exams/${id}`,
         method: "GET",
       }),
-      providesTags: (result, error, id) => [{ type: "Exam", id }],
+      providesTags: (_result, _error, id) => [{ type: "Exam", id }],
     }),
     submitExam: builder.mutation<any, SubmitExamPayload>({
       invalidatesTags: [{ type: "Exam", id: "LIST" }],

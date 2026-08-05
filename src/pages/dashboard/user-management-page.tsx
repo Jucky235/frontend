@@ -26,6 +26,7 @@ import {
   ToastContainer,
   type ToastMessage,
 } from "@/components/organism/common/Toast";
+import Dropdown from "@/components/organism/common/Dropdown";
 import { useState } from "react";
 
 export default function UserManagementPage() {
@@ -33,6 +34,7 @@ export default function UserManagementPage() {
   const [limit] = React.useState(10);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [debouncedSearch, setDebouncedSearch] = React.useState("");
+
   // 1. Toast State
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
@@ -49,10 +51,6 @@ export default function UserManagementPage() {
   const removeToast = (id: string) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   };
-  // Track which user's dropdown menu is open
-  const [openDropdownId, setOpenDropdownId] = React.useState<
-    string | number | null
-  >(null);
 
   // Track which user is currently being deleted via API
   const [deletingUserId, setDeletingUserId] = React.useState<
@@ -62,18 +60,6 @@ export default function UserManagementPage() {
   // State for ConfirmModal control
   const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
   const [userToDelete, setUserToDelete] = React.useState<any | null>(null);
-
-  // Close dropdown when clicking anywhere outside
-  React.useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (!target.closest(".action-menu-container")) {
-        setOpenDropdownId(null);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   // Debounce search query
   React.useEffect(() => {
@@ -103,18 +89,15 @@ export default function UserManagementPage() {
 
   // Handlers for menu actions
   const handleViewDetails = (user: any) => {
-    setOpenDropdownId(null);
     console.log("View details for user:", user);
   };
 
   const handleEditUser = (user: any) => {
-    setOpenDropdownId(null);
     console.log("Edit user:", user);
   };
 
   // Open modal confirmation step
   const handleOpenDeleteModal = (user: any) => {
-    setOpenDropdownId(null);
     setUserToDelete(user);
     setIsDeleteModalOpen(true);
   };
@@ -322,6 +305,21 @@ export default function UserManagementPage() {
                     const isCurrentDeleting =
                       isDeleting && deletingUserId === user.id;
 
+                    const menuItems = [
+                      {
+                        label: "View Details",
+                        icon: <Eye className="w-3.5 h-3.5" />,
+                        onClick: () => handleViewDetails(user),
+                      },
+                      {
+                        label: "Delete User",
+                        icon: <Trash2 className="w-3.5 h-3.5" />,
+                        onClick: () => handleOpenDeleteModal(user),
+                        danger: true,
+                        divider: true,
+                      },
+                    ];
+
                     return (
                       <tr
                         key={user.id}
@@ -382,55 +380,23 @@ export default function UserManagementPage() {
                         </td>
 
                         {/* Action Dropdown Menu Column */}
-                        <td className="px-6 py-4 text-center whitespace-nowrap relative action-menu-container">
+                        <td className="px-6 py-4 text-center whitespace-nowrap">
                           {isCurrentDeleting ? (
                             <Loader2 className="w-4 h-4 animate-spin text-red-500 mx-auto" />
                           ) : (
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setOpenDropdownId(
-                                  openDropdownId === user.id ? null : user.id,
-                                )
+                            <Dropdown
+                              align="right"
+                              width="w-44"
+                              items={menuItems}
+                              trigger={
+                                <button
+                                  type="button"
+                                  className="w-7 h-7 inline-flex items-center justify-center text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 rounded-lg transition-all cursor-pointer"
+                                >
+                                  <MoreVertical className="w-4 h-4" />
+                                </button>
                               }
-                              className="w-7 h-7 inline-flex items-center justify-center text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 rounded-lg transition-all cursor-pointer"
-                            >
-                              <MoreVertical className="w-4 h-4" />
-                            </button>
-                          )}
-
-                          {/* Popover Dropdown Menu */}
-                          {openDropdownId === user.id && (
-                            <div className="absolute right-6 top-12 w-44 bg-white border border-neutral-200 rounded-xl shadow-lg z-50 py-1.5 text-left animate-in fade-in zoom-in-95 duration-100">
-                              <button
-                                type="button"
-                                onClick={() => handleViewDetails(user)}
-                                className="w-full px-3.5 py-2 text-xs font-semibold text-neutral-700 hover:bg-neutral-50 flex items-center space-x-2 transition-colors"
-                              >
-                                <Eye className="w-3.5 h-3.5 text-neutral-400" />
-                                <span>View Details</span>
-                              </button>
-
-                              <button
-                                type="button"
-                                onClick={() => handleEditUser(user)}
-                                className="w-full px-3.5 py-2 text-xs font-semibold text-neutral-700 hover:bg-neutral-50 flex items-center space-x-2 transition-colors"
-                              >
-                                <Pencil className="w-3.5 h-3.5 text-neutral-400" />
-                                <span>Edit User</span>
-                              </button>
-
-                              <div className="my-1 border-t border-neutral-100" />
-
-                              <button
-                                type="button"
-                                onClick={() => handleOpenDeleteModal(user)}
-                                className="w-full px-3.5 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 flex items-center space-x-2 transition-colors"
-                              >
-                                <Trash2 className="w-3.5 h-3.5 text-red-500" />
-                                <span>Delete User</span>
-                              </button>
-                            </div>
+                            />
                           )}
                         </td>
                       </tr>

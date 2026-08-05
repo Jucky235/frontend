@@ -9,49 +9,79 @@ import {
 import {
   useGetExamByIdQuery,
   useSubmitExamMutation,
+  type ExamPart,
+  type Question,
 } from "@/redux/exam/examApiSlice";
 import {
-  CheckCircle2,
   RefreshCw,
   ChevronLeft,
-  Volume2,
-  Square,
+  ChevronRight,
+  Check,
+  Clock,
 } from "lucide-react";
+
+import { ExamHeader } from "@/components/organism/exam/ExamHeader";
+import { ScoreCard } from "@/components/organism/exam/ScoreCard";
+import { QuestionCard } from "@/components/organism/exam/QuestionCard";
 
 export default function TestPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  // 1. Fetch live data & declare mutation hook from backend api slice
   const { data: exam, isLoading, error } = useGetExamByIdQuery(id!);
   const [submitExam, { isLoading: isSubmitting }] = useSubmitExamMutation();
 
-  // 2. Fetch tracking metrics from Redux and local React state
   const selections = useAppSelector((state) => state.exam.userAnswers);
+  const [currentPartIndex, setCurrentPartIndex] = React.useState(0);
   const [isSubmitted, setIsSubmitted] = React.useState(false);
   const [score, setScore] = React.useState(0);
   const [startTime, setStartTime] = React.useState<string>(
     new Date().toISOString(),
   );
 
-  // Audio Player State
+  // Timer state in seconds (defaulting to exam.time in minutes * 60)
+  const [timeLeft, setTimeLeft] = React.useState<number | null>(null);
+
   const [playingAudioId, setPlayingAudioId] = React.useState<string | null>(
     null,
   );
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
 
-  // Initialize slice when test loads or resets
+  // Reset exam on mount or ID change
   React.useEffect(() => {
     if (id) {
       dispatch(startExam({ examId: id }));
-      setStartTime(new Date().toISOString()); // Track when the exam session actually initializes
+      setStartTime(new Date().toISOString());
     }
     return () => {
       dispatch(resetExamState());
       audioRef.current?.pause();
     };
   }, [id, dispatch]);
+
+  // Initialize timer once exam data is loaded
+  React.useEffect(() => {
+    if (exam && exam.time) {
+      setTimeLeft(exam.time * 60); // convert minutes to seconds
+    }
+  }, [exam]);
+
+  // Handle countdown timer logic
+  React.useEffect(() => {
+    if (timeLeft === null || isSubmitted) return;
+
+    if (timeLeft <= 0) {
+      handleSubmitExam();
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => (prev !== null && prev > 0 ? prev - 1 : 0));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft, isSubmitted]);
 
   const handleToggleAudio = (questionId: string, url: string) => {
     if (playingAudioId === questionId) {
@@ -71,25 +101,69 @@ export default function TestPage() {
     dispatch(selectAnswer({ questionId, answer: optionKey }));
   };
 
-  // Modern Asynchronous Submit Handler targeting history storage
-  const handleSubmitExam = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!exam?.questions || isSubmitting) return;
+  // Format seconds to HH:MM:SS or MM:SS
+  const formatTime = (seconds: number) => {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
 
-    const submissionTime = new Date().toISOString();
+    if (hrs > 0) {
+      return `${hrs.toString().padStart(2, "0")}:${mins
+        .toString()
+        .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+    }
+    return `${mins.toString().padStart(2, "0")}:${secs
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
+  // Group or retrieve structured exam parts
+  const partsList: ExamPart[] = React.useMemo(() => {
+    if (!exam) return [];
+    if (exam.parts && exam.parts.length > 0) return exam.parts;
+
+    if (exam.questions && exam.questions.length > 0) {
+      const grouped = exam.questions.reduce<Record<number, Question[]>>(
+        (acc, q) => {
+          const pNum = q.partNumber || 1;
+          if (!acc[pNum]) acc[pNum] = [];
+          acc[pNum].push(q);
+          return acc;
+        },
+        {},
+      );
+
+      return Object.entries(grouped).map(([pNum, qList]) => ({
+        id: `part-${pNum}`,
+        examId: exam.id,
+        partNumber: Number(pNum),
+        name: `Part ${pNum}`,
+        sortOrder: Number(pNum),
+        questions: qList,
+        createdAt: exam.createdAt,
+        updatedAt: exam.updatedAt,
+      }));
+    }
+
+    return [];
+  }, [exam]);
+
+  const handleSubmitExam = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!exam || isSubmitting) return;
+
+    const allQuestions: Question[] = partsList.flatMap((p) => p.questions);
 
     try {
-      // 1. Fire the RTK Mutation to persist history metrics securely to database via API
       await submitExam({
-        examId: id,
+        examId: id!,
         answers: selections,
         startedAt: startTime,
-        submittedAt: submissionTime,
+        submittedAt: new Date().toISOString(),
       }).unwrap();
 
-      // 2. Compute local visual states for seamless score card transition styles
       let finalScore = 0;
-      exam.questions.forEach((q) => {
+      allQuestions.forEach((q) => {
         if (selections[q.id] === q.right_answer) finalScore += 1;
       });
 
@@ -104,248 +178,292 @@ export default function TestPage() {
   };
 
   const handleResetExam = () => {
+    if (!id || !exam) return;
     dispatch(startExam({ examId: id }));
-    setStartTime(new Date().toISOString()); // Refresh session window
+    setStartTime(new Date().toISOString());
     setIsSubmitted(false);
+    setCurrentPartIndex(0);
     setScore(0);
+    setTimeLeft(exam.time * 60);
     audioRef.current?.pause();
     setPlayingAudioId(null);
   };
 
-  // --- LOADING & ERROR UI ---
+  const scrollToQuestion = (questionId: string) => {
+    const el = document.getElementById(`question-${questionId}`);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-neutral-50 text-neutral-500">
         <RefreshCw className="w-8 h-8 animate-spin text-[#5A67FF] mb-4" />
-        <p className="font-medium animate-pulse">Loading your exam...</p>
+        <p className="font-medium animate-pulse">Loading exam parts...</p>
       </div>
     );
   }
 
-  if (error || !exam || !exam.questions) {
+  if (error || !exam) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-neutral-50 text-rose-500 font-bold">
-        Failed to load exam data. Make sure your backend is running!
+        Failed to load exam data.
       </div>
     );
   }
 
-  // --- MAIN RENDER ---
-  return (
-    <div className="min-h-screen w-full bg-neutral-50 font-inter py-10 px-4 sm:px-6">
-      <div className="max-w-3xl mx-auto space-y-8">
-        {/* Header Block Row */}
-        <div className="flex items-center justify-between">
-          <button
-            onClick={() => navigate(-1)}
-            type="button"
-            className="flex items-center space-x-1 text-sm font-semibold text-neutral-500 hover:text-indigo-600 transition-colors cursor-pointer"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            <span>Back</span>
-          </button>
-          <span className="text-xs font-bold uppercase tracking-widest text-neutral-400 bg-neutral-200/60 px-3 py-1 rounded-md">
-            {exam.name}
-          </span>
-        </div>
+  const currentPart = partsList[currentPartIndex] || {
+    name: "Part 1",
+    questions: [],
+  };
 
-        {/* Evaluation Score Card */}
-        {isSubmitted && (
-          <div className="w-full bg-white border border-neutral-200 p-6 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4 animate-in fade-in slide-in-from-top-4">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
-                <CheckCircle2 className="w-6 h-6" />
+  const totalQuestions = partsList.reduce(
+    (acc, p) => acc + (p.questions?.length || 0),
+    0,
+  );
+
+  const answeredQuestionsCount = Object.keys(selections).length;
+
+  const previousQuestionsCount = partsList
+    .slice(0, currentPartIndex)
+    .reduce((acc, p) => acc + (p.questions?.length || 0), 0);
+
+  const isLowTime = timeLeft !== null && timeLeft <= 300; // Less than 5 mins
+
+  return (
+    <div className="min-h-screen w-full bg-neutral-50 font-inter py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        <ExamHeader examName={exam.name} onBack={() => navigate(-1)} />
+
+        <div className="mt-6 flex flex-col lg:flex-row gap-8 items-start relative">
+          {/* Main Question Area */}
+          <main className="flex-1 w-full space-y-6">
+            {isSubmitted && (
+              <ScoreCard
+                score={score}
+                totalQuestions={totalQuestions}
+                onReset={handleResetExam}
+              />
+            )}
+
+            {/* Part Header & Instructions */}
+            <div className="bg-white p-5 rounded-2xl border border-neutral-200 shadow-xs space-y-2">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-black text-neutral-800">
+                  {currentPart.name || `Part ${currentPartIndex + 1}`}
+                </h2>
+                <span className="text-xs font-semibold text-neutral-500 bg-neutral-100 px-3 py-1 rounded-full">
+                  {currentPart.questions?.length || 0} Questions
+                </span>
               </div>
-              <div>
-                <h3 className="font-extrabold text-neutral-800 text-lg">
-                  Test Complete!
-                </h3>
-                <p className="text-xs text-neutral-500 font-medium mt-0.5">
-                  You answered {score} out of {exam.questions.length} correctly.
+              {currentPart.instructions && (
+                <p className="text-sm text-neutral-600 italic bg-neutral-50 p-3 rounded-xl border border-neutral-100">
+                  {currentPart.instructions}
                 </p>
-              </div>
+              )}
             </div>
-            <div className="flex items-center space-x-4 w-full sm:w-auto">
-              <div className="bg-neutral-50 px-5 py-2.5 rounded-xl border border-neutral-200 text-center flex-1 sm:flex-initial">
-                <span className="text-xs font-bold text-neutral-400 block uppercase tracking-wider">
-                  Score
-                </span>
-                <span className="text-xl font-black text-neutral-800">
-                  {exam.questions.length > 0
-                    ? Math.round((score / exam.questions.length) * 100)
-                    : 0}
-                  %
-                </span>
-              </div>
+
+            {/* Questions List */}
+            <div className="space-y-6">
+              {(currentPart.questions || []).map(
+                (q: Question, qIdx: number) => (
+                  <div key={q.id} id={`question-${q.id}`}>
+                    <QuestionCard
+                      question={q}
+                      index={previousQuestionsCount + qIdx}
+                      userSelection={selections[q.id]}
+                      isSubmitted={isSubmitted}
+                      isSubmitting={isSubmitting}
+                      playingAudioId={playingAudioId}
+                      onToggleAudio={handleToggleAudio}
+                      onSelectOption={handleSelectOption}
+                    />
+                  </div>
+                ),
+              )}
+            </div>
+
+            {/* Navigation Bottom Controls */}
+            <div className="flex items-center justify-between pt-4 border-t border-neutral-200">
               <button
                 type="button"
-                onClick={handleResetExam}
-                className="bg-neutral-900 hover:bg-neutral-800 text-white p-3.5 rounded-xl transition-colors cursor-pointer"
+                disabled={currentPartIndex === 0}
+                onClick={() => {
+                  setCurrentPartIndex((prev) => prev - 1);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                className="flex items-center space-x-1.5 px-4 py-2.5 bg-white border border-neutral-200 hover:bg-neutral-100 disabled:opacity-40 disabled:cursor-not-allowed text-neutral-700 font-bold text-sm rounded-xl transition-all cursor-pointer"
               >
-                <RefreshCw className="w-5 h-5" />
+                <ChevronLeft className="w-4 h-4" />
+                <span>Previous Part</span>
               </button>
+
+              {currentPartIndex < partsList.length - 1 ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCurrentPartIndex((prev) => prev + 1);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                  className="flex items-center space-x-1.5 px-5 py-2.5 bg-[#5A67FF] hover:bg-indigo-600 text-white font-bold text-sm rounded-xl transition-all shadow-xs cursor-pointer"
+                >
+                  <span>Next Part</span>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              ) : (
+                !isSubmitted && (
+                  <button
+                    type="button"
+                    disabled={isSubmitting}
+                    onClick={() => handleSubmitExam()}
+                    className="bg-emerald-600 hover:bg-emerald-700 disabled:bg-neutral-300 text-white font-bold text-sm px-6 py-2.5 rounded-xl transition-all shadow-xs flex items-center justify-center cursor-pointer"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <RefreshCw className="w-4 h-4 animate-spin mr-2" />
+                        Submitting...
+                      </>
+                    ) : (
+                      <>
+                        Submit Exam ({answeredQuestionsCount}/{totalQuestions})
+                      </>
+                    )}
+                  </button>
+                )
+              )}
             </div>
-          </div>
-        )}
+          </main>
 
-        {/* Real Dynamic Questions Map */}
-        <form onSubmit={handleSubmitExam} className="space-y-6">
-          {exam.questions.map((q, qIdx) => {
-            const userSelection = selections[q.id];
-            const isPlaying = playingAudioId === q.id;
-
-            return (
+          {/* Floating Right Sidebar (Sticky on desktop) */}
+          <aside className="w-full lg:w-80 shrink-0 lg:sticky lg:top-8 space-y-4">
+            {/* Timer Card */}
+            {timeLeft !== null && !isSubmitted && (
               <div
-                key={q.id}
-                className="bg-white border border-neutral-200 rounded-2xl p-6 shadow-xs space-y-5"
+                className={`flex items-center justify-between p-4 rounded-2xl border transition-all shadow-xs ${
+                  isLowTime
+                    ? "bg-rose-50 border-rose-200 text-rose-700 animate-pulse"
+                    : "bg-white border-neutral-200 text-neutral-800"
+                }`}
               >
-                {/* 1. Question Title */}
-                <div className="flex items-start space-x-3">
-                  <span className="text-sm font-black text-indigo-500 bg-indigo-50 w-6 h-6 rounded-md flex items-center justify-center shrink-0 mt-0.5">
-                    {qIdx + 1}
-                  </span>
-                  <div className="space-y-4 w-full">
-                    <h2 className="text-base font-bold text-neutral-800 leading-snug">
-                      {q.content}
-                    </h2>
+                <div className="flex items-center space-x-2">
+                  <Clock className="w-5 h-5 text-[#5A67FF]" />
+                  <span className="font-bold text-sm">Time Remaining</span>
+                </div>
+                <span className="font-black text-lg tracking-wider font-mono">
+                  {formatTime(timeLeft)}
+                </span>
+              </div>
+            )}
 
-                    {/* AUDIO PLAYER COMPONENT (Nếu câu hỏi có audioPath) */}
-                    {q.audioPath && (
-                      <div className="flex items-center pt-1">
-                        <button
-                          type="button"
-                          onClick={() => handleToggleAudio(q.id, q.audioPath!)}
-                          className={`flex items-center space-x-2 text-xs font-bold px-4 py-2 rounded-xl transition-all cursor-pointer select-none border border-neutral-200 ${
-                            isPlaying
-                              ? "bg-rose-50 text-rose-600 border-rose-200"
-                              : "bg-neutral-50 text-neutral-700 hover:bg-neutral-100"
+            {/* Sidebar Parts & Navigation Card */}
+            <div className="bg-white p-5 rounded-2xl border border-neutral-200 shadow-xs space-y-4">
+              <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
+                <h3 className="font-extrabold text-neutral-800 text-base">
+                  Parts & Navigation
+                </h3>
+                <span className="text-xs font-bold text-[#5A67FF] bg-indigo-50 px-2.5 py-1 rounded-lg">
+                  {answeredQuestionsCount} / {totalQuestions} Done
+                </span>
+              </div>
+
+              {/* Part Selector List */}
+              <div className="space-y-2">
+                {partsList.map((part, idx) => {
+                  const partAnsweredCount = (part.questions || []).filter(
+                    (q) => selections[q.id] !== undefined,
+                  ).length;
+                  const isPartComplete =
+                    partAnsweredCount === (part.questions?.length || 0) &&
+                    (part.questions?.length || 0) > 0;
+                  const isActive = currentPartIndex === idx;
+
+                  return (
+                    <button
+                      key={part.id || idx}
+                      type="button"
+                      onClick={() => setCurrentPartIndex(idx)}
+                      className={`w-full flex items-center justify-between p-3 rounded-xl font-bold text-xs transition-all cursor-pointer ${
+                        isActive
+                          ? "bg-[#5A67FF] text-white shadow-xs"
+                          : "bg-neutral-50 text-neutral-700 hover:bg-neutral-100 border border-neutral-200/60"
+                      }`}
+                    >
+                      <span>
+                        {part.name || `Part ${part.partNumber || idx + 1}`}
+                      </span>
+                      {isPartComplete ? (
+                        <span className="w-5 h-5 rounded-full bg-emerald-400 text-white flex items-center justify-center shrink-0">
+                          <Check className="w-3 h-3 stroke-[3]" />
+                        </span>
+                      ) : (
+                        <span
+                          className={`text-[11px] px-2 py-0.5 rounded-md ${
+                            isActive
+                              ? "bg-white/20 text-white"
+                              : "bg-neutral-200/60 text-neutral-600"
                           }`}
                         >
-                          {isPlaying ? (
-                            <>
-                              <Square className="w-4 h-4 fill-current" />
-                              <span>Stop Audio</span>
-                            </>
-                          ) : (
-                            <>
-                              <Volume2 className="w-4 h-4" />
-                              <span>Play Audio</span>
-                            </>
-                          )}
-                        </button>
-                      </div>
-                    )}
+                          {partAnsweredCount}/{part.questions?.length || 0}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
 
-                    {/* IMAGE CONTAINER COMPONENT (Nếu câu hỏi có imagePath) */}
-                    {q.imagePath && (
-                      <div className="w-full max-w-md bg-neutral-100 border border-neutral-200 rounded-xl overflow-hidden shadow-xs">
-                        <img
-                          src={q.imagePath}
-                          alt={`Question visual illustration ${qIdx + 1}`}
-                          className="w-full h-auto object-cover block"
-                          loading="lazy"
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* 2. Dynamic JSON Options Loop */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                  {Object.entries(q.options as Record<string, string>).map(
-                    ([optKey, optText]) => {
-                      const isSelected = userSelection === optKey;
-                      const isCorrect = q.right_answer === optKey;
-
-                      // Styling Logic
-                      let optionStyle =
-                        "border-neutral-200 bg-white hover:bg-neutral-50 hover:border-neutral-300";
-                      let badgeStyle =
-                        "bg-neutral-100 text-neutral-600 border-neutral-300";
-
-                      if (!isSubmitted) {
-                        if (isSelected) {
-                          optionStyle =
-                            "border-[#5A67FF] bg-indigo-50/40 shadow-xs";
-                          badgeStyle =
-                            "bg-[#5A67FF] text-white border-[#5A67FF]";
-                        }
-                      } else {
-                        if (isCorrect) {
-                          optionStyle =
-                            "border-emerald-500 bg-emerald-50/30 text-emerald-900 shadow-xs";
-                          badgeStyle =
-                            "bg-emerald-500 text-white border-emerald-500";
-                        } else if (isSelected && !isCorrect) {
-                          optionStyle =
-                            "border-rose-400 bg-rose-50/30 text-rose-900";
-                          badgeStyle = "bg-rose-500 text-white border-rose-500";
-                        } else {
-                          optionStyle =
-                            "border-neutral-200 bg-white opacity-60";
-                        }
-                      }
+              {/* Active Part Question Grid */}
+              <div className="pt-2 border-t border-neutral-100 space-y-2">
+                <span className="text-xs font-bold text-neutral-500 uppercase tracking-wider block">
+                  Quick Jump (
+                  {currentPart.name || `Part ${currentPartIndex + 1}`})
+                </span>
+                <div className="grid grid-cols-5 gap-2 max-h-48 overflow-y-auto pr-1">
+                  {(currentPart.questions || []).map(
+                    (q: Question, qIdx: number) => {
+                      const globalIdx = previousQuestionsCount + qIdx + 1;
+                      const isAnswered = selections[q.id] !== undefined;
 
                       return (
                         <button
+                          key={q.id}
                           type="button"
-                          key={optKey}
-                          onClick={() => handleSelectOption(q.id, optKey)}
-                          disabled={isSubmitting}
-                          className={`border rounded-xl p-3.5 flex items-center space-x-3 text-left transition-all font-medium text-sm text-neutral-700 select-none ${
-                            !isSubmitted && !isSubmitting
-                              ? "cursor-pointer active:scale-[0.99]"
-                              : "cursor-default"
-                          } ${optionStyle}`}
+                          onClick={() => scrollToQuestion(q.id)}
+                          className={`h-8 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center ${
+                            isAnswered
+                              ? "bg-emerald-500 text-white shadow-2xs"
+                              : "bg-neutral-100 hover:bg-neutral-200 text-neutral-600 border border-neutral-200"
+                          }`}
                         >
-                          <span
-                            className={`w-6 h-6 text-xs font-bold border rounded-lg flex items-center justify-center shrink-0 tracking-tight transition-colors ${badgeStyle}`}
-                          >
-                            {optKey}
-                          </span>
-                          <span className="leading-tight">{optText}</span>
+                          {globalIdx}
                         </button>
                       );
                     },
                   )}
                 </div>
-
-                {/* Explanation Block (Only shows after submitting) */}
-                {isSubmitted && q.explanation && (
-                  <div className="mt-4 p-4 bg-blue-50 text-blue-800 text-sm rounded-xl border border-blue-100 font-medium">
-                    <strong className="block mb-1 text-blue-900 uppercase text-xs tracking-wider">
-                      Explanation
-                    </strong>
-                    {q.explanation}
-                  </div>
-                )}
               </div>
-            );
-          })}
 
-          {/* Bottom Action Button */}
-          {!isSubmitted && (
-            <div className="pt-2">
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-[#5A67FF] hover:bg-indigo-600 disabled:bg-neutral-300 disabled:cursor-not-allowed text-white font-bold text-base py-4 rounded-xl tracking-wide transition-all shadow-md cursor-pointer flex items-center justify-center"
-              >
-                {isSubmitting ? (
-                  <>
-                    <RefreshCw className="w-5 h-5 animate-spin mr-2" />
-                    Submitting results...
-                  </>
-                ) : (
-                  <>
-                    Submit Exam ({Object.keys(selections).length}/
-                    {exam.questions.length})
-                  </>
-                )}
-              </button>
+              {/* Global Submit CTA */}
+              {!isSubmitted && (
+                <button
+                  type="button"
+                  disabled={isSubmitting}
+                  onClick={() => handleSubmitExam()}
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-neutral-300 text-white font-bold text-sm py-3 rounded-xl transition-all shadow-xs flex items-center justify-center cursor-pointer mt-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin mr-2" />
+                      Submitting...
+                    </>
+                  ) : (
+                    "Submit Exam"
+                  )}
+                </button>
+              )}
             </div>
-          )}
-        </form>
+          </aside>
+        </div>
       </div>
     </div>
   );
