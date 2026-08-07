@@ -18,6 +18,7 @@ import ForumPage from "@/pages/community/forum-page";
 import FAQPage from "@/pages/help/faq-page";
 import NewsManagementPage from "@/pages/dashboard/news-management-page";
 import NewsContentPage from "@/pages/home/news-content-page";
+import ExamsManagementPage from "@/pages/dashboard/exams-management-page";
 
 export const router = createBrowserRouter([
   {
@@ -71,6 +72,14 @@ export const router = createBrowserRouter([
     element: (
       <AdminRoute>
         <CourseManagementPage />
+      </AdminRoute>
+    ),
+  },
+  {
+    path: "/dashboard/exam",
+    element: (
+      <AdminRoute>
+        <ExamsManagementPage />
       </AdminRoute>
     ),
   },
