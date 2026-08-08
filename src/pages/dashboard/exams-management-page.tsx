@@ -11,14 +11,23 @@ import CreateSingleQuestionModal, {
   type CreateQuestionFormData,
 } from "@/components/organism/dashboard/exam/modals/CreateSingleQuestionModal";
 import ImportCsvModal from "@/components/organism/dashboard/exam/modals/ImportCsvModal";
-import { useGetExamsQuery, type Exam } from "@/redux/exam/examApiSlice";
+import CreateExamModal, {
+  type CreateExamFormData,
+} from "@/components/organism/dashboard/exam/modals/CreateExamModal";
+import {
+  useGetExamsQuery,
+  useCreateExamMutation,
+  type Exam,
+  type ExamCategory,
+} from "@/redux/exam/examApiSlice";
 import { useCreateQuestionMutation } from "@/redux/question/questionApiSlice";
 
 export default function ExamsManagementPage() {
   const { data: exams = [], isLoading, isError, refetch } = useGetExamsQuery();
 
-  // RTK Query Mutation để thêm câu hỏi vào Database
+  // RTK Query Mutations
   const [createQuestion] = useCreateQuestionMutation();
+  const [createExam] = useCreateExamMutation();
 
   // Filters state
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -28,6 +37,7 @@ export default function ExamsManagementPage() {
   // Modals state
   const [isQuestionModalOpen, setIsQuestionModalOpen] = React.useState(false);
   const [isCsvModalOpen, setIsCsvModalOpen] = React.useState(false);
+  const [isExamModalOpen, setIsExamModalOpen] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const categories = React.useMemo(() => {
@@ -61,35 +71,56 @@ export default function ExamsManagementPage() {
   const handleDelete = (id: string) => {
     if (confirm("Are you sure you want to delete this exam?")) {
       console.log("Delete exam ID:", id);
-      // Trigger RTK Query delete mutation here when added
     }
   };
 
-  // Handler for creating a single question (Đã gắn API call)
   const handleCreateQuestion = async (data: CreateQuestionFormData) => {
     setIsSubmitting(true);
     try {
-      console.log("Single Question Payload:", data);
-
-      // Gọi RTK Query mutation lưu câu hỏi xuống Database
       await createQuestion(data).unwrap();
-
       refetch();
     } catch (error) {
       console.error("Failed to create question:", error);
-      // Re-throw để modal bắt lỗi và hiển thị error toast
       throw error;
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Handler for bulk CSV import
+  // Connected createExam API call with payload mapping
+  const handleCreateExam = async (data: CreateExamFormData) => {
+    setIsSubmitting(true);
+    try {
+      const allQuestions = data.sections.flatMap((section) =>
+        section.questionIds.map((qId, idx) => ({
+          questionId: qId,
+          sortOrder: idx + 1,
+          partNumber: section.partNumber,
+        })),
+      );
+
+      await createExam({
+        name: data.title,
+        category: data.category as ExamCategory,
+        description: data.description,
+        durationMinutes: data.durationMinutes,
+        status: "ACTIVE",
+        questions: allQuestions,
+      }).unwrap();
+
+      refetch();
+    } catch (error) {
+      console.error("Failed to create exam:", error);
+      throw error;
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handleImportCsv = async (questions: CreateQuestionFormData[]) => {
     setIsSubmitting(true);
     try {
       console.log("Bulk Imported Questions:", questions);
-      // Trigger bulk upload mutation hoặc dispatch batch creation tại đây
       refetch();
     } finally {
       setIsSubmitting(false);
@@ -101,7 +132,6 @@ export default function ExamsManagementPage() {
       <Header />
 
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col space-y-6">
-        {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h1 className="text-2xl font-extrabold text-neutral-800 tracking-tight">
@@ -113,7 +143,6 @@ export default function ExamsManagementPage() {
             </p>
           </div>
 
-          {/* Action Buttons */}
           <div className="flex items-center flex-wrap gap-2.5">
             <button
               type="button"
@@ -135,7 +164,7 @@ export default function ExamsManagementPage() {
 
             <button
               type="button"
-              onClick={() => alert("Open Create Exam Modal")}
+              onClick={() => setIsExamModalOpen(true)}
               className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-md transition-all flex items-center space-x-2 cursor-pointer active:scale-95"
             >
               <Plus className="w-4 h-4" />
@@ -167,11 +196,17 @@ export default function ExamsManagementPage() {
         />
       </main>
 
-      {/* Modals */}
       <CreateSingleQuestionModal
         isOpen={isQuestionModalOpen}
         onClose={() => setIsQuestionModalOpen(false)}
         onSubmit={handleCreateQuestion}
+        isSubmitting={isSubmitting}
+      />
+
+      <CreateExamModal
+        isOpen={isExamModalOpen}
+        onClose={() => setIsExamModalOpen(false)}
+        onSubmit={handleCreateExam}
         isSubmitting={isSubmitting}
       />
 

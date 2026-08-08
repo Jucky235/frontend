@@ -17,7 +17,7 @@ export interface Question {
   options: QuestionOptions;
   right_answer: string;
   category: ExamCategory;
-  partNumber?: number | null; // Added partNumber
+  partNumber?: number | null;
   explanation?: string | null;
   imagePath?: string | null;
   audioPath?: string | null;
@@ -29,8 +29,8 @@ export interface Question {
 export interface ExamPart {
   id: string;
   examId: string;
-  partNumber: number; // e.g., 1, 2, 3...
-  name: string; // e.g., "Part 1: Photographs"
+  partNumber: number;
+  name: string;
   instructions?: string | null;
   audioPath?: string | null;
   sortOrder: number;
@@ -45,8 +45,8 @@ export interface Exam {
   category: ExamCategory;
   time: number;
   status: ExamStatus;
-  parts?: ExamPart[]; // Added multi-part support
-  questions?: Question[]; // Fallback list if parts aren't grouped
+  parts?: ExamPart[];
+  questions?: Question[];
   createdAt: string;
   updatedAt: string;
 }
@@ -56,6 +56,22 @@ export interface SubmitExamPayload {
   answers: Record<string, string>;
   startedAt: string;
   submittedAt: string;
+}
+
+export interface CreateExamQuestionItem {
+  questionId: string;
+  sortOrder: number;
+  partNumber?: number;
+}
+
+export interface CreateExamPayload {
+  name: string;
+  code?: string;
+  description?: string;
+  category: ExamCategory;
+  status?: ExamStatus;
+  durationMinutes?: number;
+  questions?: CreateExamQuestionItem[];
 }
 
 export const examApiSlice = baseApiSlice.injectEndpoints({
@@ -80,16 +96,28 @@ export const examApiSlice = baseApiSlice.injectEndpoints({
       }),
       providesTags: (_result, _error, id) => [{ type: "Exam", id }],
     }),
-    submitExam: builder.mutation<any, SubmitExamPayload>({
+    createExam: builder.mutation<Exam, CreateExamPayload>({
+      query: (body) => ({
+        url: "/exams",
+        method: "POST",
+        body,
+      }),
       invalidatesTags: [{ type: "Exam", id: "LIST" }],
+    }),
+    submitExam: builder.mutation<any, SubmitExamPayload>({
       query: (body) => ({
         url: "/exams/submit",
         method: "POST",
         body,
       }),
+      invalidatesTags: [{ type: "Exam", id: "LIST" }],
     }),
   }),
 });
 
-export const { useGetExamsQuery, useGetExamByIdQuery, useSubmitExamMutation } =
-  examApiSlice;
+export const {
+  useGetExamsQuery,
+  useGetExamByIdQuery,
+  useCreateExamMutation,
+  useSubmitExamMutation,
+} = examApiSlice;
