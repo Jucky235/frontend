@@ -9,7 +9,6 @@ export interface ExamSectionInput {
   title: string;
   partNumber: number;
   description?: string;
-  questionIds: string[];
 }
 
 export interface CreateExamFormData {
@@ -48,7 +47,6 @@ export const CreateExamModal: React.FC<CreateExamModalProps> = ({
     {
       title: "Listening - Part 1",
       partNumber: 1,
-      questionIds: [],
       description: "",
     },
   ]);
@@ -85,7 +83,6 @@ export const CreateExamModal: React.FC<CreateExamModalProps> = ({
       {
         title: "Listening - Part 1",
         partNumber: 1,
-        questionIds: [],
         description: "",
       },
     ]);
@@ -104,7 +101,6 @@ export const CreateExamModal: React.FC<CreateExamModalProps> = ({
       {
         title: `Part ${nextPart}`,
         partNumber: nextPart,
-        questionIds: [],
         description: "",
       },
     ]);

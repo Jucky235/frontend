@@ -14,9 +14,11 @@ import ImportCsvModal from "@/components/organism/dashboard/exam/modals/ImportCs
 import CreateExamModal, {
   type CreateExamFormData,
 } from "@/components/organism/dashboard/exam/modals/CreateExamModal";
+import { type SelectedQuestionPayload } from "@/components/organism/dashboard/exam/modals/AddQuestionToExamModal";
 import {
   useGetExamsQuery,
   useCreateExamMutation,
+  useAddQuestionsToExamMutation,
   type Exam,
   type ExamCategory,
 } from "@/redux/exam/examApiSlice";
@@ -28,6 +30,7 @@ export default function ExamsManagementPage() {
   // RTK Query Mutations
   const [createQuestion] = useCreateQuestionMutation();
   const [createExam] = useCreateExamMutation();
+  const [addQuestionsToExam] = useAddQuestionsToExamMutation();
 
   // Filters state
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -79,41 +82,58 @@ export default function ExamsManagementPage() {
     try {
       await createQuestion(data).unwrap();
       refetch();
+      setIsQuestionModalOpen(false);
     } catch (error) {
       console.error("Failed to create question:", error);
-      throw error;
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Connected createExam API call with payload mapping
   const handleCreateExam = async (data: CreateExamFormData) => {
     setIsSubmitting(true);
     try {
-      const allQuestions = data.sections.flatMap((section) =>
-        section.questionIds.map((qId, idx) => ({
-          questionId: qId,
-          sortOrder: idx + 1,
-          partNumber: section.partNumber,
-        })),
-      );
-
       await createExam({
         name: data.title,
         category: data.category as ExamCategory,
         description: data.description,
         durationMinutes: data.durationMinutes,
         status: "ACTIVE",
-        questions: allQuestions,
+        parts: data.sections.map((section, idx) => ({
+          partNumber: section.partNumber || idx + 1,
+          name: section.title,
+          description: section.description,
+          sortOrder: idx + 1,
+        })),
+        questions: [],
       }).unwrap();
 
       refetch();
+      setIsExamModalOpen(false);
     } catch (error) {
       console.error("Failed to create exam:", error);
-      throw error;
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleAddQuestionsToExam = async (
+    examId: string,
+    selectedQuestions: SelectedQuestionPayload[],
+  ) => {
+    try {
+      const formattedQuestions = selectedQuestions.map((q) => ({
+        questionId: q.questionId,
+        partNumber: q.partNumber,
+        sortOrder: q.sortOrder,
+      }));
+
+      await addQuestionsToExam({
+        examId,
+        questions: formattedQuestions,
+      }).unwrap();
+    } catch (error) {
+      console.error("Failed to add questions to exam:", error);
     }
   };
 
@@ -122,6 +142,7 @@ export default function ExamsManagementPage() {
     try {
       console.log("Bulk Imported Questions:", questions);
       refetch();
+      setIsCsvModalOpen(false);
     } finally {
       setIsSubmitting(false);
     }
@@ -193,6 +214,7 @@ export default function ExamsManagementPage() {
           onDelete={handleDelete}
           onEdit={(exam: Exam) => alert(`Edit ${exam.name}`)}
           onView={(exam: Exam) => alert(`View ${exam.name}`)}
+          onAddQuestionsToExam={handleAddQuestionsToExam}
         />
       </main>
 

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import {
   X,
   Search,
@@ -7,11 +7,17 @@ import {
   Plus,
   HelpCircle,
   Filter,
+  Layers,
 } from "lucide-react";
 import {
   useGetQuestionsQuery,
   type Question,
 } from "@/redux/question/questionApiSlice";
+
+export interface ExamPart {
+  partNumber: number;
+  title?: string;
+}
 
 export interface SelectedQuestionPayload {
   questionId: string;
@@ -24,6 +30,8 @@ export interface AddQuestionToExamModalProps {
   onClose: () => void;
   onAddQuestions: (selectedQuestions: SelectedQuestionPayload[]) => void;
   alreadySelectedIds?: string[];
+  /** Dynamic exam parts passed from parent exam state */
+  examParts?: ExamPart[];
 }
 
 export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
@@ -31,8 +39,9 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
   onClose,
   onAddQuestions,
   alreadySelectedIds = [],
+  examParts = [],
 }) => {
-  // Fetch with a large limit so all questions display initially
+  // Fetch questions when modal is active
   const {
     data: questionsResponse,
     isLoading,
@@ -46,10 +55,36 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
     return questionsResponse.items || [];
   }, [questionsResponse]);
 
+  // Extract available part numbers (fallback to [1, 2, 3, 4, 5, 6, 7] if empty)
+  const availableParts = useMemo(() => {
+    if (examParts && examParts.length > 0) {
+      return examParts.map((p) => p.partNumber);
+    }
+    return [1, 2, 3, 4, 5, 6, 7];
+  }, [examParts]);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("ALL");
-  const [targetPart, setTargetPart] = useState<number>(1);
+  const [targetPart, setTargetPart] = useState<number>(availableParts[0] ?? 1);
   const [selectedMap, setSelectedMap] = useState<Record<string, number>>({});
+
+  // Reset or update target part when available parts change or modal opens
+  useEffect(() => {
+    if (isOpen && availableParts.length > 0) {
+      setTargetPart(availableParts[0]);
+    }
+  }, [isOpen, availableParts]);
+
+  // Handle ESC key press to close modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
 
   const alreadySelectedSet = useMemo(
     () => new Set(alreadySelectedIds),
@@ -61,13 +96,12 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
     return ["ALL", ...Array.from(set)];
   }, [questions]);
 
-  // Shows all questions by default when search and category are empty/ALL
   const filteredQuestions = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
     return questions.filter((q) => {
-      const matchesSearch =
-        !searchQuery.trim() ||
-        q.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        q.id.toLowerCase().includes(searchQuery.toLowerCase());
+      const contentMatch = (q.content || "").toLowerCase().includes(query);
+      const idMatch = (q.id || "").toLowerCase().includes(query);
+      const matchesSearch = !query || contentMatch || idMatch;
 
       const matchesCategory =
         categoryFilter === "ALL" || q.category === categoryFilter;
@@ -117,7 +151,7 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
     }
   };
 
-  const handlePartChangeForSelected = (partNum: number) => {
+  const handleBatchPartChange = (partNum: number) => {
     setTargetPart(partNum);
     setSelectedMap((prev) => {
       const next = { ...prev };
@@ -126,6 +160,18 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
       });
       return next;
     });
+  };
+
+  const handleSingleItemPartChange = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+    questionId: string,
+  ) => {
+    e.stopPropagation();
+    const newPart = Number(e.target.value);
+    setSelectedMap((prev) => ({
+      ...prev,
+      [questionId]: newPart,
+    }));
   };
 
   const handleConfirmAdd = () => {
@@ -148,8 +194,8 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
   const selectedCount = Object.keys(selectedMap).length;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
-      <div className="relative flex w-full max-w-4xl max-h-[90vh] flex-col rounded-2xl bg-white shadow-2xl dark:bg-neutral-800">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="relative flex w-full max-w-4xl max-h-[90vh] flex-col rounded-2xl bg-white shadow-2xl dark:bg-neutral-800 border border-neutral-200/80 dark:border-neutral-700">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-neutral-200 px-6 py-4 dark:border-neutral-700">
           <div className="flex items-center gap-2.5">
@@ -161,14 +207,14 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
                 Thêm câu hỏi vào đề thi
               </h2>
               <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                Lựa chọn danh sách câu hỏi và phân bổ vào Phần (Part) phù hợp.
+                Lựa chọn danh sách câu hỏi và chọn Part để chèn vào.
               </p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="cursor-pointer rounded-lg p-2 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-600 dark:hover:bg-neutral-700 dark:hover:text-neutral-200"
+            className="cursor-pointer rounded-lg p-2 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-600 dark:hover:bg-neutral-700 dark:hover:text-neutral-200 transition-colors"
           >
             <X className="h-5 w-5" />
           </button>
@@ -178,7 +224,7 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
         <div className="border-b border-neutral-200 bg-neutral-50/50 p-4 space-y-3 dark:border-neutral-700 dark:bg-neutral-800/50">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
             {/* Search Bar */}
-            <div className="relative md:col-span-6">
+            <div className="relative md:col-span-5">
               <Search className="absolute left-3 top-2.5 h-4 w-4 text-neutral-400" />
               <input
                 type="text"
@@ -196,7 +242,7 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
                 <select
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="w-full bg-transparent text-xs font-medium text-neutral-700 dark:text-neutral-200 focus:outline-none"
+                  className="w-full bg-transparent text-xs font-medium text-neutral-700 dark:text-neutral-200 focus:outline-none cursor-pointer"
                 >
                   {categories.map((cat) => (
                     <option
@@ -212,27 +258,36 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
             </div>
 
             {/* Target Exam Part Selector */}
-            <div className="relative md:col-span-3">
-              <div className="flex items-center rounded-xl border border-indigo-200 bg-indigo-50/50 px-3 py-2 dark:border-indigo-800 dark:bg-indigo-950/30">
-                <span className="mr-2 text-xs font-semibold text-indigo-700 dark:text-indigo-300 shrink-0">
-                  Phần (Part):
+            <div className="relative md:col-span-4">
+              <div className="flex items-center rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 dark:border-indigo-800 dark:bg-indigo-950/40">
+                <Layers className="mr-2 h-4 w-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
+                <span className="mr-2 text-xs font-semibold text-indigo-900 dark:text-indigo-200 shrink-0">
+                  Chèn vào Part:
                 </span>
                 <select
                   value={targetPart}
                   onChange={(e) =>
-                    handlePartChangeForSelected(Number(e.target.value))
+                    handleBatchPartChange(Number(e.target.value))
                   }
-                  className="w-full bg-transparent text-xs font-bold text-indigo-800 dark:text-indigo-200 focus:outline-none"
+                  className="w-full bg-transparent text-xs font-bold text-indigo-700 dark:text-indigo-300 focus:outline-none cursor-pointer"
                 >
-                  {[1, 2, 3, 4, 5, 6, 7].map((num) => (
-                    <option
-                      key={num}
-                      value={num}
-                      className="dark:bg-neutral-800"
-                    >
-                      Part {num}
-                    </option>
-                  ))}
+                  {availableParts.map((num) => {
+                    const partDetail = examParts?.find(
+                      (p) => p.partNumber === num,
+                    );
+                    const label = partDetail?.title
+                      ? `Part ${num} - ${partDetail.title}`
+                      : `Part ${num}`;
+                    return (
+                      <option
+                        key={num}
+                        value={num}
+                        className="dark:bg-neutral-800 font-medium"
+                      >
+                        {label}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
             </div>
@@ -243,7 +298,7 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
             <button
               type="button"
               onClick={handleSelectAll}
-              className="cursor-pointer font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 flex items-center gap-1.5"
+              className="cursor-pointer font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 flex items-center gap-1.5 transition-colors"
             >
               Chọn tất cả ({filteredQuestions.length})
             </button>
@@ -252,7 +307,7 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
               <strong className="text-indigo-600 dark:text-indigo-400">
                 {selectedCount}
               </strong>{" "}
-              câu hỏi
+              câu hỏi (sẽ chèn vào <strong>Part {targetPart}</strong>)
             </span>
           </div>
         </div>
@@ -264,12 +319,12 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
               <div className="h-6 w-6 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent" />
             </div>
           ) : isError ? (
-            <div className="py-10 text-center text-xs text-red-500">
+            <div className="py-10 text-center text-xs text-rose-500 font-semibold">
               Không thể tải danh sách câu hỏi. Vui lòng thử lại sau.
             </div>
           ) : filteredQuestions.length === 0 ? (
-            <div className="py-12 text-center text-xs text-neutral-500 dark:text-neutral-400">
-              Không có câu hỏi nào.
+            <div className="py-12 text-center text-xs text-neutral-500 dark:text-neutral-400 font-medium">
+              Không tìm thấy câu hỏi nào phù hợp.
             </div>
           ) : (
             filteredQuestions.map((q) => {
@@ -284,7 +339,7 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
                     isAlreadyAdded
                       ? "opacity-50 bg-neutral-100 border-neutral-200 cursor-not-allowed dark:bg-neutral-800/40 dark:border-neutral-700"
                       : isSelected
-                        ? "border-indigo-500 bg-indigo-50/40 dark:border-indigo-600 dark:bg-indigo-950/20"
+                        ? "border-indigo-500 bg-indigo-50/40 dark:border-indigo-600 dark:bg-indigo-950/20 shadow-xs"
                         : "border-neutral-200 bg-white hover:border-neutral-300 dark:border-neutral-700 dark:bg-neutral-800"
                   }`}
                 >
@@ -300,16 +355,13 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
 
                   <div className="flex-1 space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="rounded-md bg-neutral-100 px-2 py-0.5 text-[10px] font-bold text-neutral-600 dark:bg-neutral-700 dark:text-neutral-300">
-                        {q.category}
-                      </span>
-                      {q.partNumber && (
-                        <span className="rounded-md bg-indigo-100 px-2 py-0.5 text-[10px] font-bold text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300">
-                          Part {q.partNumber}
+                      {q.category && (
+                        <span className="rounded-md bg-neutral-100 px-2 py-0.5 text-[10px] font-bold text-neutral-600 dark:bg-neutral-700 dark:text-neutral-300">
+                          {q.category}
                         </span>
                       )}
                       {isAlreadyAdded && (
-                        <span className="text-[10px] italic text-neutral-400">
+                        <span className="text-[10px] italic text-neutral-400 font-medium">
                           (Đã có trong đề)
                         </span>
                       )}
@@ -320,11 +372,27 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
                     </p>
                   </div>
 
+                  {/* Per-item Part selection dropdown */}
                   {isSelected && (
-                    <div className="shrink-0 text-right">
-                      <span className="inline-block rounded-lg bg-indigo-600 px-2.5 py-1 text-[11px] font-bold text-white shadow-xs">
-                        Gán vào Part {selectedMap[q.id]}
-                      </span>
+                    <div
+                      className="shrink-0 text-right"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <select
+                        value={selectedMap[q.id]}
+                        onChange={(e) => handleSingleItemPartChange(e, q.id)}
+                        className="rounded-lg bg-indigo-600 hover:bg-indigo-700 px-2.5 py-1 text-[11px] font-bold text-white shadow-xs focus:outline-none cursor-pointer transition-colors"
+                      >
+                        {availableParts.map((num) => (
+                          <option
+                            key={num}
+                            value={num}
+                            className="bg-white text-neutral-800 dark:bg-neutral-800 dark:text-white"
+                          >
+                            Part {num}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   )}
                 </div>
@@ -338,7 +406,7 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="cursor-pointer rounded-xl border border-neutral-200 px-4 py-2.5 text-xs font-bold text-neutral-600 hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700"
+            className="cursor-pointer rounded-xl border border-neutral-200 px-4 py-2.5 text-xs font-bold text-neutral-600 hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700 transition-colors"
           >
             Hủy
           </button>
@@ -346,7 +414,7 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
             type="button"
             disabled={selectedCount === 0}
             onClick={handleConfirmAdd}
-            className="cursor-pointer flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-xs font-bold text-white shadow-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="cursor-pointer flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-xs font-bold text-white shadow-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             <Plus className="h-4 w-4" />
             Xác nhận thêm ({selectedCount})

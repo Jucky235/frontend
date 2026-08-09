@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   MoreVertical,
   Eye,
@@ -9,12 +9,14 @@ import {
   Archive,
   RefreshCw,
   PlusCircle,
+  HelpCircle,
 } from "lucide-react";
 import Dropdown, {
   type DropdownItem,
 } from "@/components/organism/common/Dropdown";
 import AddQuestionToExamModal, {
   type SelectedQuestionPayload,
+  type ExamPart,
 } from "@/components/organism/dashboard/exam/modals/AddQuestionToExamModal";
 import { type Exam, type ExamStatus } from "@/redux/exam/examApiSlice";
 
@@ -47,11 +49,15 @@ export default function ExamsTable({
   );
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  const getQuestionCount = (exam: Exam) => {
-    if (exam.questions && exam.questions.length > 0)
+  const getQuestionCount = (exam: Exam): number => {
+    if (exam.questions && exam.questions.length > 0) {
       return exam.questions.length;
+    }
     if (exam.parts && exam.parts.length > 0) {
-      return exam.parts.reduce((sum, p) => sum + (p.questions?.length || 0), 0);
+      return exam.parts.reduce(
+        (sum, part) => sum + (part.questions?.length || 0),
+        0,
+      );
     }
     return 0;
   };
@@ -79,6 +85,13 @@ export default function ExamsTable({
             <span>Outdated</span>
           </span>
         );
+      default:
+        return (
+          <span className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-neutral-100 text-neutral-500 border border-neutral-200">
+            <HelpCircle className="w-3 h-3 text-neutral-400" />
+            <span>{status}</span>
+          </span>
+        );
     }
   };
 
@@ -101,6 +114,38 @@ export default function ExamsTable({
     handleCloseAddQuestionsModal();
   };
 
+  // Derive target parts for the selected exam (Defaults to Part 1 for single-part exams)
+  const examPartsForModal: ExamPart[] = useMemo(() => {
+    if (!selectedExamForAdd) return [{ partNumber: 1 }];
+
+    if (selectedExamForAdd.parts && selectedExamForAdd.parts.length > 0) {
+      return selectedExamForAdd.parts.map((p, idx) => ({
+        partNumber: p.partNumber || p.part_number || idx + 1,
+        title: p.title || p.name,
+      }));
+    }
+
+    return [{ partNumber: 1 }];
+  }, [selectedExamForAdd]);
+
+  // Extract existing question IDs across single-part and multi-part exams
+  const alreadySelectedQuestionIds: string[] = useMemo(() => {
+    if (!selectedExamForAdd) return [];
+
+    const directQs =
+      selectedExamForAdd.questions
+        ?.map((q: any) => q.id || q.questionId)
+        .filter(Boolean) || [];
+
+    const partQs =
+      selectedExamForAdd.parts
+        ?.flatMap((part: any) => part.questions || [])
+        .map((q: any) => q.id || q.questionId)
+        .filter(Boolean) || [];
+
+    return Array.from(new Set([...directQs, ...partQs])) as string[];
+  }, [selectedExamForAdd]);
+
   if (isLoading) {
     return (
       <div className="bg-white border border-neutral-200/80 rounded-2xl p-12 text-center text-xs font-semibold text-neutral-400 space-y-3">
@@ -115,6 +160,7 @@ export default function ExamsTable({
       <div className="bg-white border border-neutral-200/80 rounded-2xl p-12 text-center text-xs font-semibold text-rose-500 space-y-3">
         <p>Failed to load exams list.</p>
         <button
+          type="button"
           onClick={onRefetch}
           className="px-4 py-2 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 transition-colors font-bold cursor-pointer"
         >
@@ -123,9 +169,6 @@ export default function ExamsTable({
       </div>
     );
   }
-
-  const alreadySelectedQuestionIds =
-    selectedExamForAdd?.questions?.map((q) => q.id || q.questionId) || [];
 
   return (
     <>
@@ -247,12 +290,15 @@ export default function ExamsTable({
       </div>
 
       {/* Add Question Modal Integration */}
-      <AddQuestionToExamModal
-        isOpen={isAddModalOpen}
-        onClose={handleCloseAddQuestionsModal}
-        onAddQuestions={handleConfirmAddQuestions}
-        alreadySelectedIds={alreadySelectedQuestionIds}
-      />
+      {isAddModalOpen && selectedExamForAdd && (
+        <AddQuestionToExamModal
+          isOpen={isAddModalOpen}
+          onClose={handleCloseAddQuestionsModal}
+          onAddQuestions={handleConfirmAddQuestions}
+          alreadySelectedIds={alreadySelectedQuestionIds}
+          examParts={examPartsForModal}
+        />
+      )}
     </>
   );
 }

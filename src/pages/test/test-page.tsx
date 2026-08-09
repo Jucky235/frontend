@@ -117,17 +117,41 @@ export default function TestPage() {
       .padStart(2, "0")}`;
   };
 
-  // Group or retrieve structured exam parts
+  // Group or retrieve structured exam parts with safe question unwrapping
   const partsList: ExamPart[] = React.useMemo(() => {
     if (!exam) return [];
-    if (exam.parts && exam.parts.length > 0) return exam.parts;
 
+    // Normalizer to extract clean question objects whether nested or flat
+    const normalizeQuestion = (qItem: any): Question => {
+      const target = qItem.question ? qItem.question : qItem;
+      return {
+        ...target,
+        id: target.id || qItem.questionId || qItem.id,
+        content: target.content || "",
+        options: target.options || {},
+        right_answer: target.right_answer || target.rightAnswer || "",
+        audioPath: target.audioPath || qItem.audioPath,
+        imagePath: target.imagePath || qItem.imagePath,
+        explanation: target.explanation || qItem.explanation,
+      };
+    };
+
+    // Case 1: Structured exam parts array
+    if (exam.parts && exam.parts.length > 0) {
+      return exam.parts.map((part) => ({
+        ...part,
+        questions: (part.questions || []).map(normalizeQuestion),
+      }));
+    }
+
+    // Case 2: Flattened top-level questions array
     if (exam.questions && exam.questions.length > 0) {
       const grouped = exam.questions.reduce<Record<number, Question[]>>(
-        (acc, q) => {
-          const pNum = q.partNumber || 1;
+        (acc, qItem) => {
+          const normalized = normalizeQuestion(qItem);
+          const pNum = qItem.partNumber || 1;
           if (!acc[pNum]) acc[pNum] = [];
-          acc[pNum].push(q);
+          acc[pNum].push(normalized);
           return acc;
         },
         {},

@@ -18,6 +18,8 @@ export interface Question {
   right_answer: string;
   category: ExamCategory;
   partNumber?: number | null;
+  partId?: string;
+  sortOrder?: number;
   explanation?: string | null;
   imagePath?: string | null;
   audioPath?: string | null;
@@ -42,6 +44,8 @@ export interface ExamPart {
 export interface Exam {
   id: string;
   name: string;
+  code?: string | null;
+  description?: string | null;
   category: ExamCategory;
   time: number;
   status: ExamStatus;
@@ -61,7 +65,15 @@ export interface SubmitExamPayload {
 export interface CreateExamQuestionItem {
   questionId: string;
   sortOrder: number;
-  partNumber?: number;
+  partNumber: number;
+}
+
+export interface CreateExamPartPayload {
+  partNumber: number;
+  name: string;
+  instructions?: string;
+  description?: string;
+  sortOrder?: number;
 }
 
 export interface CreateExamPayload {
@@ -71,7 +83,19 @@ export interface CreateExamPayload {
   category: ExamCategory;
   status?: ExamStatus;
   durationMinutes?: number;
+  parts?: CreateExamPartPayload[];
   questions?: CreateExamQuestionItem[];
+}
+
+export interface AddQuestionsToExamItem {
+  questionId: string;
+  partNumber?: number;
+  sortOrder?: number;
+}
+
+export interface AddQuestionsToExamPayload {
+  examId: string;
+  questions: AddQuestionsToExamItem[];
 }
 
 export const examApiSlice = baseApiSlice.injectEndpoints({
@@ -104,6 +128,17 @@ export const examApiSlice = baseApiSlice.injectEndpoints({
       }),
       invalidatesTags: [{ type: "Exam", id: "LIST" }],
     }),
+    addQuestionsToExam: builder.mutation<Exam, AddQuestionsToExamPayload>({
+      query: ({ examId, questions }) => ({
+        url: `/exams/${examId}/questions`,
+        method: "POST",
+        body: { questions },
+      }),
+      invalidatesTags: (_result, _error, { examId }) => [
+        { type: "Exam", id: examId },
+        { type: "Exam", id: "LIST" },
+      ],
+    }),
     submitExam: builder.mutation<any, SubmitExamPayload>({
       query: (body) => ({
         url: "/exams/submit",
@@ -119,5 +154,6 @@ export const {
   useGetExamsQuery,
   useGetExamByIdQuery,
   useCreateExamMutation,
+  useAddQuestionsToExamMutation,
   useSubmitExamMutation,
 } = examApiSlice;
