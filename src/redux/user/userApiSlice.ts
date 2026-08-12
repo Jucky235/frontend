@@ -56,6 +56,32 @@ export interface GetUsersResponse {
   };
 }
 
+// 💬 Payload và Response cho SendMessage
+export interface SendMessagePayload {
+  channelId: string;
+  content: string;
+  attachments?: string[];
+}
+
+export interface ChatMessage {
+  id: string;
+  channelId: string;
+  content: string;
+  attachments?: string[];
+  createdAt: string;
+  updatedAt: string;
+  sender: {
+    id: string;
+    name: string;
+    email: string;
+  };
+}
+
+export interface SendMessageResponse {
+  message: string;
+  data: ChatMessage;
+}
+
 export const userApiSlice = baseApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // 🟢 Fetch list of all users (Admin)
@@ -128,6 +154,19 @@ export const userApiSlice = baseApiSlice.injectEndpoints({
       }),
     }),
 
+    // 💬 Send message to a channel (POST /users/messages)
+    sendMessage: builder.mutation<SendMessageResponse, SendMessagePayload>({
+      query: (body) => ({
+        url: "/users/messages",
+        method: "POST",
+        body,
+      }),
+      // Refetches messages in the relevant channel if you are using { type: "Message", id: channelId } tags
+      invalidatesTags: (_result, _error, { channelId }) => [
+        { type: "Message", id: channelId },
+      ],
+    }),
+
     // 🔴 Delete user by ID (Admin)
     deleteUser: builder.mutation<{ message: string }, string>({
       query: (id) => ({
@@ -149,5 +188,6 @@ export const {
   useUpdateUserProfileMutation,
   useGetUserHistoryQuery,
   useChangePasswordMutation,
+  useSendMessageMutation,
   useDeleteUserMutation,
 } = userApiSlice;

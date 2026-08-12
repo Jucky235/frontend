@@ -5,6 +5,7 @@ import examReducer from "./exam/examSlice";
 import userReducer from "./user/userSlice";
 import newsReducer from "./news/newsSlice";
 import questionReducer from "./question/questionSlice";
+import channelReducer from "./channel/channelSlice";
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     user: userReducer,
     news: newsReducer,
     question: questionReducer,
+    channel: channelReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(baseApiSlice.middleware),
