@@ -1,415 +1,242 @@
 import * as React from "react";
-import {
-  MessageSquare,
-  Search,
-  Plus,
-  ThumbsUp,
-  MessageCircle,
-  Eye,
-  Pin,
-  Filter,
-  Flame,
-  HelpCircle,
-  BookOpen,
-  Sparkles,
-  Award,
-} from "lucide-react";
 import Header from "@/components/organism/common/Header";
 import Footer from "@/components/organism/common/Footer";
-
-export interface ForumPost {
-  id: string | number;
-  title: string;
-  excerpt: string;
-  author: {
-    name: string;
-    avatar: string;
-    badge?: string;
-  };
-  category: string;
-  tags: string[];
-  upvotes: number;
-  replies: number;
-  views: number;
-  timestamp: string;
-  isPinned?: boolean;
-  isSolved?: boolean;
-}
-
-const CATEGORIES = [
-  {
-    id: "all",
-    name: "All Topics",
-    icon: <MessageSquare className="w-4 h-4" />,
-  },
-  { id: "exams", name: "Exam Strategy", icon: <Award className="w-4 h-4" /> },
-  {
-    id: "grammar",
-    name: "Vocabulary & Grammar",
-    icon: <BookOpen className="w-4 h-4" />,
-  },
-  { id: "qa", name: "Q&A Help", icon: <HelpCircle className="w-4 h-4" /> },
-  {
-    id: "resources",
-    name: "Study Resources",
-    icon: <Sparkles className="w-4 h-4" />,
-  },
-];
-
-const INITIAL_POSTS: ForumPost[] = [
-  {
-    id: 1,
-    title: "Official TOEFL & IELTS Mock Exam Guidelines for August 2026",
-    excerpt:
-      "Important updates regarding time limits, new speaking section evaluation criteria, and automated scoring breakdown.",
-    author: {
-      name: "Admin Team",
-      avatar:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150",
-      badge: "Staff",
-    },
-    category: "Exam Strategy",
-    tags: ["Announcement", "IELTS", "TOEFL"],
-    upvotes: 142,
-    replies: 38,
-    views: 1205,
-    timestamp: "2 hours ago",
-    isPinned: true,
-  },
-  {
-    id: 2,
-    title: "How do you effectively memorize 30+ new vocabulary words daily?",
-    excerpt:
-      "I'm using spaced repetition flashcards, but I keep forgetting context usage when writing essays. Any advice on retention techniques?",
-    author: {
-      name: "David Chen",
-      avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150",
-    },
-    category: "Vocabulary & Grammar",
-    tags: ["Vocabulary", "StudyTips", "Memory"],
-    upvotes: 45,
-    replies: 19,
-    views: 430,
-    timestamp: "4 hours ago",
-    isSolved: true,
-  },
-  {
-    id: 3,
-    title:
-      "Share your favorite listening practice podcasts for Band 8+ preparation",
-    excerpt:
-      "Looking for native-speaking podcasts covering academic topics, natural conversations, and accents suitable for advanced practice.",
-    author: {
-      name: "Sarah Jenkins",
-      avatar:
-        "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=150",
-    },
-    category: "Study Resources",
-    tags: ["Listening", "Podcasts", "Resources"],
-    upvotes: 29,
-    replies: 12,
-    views: 280,
-    timestamp: "6 hours ago",
-  },
-  {
-    id: 4,
-    title: "Difference between 'In spite of' vs 'Despite' in formal writing?",
-    excerpt:
-      "Could someone explain when to use these prepositions correctly in academic essays? Examples would be greatly appreciated!",
-    author: {
-      name: "Alex Morgan",
-      avatar:
-        "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=150",
-    },
-    category: "Q&A Help",
-    tags: ["Grammar", "Writing", "Question"],
-    upvotes: 18,
-    replies: 8,
-    views: 195,
-    timestamp: "Yesterday",
-    isSolved: true,
-  },
-];
+import ForumBanner from "@/components/organism/forum/ForumBanner";
+import ForumSidebar from "@/components/organism/forum/ForumSidebar";
+import ForumFilterBar from "@/components/organism/forum/ForumFilterBar";
+import ForumPostCard, {
+  type ForumPost as CardForumPost,
+} from "@/components/organism/forum/ForumPostCard";
+import {
+  useGetAllPostsQuery,
+  useGetAllCategoriesQuery,
+  useVotePostMutation,
+  useCreatePostMutation,
+  type ForumPost as ApiForumPost,
+  type CreatePostPayload,
+} from "@/redux/forum/forumApiSlice";
+import { Loader2, AlertCircle, MessageSquareX } from "lucide-react";
+import CreatePostModal from "@/components/organism/forum/modal/CreatePostModal";
 
 export default function ForumPage() {
-  const [selectedCategory, setSelectedCategory] = React.useState("all");
+  const [selectedCategoryId, setSelectedCategoryId] =
+    React.useState<string>("all");
   const [searchQuery, setSearchQuery] = React.useState("");
+  const [debouncedSearch, setDebouncedSearch] = React.useState("");
   const [sortBy, setSortBy] = React.useState<"latest" | "popular">("latest");
-  const [posts, setPosts] = React.useState<ForumPost[]>(INITIAL_POSTS);
+  const [page, setPage] = React.useState(1);
+  const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
 
-  const handleUpvote = (id: string | number) => {
-    setPosts((prev) =>
-      prev.map((post) =>
-        post.id === id ? { ...post, upvotes: post.upvotes + 1 } : post,
-      ),
-    );
+  // Debounce search query to avoid firing API requests on every keystroke
+  React.useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+      setPage(1); // Reset to first page on search change
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
+
+  // Map local sorting option to backend API sortBy expectation ("hot" | "top" | "new")
+  const apiSortBy = sortBy === "popular" ? "top" : "new";
+
+  // 1. Fetch Categories
+  const { data: categories = [] } = useGetAllCategoriesQuery();
+
+  // 2. Fetch Posts with Filters & Pagination
+  const {
+    data: postsData,
+    isLoading,
+    isFetching,
+    isError,
+    refetch,
+  } = useGetAllPostsQuery({
+    page,
+    limit: 10,
+    categoryId: selectedCategoryId === "all" ? undefined : selectedCategoryId,
+    sortBy: apiSortBy,
+    search: debouncedSearch.trim() || undefined,
+  });
+
+  // 3. Mutations
+  const [votePost] = useVotePostMutation();
+  const [createPost, { isLoading: isCreating }] = useCreatePostMutation();
+
+  const handleVote = async (postId: string) => {
+    try {
+      await votePost({ postId, type: "UPVOTE" }).unwrap();
+    } catch (err) {
+      console.error("Failed to vote post:", err);
+    }
   };
 
-  const filteredPosts = posts
-    .filter((post) => {
-      const matchesCategory =
-        selectedCategory === "all" ||
-        post.category.toLowerCase().includes(selectedCategory.toLowerCase());
-      const matchesSearch =
-        post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesCategory && matchesSearch;
-    })
-    .sort((a, b) => {
-      if (a.isPinned) return -1;
-      if (b.isPinned) return 1;
-      if (sortBy === "popular") return b.upvotes - a.upvotes;
-      return 0;
-    });
+  const handleCreatePost = async (payload: CreatePostPayload) => {
+    try {
+      await createPost(payload).unwrap();
+      setIsCreateModalOpen(false);
+      refetch(); // Refresh post list to show the new discussion
+    } catch (err) {
+      console.error("Failed to create post:", err);
+      // Re-throw so the modal form can display field or submission errors if needed
+      throw err;
+    }
+  };
+
+  // Convert backend ForumPost model to UI ForumPostCard adapter format
+  const mapApiPostToCard = React.useCallback(
+    (post: ApiForumPost): CardForumPost => ({
+      id: post.id,
+      title: post.title,
+      excerpt: post.content,
+      author: {
+        name: post.author?.name || "Anonymous",
+        avatar:
+          post.author?.avatar ||
+          "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150",
+        badge: post.author?.role?.name,
+      },
+      category: post.category?.name || "General",
+      tags: [post.category?.name || "Topic"],
+      upvotes: post.upvotesCount ?? 0,
+      replies: post.commentsCount ?? 0,
+      views: 0,
+      timestamp: new Date(post.createdAt).toLocaleDateString("vi-VN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }),
+    }),
+    [],
+  );
+
+  const posts = postsData?.data || [];
+  const pagination = postsData?.pagination;
 
   return (
     <div className="min-h-screen w-full bg-neutral-50 font-inter flex flex-col justify-between">
       <Header />
 
       <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
-        {/* Banner Section */}
-        <div className="bg-gradient-to-br from-blue-600 via-indigo-600 to-indigo-700 rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-          <div className="space-y-2 z-10 max-w-xl">
-            <span className="inline-flex items-center space-x-1.5 bg-white/20 text-xs font-bold px-3 py-1 rounded-full backdrop-blur-md uppercase tracking-wider">
-              <Flame className="w-3.5 h-3.5 text-amber-300 fill-current" />
-              <span>Community Forum</span>
-            </span>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-              Discuss, Ask & Share Knowledge
-            </h1>
-            <p className="text-xs sm:text-sm opacity-90 font-medium leading-relaxed">
-              Connect with fellow learners, exchange study notes, ask questions,
-              and practice with global peers.
-            </p>
-          </div>
+        <ForumBanner onNewDiscussionClick={() => setIsCreateModalOpen(true)} />
 
-          <button className="z-10 bg-white text-[#5A67FF] hover:bg-neutral-100 font-bold text-xs sm:text-sm px-5 py-3 rounded-xl shadow-md transition-all flex items-center space-x-2 cursor-pointer active:scale-95 shrink-0">
-            <Plus className="w-4 h-4" />
-            <span>New Discussion</span>
-          </button>
-
-          {/* Background decoration */}
-          <div className="absolute -bottom-10 -right-10 w-48 h-48 bg-indigo-500 rounded-full opacity-30 blur-2xl pointer-events-none" />
-        </div>
-
-        {/* Content Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Left Sidebar - Categories */}
-          <aside className="space-y-6">
-            <div className="bg-white border border-neutral-200/80 rounded-2xl p-4 shadow-xs space-y-3">
-              <h2 className="text-xs font-bold text-neutral-400 uppercase tracking-wider px-2">
-                Categories
-              </h2>
-              <nav className="space-y-1">
-                {CATEGORIES.map((cat) => {
-                  const isActive = selectedCategory === cat.id;
-                  return (
-                    <button
-                      key={cat.id}
-                      onClick={() => setSelectedCategory(cat.id)}
-                      className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                        isActive
-                          ? "bg-indigo-50 text-[#5A67FF]"
-                          : "text-neutral-600 hover:bg-neutral-100"
-                      }`}
-                    >
-                      <span
-                        className={
-                          isActive ? "text-[#5A67FF]" : "text-neutral-400"
-                        }
-                      >
-                        {cat.icon}
-                      </span>
-                      <span>{cat.name}</span>
-                    </button>
-                  );
-                })}
-              </nav>
-            </div>
+          <ForumSidebar
+            categories={categories}
+            selectedCategory={selectedCategoryId}
+            onSelectCategory={(id) => {
+              setSelectedCategoryId(id);
+              setPage(1);
+            }}
+          />
 
-            {/* Quick Stats / Community Info Widget */}
-            <div className="bg-white border border-neutral-200/80 rounded-2xl p-5 shadow-xs space-y-4">
-              <h3 className="text-xs font-extrabold text-neutral-800 uppercase tracking-wider">
-                Community Stats
-              </h3>
-              <div className="grid grid-cols-2 gap-3 text-center">
-                <div className="bg-neutral-50 p-3 rounded-xl border border-neutral-100">
-                  <div className="text-base font-black text-[#5A67FF]">
-                    1,280
-                  </div>
-                  <div className="text-[10px] font-bold text-neutral-400">
-                    Discussions
-                  </div>
-                </div>
-                <div className="bg-neutral-50 p-3 rounded-xl border border-neutral-100">
-                  <div className="text-base font-black text-indigo-500">
-                    4,520
-                  </div>
-                  <div className="text-[10px] font-bold text-neutral-400">
-                    Members
-                  </div>
-                </div>
-              </div>
-            </div>
-          </aside>
-
-          {/* Main Feed */}
           <section className="lg:col-span-3 space-y-6">
-            {/* Controls Bar (Search & Filter) */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white border border-neutral-200/80 p-3 rounded-2xl shadow-xs">
-              <div className="relative w-full sm:w-80">
-                <Search className="w-4 h-4 text-neutral-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                <input
-                  type="text"
-                  placeholder="Search discussions or tags..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 bg-neutral-100 border border-transparent rounded-xl text-xs font-medium text-neutral-800 focus:outline-none focus:bg-white focus:border-[#5A67FF] transition-all"
-                />
-              </div>
+            <ForumFilterBar
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              sortBy={sortBy}
+              onSortChange={(sort) => {
+                setSortBy(sort);
+                setPage(1);
+              }}
+            />
 
-              {/* Sort Options */}
-              <div className="flex items-center space-x-2 w-full sm:w-auto justify-end">
-                <Filter className="w-3.5 h-3.5 text-neutral-400" />
-                <div className="bg-neutral-100 p-1 rounded-xl flex items-center space-x-1">
-                  <button
-                    onClick={() => setSortBy("latest")}
-                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                      sortBy === "latest"
-                        ? "bg-white text-[#5A67FF] shadow-xs"
-                        : "text-neutral-500 hover:text-neutral-800"
-                    }`}
-                  >
-                    Latest
-                  </button>
-                  <button
-                    onClick={() => setSortBy("popular")}
-                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                      sortBy === "popular"
-                        ? "bg-white text-[#5A67FF] shadow-xs"
-                        : "text-neutral-500 hover:text-neutral-800"
-                    }`}
-                  >
-                    Top
-                  </button>
-                </div>
+            {/* State: Loading */}
+            {isLoading && (
+              <div className="flex flex-col items-center justify-center py-16 space-y-3 bg-white rounded-2xl border border-neutral-200/80 shadow-xs">
+                <Loader2 className="w-8 h-8 text-[#5A67FF] animate-spin" />
+                <p className="text-xs font-semibold text-neutral-500">
+                  Loading discussions...
+                </p>
               </div>
-            </div>
+            )}
 
-            {/* Discussion Thread Cards */}
-            <div className="space-y-4">
-              {filteredPosts.map((post) => (
-                <article
-                  key={post.id}
-                  className={`bg-white border rounded-2xl p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between space-y-4 ${
-                    post.isPinned
-                      ? "border-indigo-200 bg-indigo-50/20"
-                      : "border-neutral-200/80"
-                  }`}
+            {/* State: Error */}
+            {isError && (
+              <div className="flex flex-col items-center justify-center py-12 space-y-3 bg-red-50/50 rounded-2xl border border-red-200 text-center p-6">
+                <AlertCircle className="w-8 h-8 text-red-500" />
+                <p className="text-sm font-bold text-neutral-800">
+                  Failed to load discussions
+                </p>
+                <p className="text-xs text-neutral-500 max-w-xs">
+                  There was a problem fetching the forum posts. Please check
+                  your connection and try again.
+                </p>
+                <button
+                  onClick={() => refetch()}
+                  className="mt-2 text-xs font-bold text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl transition-all cursor-pointer shadow-xs"
                 >
-                  <div className="space-y-3">
-                    {/* Header Meta (Author, Category, Pinned status) */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2.5">
-                        <img
-                          src={post.author.avatar}
-                          alt={post.author.name}
-                          className="w-8 h-8 rounded-full object-cover border border-neutral-200"
-                        />
-                        <div>
-                          <div className="flex items-center space-x-1.5">
-                            <span className="text-xs font-extrabold text-neutral-800">
-                              {post.author.name}
-                            </span>
-                            {post.author.badge && (
-                              <span className="bg-[#5A67FF] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md">
-                                {post.author.badge}
-                              </span>
-                            )}
-                          </div>
-                          <span className="text-[10px] text-neutral-400 font-medium">
-                            {post.timestamp}
-                          </span>
-                        </div>
-                      </div>
+                  Retry
+                </button>
+              </div>
+            )}
 
-                      {/* Status Badges */}
-                      <div className="flex items-center space-x-2">
-                        {post.isPinned && (
-                          <span className="bg-amber-100 text-amber-700 text-[10px] font-extrabold px-2.5 py-1 rounded-md flex items-center space-x-1">
-                            <Pin className="w-3 h-3 fill-current" />
-                            <span>Pinned</span>
-                          </span>
-                        )}
-                        {post.isSolved && (
-                          <span className="bg-emerald-100 text-emerald-700 text-[10px] font-extrabold px-2.5 py-1 rounded-md">
-                            Solved
-                          </span>
-                        )}
-                      </div>
-                    </div>
+            {/* State: Empty */}
+            {!isLoading && !isError && posts.length === 0 && (
+              <div className="flex flex-col items-center justify-center py-16 space-y-3 bg-white rounded-2xl border border-neutral-200/80 text-center p-6 shadow-xs">
+                <MessageSquareX className="w-8 h-8 text-neutral-400" />
+                <p className="text-sm font-bold text-neutral-700">
+                  No discussions found
+                </p>
+                <p className="text-xs text-neutral-400">
+                  Try adjusting your search query or switching categories.
+                </p>
+              </div>
+            )}
 
-                    {/* Title & Excerpt */}
-                    <div className="space-y-1.5">
-                      <h2 className="text-base font-extrabold text-neutral-800 hover:text-[#5A67FF] transition-colors cursor-pointer leading-snug">
-                        {post.title}
-                      </h2>
-                      <p className="text-xs text-neutral-500 font-medium line-clamp-2 leading-relaxed">
-                        {post.excerpt}
-                      </p>
-                    </div>
+            {/* State: Success / List */}
+            {!isLoading && !isError && posts.length > 0 && (
+              <div
+                className={`space-y-4 ${
+                  isFetching
+                    ? "opacity-60 pointer-events-none transition-opacity"
+                    : ""
+                }`}
+              >
+                {posts.map((post) => (
+                  <ForumPostCard
+                    key={post.id}
+                    post={mapApiPostToCard(post)}
+                    onUpvote={(id) => handleVote(String(id))}
+                  />
+                ))}
 
-                    {/* Tags */}
-                    <div className="flex items-center space-x-2 pt-1">
-                      {post.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="text-[10px] font-bold text-neutral-500 bg-neutral-100 px-2.5 py-1 rounded-md hover:bg-neutral-200 transition-colors cursor-pointer"
-                        >
-                          #{tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Card Footer Metrics */}
-                  <div className="pt-3 border-t border-neutral-100 flex items-center justify-between text-xs font-semibold text-neutral-400">
-                    <div className="flex items-center space-x-4">
-                      {/* Upvote Button */}
-                      <button
-                        onClick={() => handleUpvote(post.id)}
-                        className="flex items-center space-x-1.5 text-neutral-500 hover:text-[#5A67FF] transition-colors cursor-pointer"
-                      >
-                        <ThumbsUp className="w-3.5 h-3.5" />
-                        <span className="font-bold">{post.upvotes}</span>
-                      </button>
-
-                      {/* Replies */}
-                      <div className="flex items-center space-x-1.5">
-                        <MessageCircle className="w-3.5 h-3.5" />
-                        <span>{post.replies} replies</span>
-                      </div>
-
-                      {/* Views */}
-                      <div className="flex items-center space-x-1.5 hidden sm:flex">
-                        <Eye className="w-3.5 h-3.5" />
-                        <span>{post.views} views</span>
-                      </div>
-                    </div>
-
-                    <span className="text-[11px] font-bold text-[#5A67FF]">
-                      {post.category}
+                {/* Pagination Controls */}
+                {pagination && pagination.totalPages > 1 && (
+                  <div className="flex items-center justify-between pt-4 border-t border-neutral-200 text-xs font-bold">
+                    <button
+                      disabled={page <= 1}
+                      onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                      className="px-4 py-2 rounded-xl bg-white border border-neutral-200 text-neutral-700 hover:bg-neutral-100 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
+                    >
+                      Previous
+                    </button>
+                    <span className="text-neutral-500">
+                      Page {pagination.page} of {pagination.totalPages}
                     </span>
+                    <button
+                      disabled={page >= pagination.totalPages}
+                      onClick={() => setPage((prev) => prev + 1)}
+                      className="px-4 py-2 rounded-xl bg-white border border-neutral-200 text-neutral-700 hover:bg-neutral-100 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
+                    >
+                      Next
+                    </button>
                   </div>
-                </article>
-              ))}
-            </div>
+                )}
+              </div>
+            )}
           </section>
         </div>
       </main>
 
       <Footer />
+
+      {/* Create Discussion Modal */}
+      <CreatePostModal
+        isOpen={isCreateModalOpen}
+        isSubmitting={isCreating}
+        categories={categories}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSubmit={handleCreatePost}
+      />
     </div>
   );
 }

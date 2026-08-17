@@ -11,7 +11,7 @@ import CourseManagementPage from "@/pages/dashboard/course-management-page";
 import ExamListPage from "@/pages/test/test-list-page";
 import ExamResultPage from "@/pages/test/test-result-page";
 import EditDeckPage from "@/pages/flashcards/edit-deck-page";
-import { AdminRoute } from "@/router/AdminRoute"; // Import the guard
+import { AdminRoute } from "@/router/AdminRoute";
 import NewsPage from "@/pages/home/news-page";
 import ChatPage from "@/pages/community/chat-page";
 import ForumPage from "@/pages/community/forum-page";
@@ -20,8 +20,10 @@ import NewsManagementPage from "@/pages/dashboard/news-management-page";
 import NewsContentPage from "@/pages/home/news-content-page";
 import ExamsManagementPage from "@/pages/dashboard/exams-management-page";
 import QuestionManagementPage from "@/pages/dashboard/question-management-page";
+import ForumPostDetailPage from "@/pages/community/post-page";
 
 export const router = createBrowserRouter([
+  // Auth Routes
   {
     path: "/signup",
     element: <SignupPage />,
@@ -30,6 +32,8 @@ export const router = createBrowserRouter([
     path: "/login",
     element: <LoginPage />,
   },
+
+  // Main App Routes
   {
     path: "/",
     element: <HomePage />,
@@ -43,13 +47,15 @@ export const router = createBrowserRouter([
     element: <NewsContentPage />,
   },
   {
-    path: "/test/:id",
-    element: <TestPage />,
-  },
-  {
     path: "/profile",
     element: <ProfilePage />,
   },
+  {
+    path: "/faq",
+    element: <FAQPage />,
+  },
+
+  // Flashcards Routes
   {
     path: "/flashcards",
     element: <FlashcardsPage />,
@@ -58,8 +64,40 @@ export const router = createBrowserRouter([
     path: "/flashcards-list",
     element: <FlashcardsListPage />,
   },
+  {
+    path: "/deck/edit",
+    element: <EditDeckPage />,
+  },
 
-  //
+  // Test & Exam Routes
+  {
+    path: "/test",
+    element: <ExamListPage />,
+  },
+  {
+    path: "/test/result",
+    element: <ExamResultPage />,
+  },
+  {
+    path: "/test/:id",
+    element: <TestPage />,
+  },
+
+  // Community & Forum Routes
+  {
+    path: "/chat",
+    element: <ChatPage />,
+  },
+  {
+    path: "/forum",
+    element: <ForumPage />,
+  },
+  {
+    path: "/forum/:id",
+    element: <ForumPostDetailPage />,
+  },
+
+  // Protected Admin Routes
   {
     path: "/dashboard/user",
     element: (
@@ -92,33 +130,12 @@ export const router = createBrowserRouter([
       </AdminRoute>
     ),
   },
-
-  {
-    path: "/test",
-    element: <ExamListPage />,
-  },
-  {
-    path: "/test/result",
-    element: <ExamResultPage />,
-  },
-  {
-    path: "/deck/edit",
-    element: <EditDeckPage />,
-  },
-  {
-    path: "/chat",
-    element: <ChatPage />,
-  },
-  {
-    path: "/forum",
-    element: <ForumPage />,
-  },
-  {
-    path: "/faq",
-    element: <FAQPage />,
-  },
   {
     path: "/dashboard/news",
-    element: <NewsManagementPage />,
+    element: (
+      <AdminRoute>
+        <NewsManagementPage />
+      </AdminRoute>
+    ),
   },
 ]);
