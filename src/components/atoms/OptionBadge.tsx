@@ -15,8 +15,8 @@ export const OptionBadge: React.FC<OptionBadgeProps> = ({
     <span
       className={`w-5 h-5 rounded-md flex items-center justify-center text-xs font-bold shrink-0 ${
         isCorrect
-          ? "bg-emerald-600 text-white"
-          : "bg-neutral-200 text-neutral-600"
+          ? "bg-status-success-bg text-white"
+          : "bg-background-hover text-foreground-muted"
       } ${className}`}
     >
       {label}

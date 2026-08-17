@@ -33,7 +33,7 @@ export default function Dropdown({
     e.stopPropagation();
     if (!isOpen && triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect();
-      const menuWidth = 176; // Default width for w-44 (11rem = 176px)
+      const menuWidth = 176;
 
       setCoords({
         top: rect.bottom + window.scrollY + 4,
@@ -70,13 +70,13 @@ export default function Dropdown({
               top: `${coords.top}px`,
               left: `${coords.left}px`,
             }}
-            className={`z-[9999] ${width} bg-white rounded-xl shadow-lg border border-neutral-200 py-1.5 text-xs font-medium text-neutral-700 animate-in fade-in-50 zoom-in-95 duration-100`}
+            className={`z-[9999] ${width} bg-background-card rounded-xl shadow-lg border border-border py-1.5 text-xs font-medium text-foreground-muted animate-in fade-in-50 zoom-in-95 duration-100`}
             onClick={(e) => e.stopPropagation()}
           >
             {items.map((item, index) => (
               <React.Fragment key={index}>
                 {item.divider && index > 0 && (
-                  <div className="my-1 border-t border-neutral-100" />
+                  <div className="my-1 border-t border-border-subtle" />
                 )}
                 <button
                   type="button"
@@ -86,8 +86,8 @@ export default function Dropdown({
                   }}
                   className={`w-full px-3 py-2 text-left flex items-center space-x-2 transition-colors cursor-pointer ${
                     item.danger
-                      ? "text-red-600 hover:bg-red-50"
-                      : "hover:bg-neutral-50 text-neutral-700"
+                      ? "text-status-danger hover:bg-status-danger-bg"
+                      : "hover:bg-background-subtle-hover text-foreground-muted"
                   }`}
                 >
                   {item.icon && <span className="shrink-0">{item.icon}</span>}

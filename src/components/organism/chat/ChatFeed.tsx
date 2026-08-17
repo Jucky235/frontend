@@ -17,9 +17,9 @@ export const ChatFeed: React.FC<ChatFeedProps> = ({
   onSendMessage,
 }) => {
   return (
-    <section className="flex-1 bg-white border border-neutral-200/80 rounded-2xl flex flex-col justify-between overflow-hidden shadow-xs relative">
+    <section className="flex-1 bg-background-card border border-border/80 rounded-2xl flex flex-col justify-between overflow-hidden shadow-xs relative">
       {/* Header Banner */}
-      <div className="px-6 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-between border-b border-indigo-700/20">
+      <div className="px-6 py-3.5 bg-gradient-to-r from-banner-from to-banner-to text-white flex items-center justify-between border-b border-banner-border/20">
         <div className="flex items-center space-x-2">
           <Hash className="w-5 h-5 opacity-80" />
           <h2 className="text-base font-extrabold tracking-tight">
@@ -32,7 +32,7 @@ export const ChatFeed: React.FC<ChatFeedProps> = ({
       </div>
 
       {/* Stream Area */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-neutral-50/50">
+      <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-background-feed">
         {messages.map((msg) => (
           <MessageBubble key={msg.id} message={msg} />
         ))}

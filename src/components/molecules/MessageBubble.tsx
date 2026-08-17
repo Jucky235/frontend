@@ -28,9 +28,9 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
         <img
           src={user.avatar}
           alt={user.name}
-          className="w-9 h-9 rounded-full object-cover border border-neutral-200"
+          className="w-9 h-9 rounded-full object-cover border border-border"
         />
-        <span className="text-[10px] text-neutral-400 mt-1 max-w-[60px] truncate font-semibold">
+        <span className="text-[10px] text-foreground-subtle mt-1 max-w-[60px] truncate font-semibold">
           {user.name}
         </span>
       </div>
@@ -38,14 +38,14 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
       <div
         className={`border px-4 py-2.5 rounded-2xl space-y-1 shadow-xs max-w-xl ${
           isMe
-            ? "bg-[#5A67FF] text-white border-[#5A67FF] rounded-tr-xs"
-            : "bg-white text-neutral-800 border-neutral-200/80 rounded-tl-xs"
+            ? "bg-brand text-white border-brand rounded-tr-xs"
+            : "bg-background-card text-foreground border-border/80 rounded-tl-xs"
         }`}
       >
         <p className="text-xs font-medium leading-relaxed">{text}</p>
         <div
           className={`text-[10px] font-semibold text-right ${
-            isMe ? "text-indigo-200" : "text-neutral-400"
+            isMe ? "text-brand-text-subtle" : "text-foreground-subtle"
           }`}
         >
           {timestamp}

@@ -74,10 +74,10 @@ export default function HeroBanner({
     <section
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      /* Fixed heights: 320px on mobile (h-80), 384px on desktop (md:h-96) */
-      className="w-full h-80 md:h-96 bg-gradient-to-br from-blue-600 via-indigo-600 to-indigo-700 rounded-3xl text-white relative overflow-hidden shadow-lg select-none"
+      /* Gradient banner linh hoạt theo màu --banner-from và --banner-to */
+      className="w-full h-80 md:h-96 bg-gradient-to-br from-banner-from to-banner-to rounded-3xl text-white relative overflow-hidden shadow-lg select-none border border-banner-border"
     >
-      {/* Slide Container (Absolute boundary to prevent height jumps) */}
+      {/* Slide Container */}
       <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-between z-10">
         {/* Dynamic Slide Content */}
         <div
@@ -101,7 +101,7 @@ export default function HeroBanner({
           <div className="pt-2">
             <button
               onClick={currentSlide.onButtonClick}
-              className="bg-white text-[#5A67FF] hover:bg-neutral-100 font-bold text-sm px-5 py-2.5 rounded-xl tracking-wide shadow-md transition-all flex items-center space-x-2 cursor-pointer active:scale-95"
+              className="bg-white text-brand hover:bg-neutral-100 font-bold text-sm px-5 py-2.5 rounded-xl tracking-wide shadow-md transition-all flex items-center space-x-2 cursor-pointer active:scale-95"
             >
               <span>{currentSlide.buttonText || "Get Started"}</span>
               <ArrowRight className="w-4 h-4" />
@@ -151,7 +151,7 @@ export default function HeroBanner({
       </div>
 
       {/* Abstract Background Blobs */}
-      <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-indigo-500 rounded-full opacity-30 blur-2xl pointer-events-none" />
+      <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-brand rounded-full opacity-30 blur-2xl pointer-events-none" />
       <div className="absolute top-0 right-0 w-32 h-32 bg-white rounded-bl-full opacity-10 pointer-events-none" />
     </section>
   );

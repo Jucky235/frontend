@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import {
   Search,
@@ -15,6 +16,8 @@ import {
   Users,
   FileText,
   HelpCircle,
+  Sun,
+  Moon,
 } from "lucide-react";
 import Dropdown, {
   type DropdownItem,
@@ -24,7 +27,7 @@ interface NavItem {
   label: string;
   href?: string;
   active?: boolean;
-  children?: DropdownItem[]; // Sub-menu items for dropdown navigation
+  children?: DropdownItem[];
 }
 
 interface HeaderProps {
@@ -52,7 +55,31 @@ export default function Header({
 }: HeaderProps) {
   const navigate = useNavigate();
 
-  // Default nav items using react-router-dom's navigate
+  // Quản lý trạng thái Theme (Light/Dark)
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      return (
+        localStorage.getItem("theme") === "dark" ||
+        (!("theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      );
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (isDark) {
+      root.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      root.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [isDark]);
+
+  const toggleTheme = () => setIsDark((prev) => !prev);
+
   const defaultNavItems: NavItem[] = [
     {
       label: "home",
@@ -145,7 +172,6 @@ export default function Header({
 
   const activeNavItems = navItems || defaultNavItems;
 
-  // Menu items for Profile Dropdown
   const profileMenuItems: DropdownItem[] = [
     {
       label: "My Profile",
@@ -166,7 +192,6 @@ export default function Header({
     },
   ];
 
-  // Menu items for Language Dropdown
   const languageMenuItems: DropdownItem[] = [
     {
       label: "English (US)",
@@ -186,25 +211,22 @@ export default function Header({
   ];
 
   return (
-    <header className="w-full bg-white border-b border-neutral-200 text-neutral-800 shadow-xs sticky top-0 z-50">
+    <header className="w-full bg-background-card border-b border-border text-foreground shadow-xs sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Left Side: Logo & Navigation Links */}
         <div className="flex items-center space-x-6">
-          {/* Logo */}
           <Link
             to="/"
-            className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-base tracking-tighter shadow-sm hover:scale-105 transition-transform"
+            className="w-10 h-10 rounded-full bg-brand text-brand-foreground flex items-center justify-center font-black text-base tracking-tighter shadow-sm hover:scale-105 transition-transform"
           >
             Eng
           </Link>
 
-          {/* Navigation Items */}
           <nav className="hidden lg:flex items-center space-x-6 text-xs font-bold lowercase tracking-wide">
             {activeNavItems.map((item, index) => {
               const hasDropdown = item.children && item.children.length > 0;
 
               return hasDropdown ? (
-                /* Nav Item WITH Dropdown */
                 <Dropdown
                   key={index}
                   align="left"
@@ -215,42 +237,40 @@ export default function Header({
                       type="button"
                       className={`relative py-5 flex items-center space-x-1 transition-colors ${
                         item.active
-                          ? "text-[#5A67FF]"
-                          : "text-neutral-500 hover:text-neutral-800"
+                          ? "text-brand"
+                          : "text-foreground-subtle hover:text-foreground"
                       }`}
                     >
                       <span>{item.label}</span>
                       <ChevronDown className="w-3 h-3 opacity-60" />
                       {item.active && (
-                        <span className="absolute bottom-0 left-0 w-full h-[3px] bg-[#5A67FF] rounded-full shadow-xs" />
+                        <span className="absolute bottom-0 left-0 w-full h-[3px] bg-brand rounded-full shadow-xs" />
                       )}
                     </button>
                   }
                 />
               ) : (
-                /* Nav Item WITHOUT Dropdown */
                 <button
                   key={index}
                   type="button"
                   onClick={() => item.href && navigate(item.href)}
                   className={`relative py-5 transition-colors cursor-pointer ${
                     item.active
-                      ? "text-[#5A67FF]"
-                      : "text-neutral-500 hover:text-neutral-800"
+                      ? "text-brand"
+                      : "text-foreground-subtle hover:text-foreground"
                   }`}
                 >
                   {item.label}
                   {item.active && (
-                    <span className="absolute bottom-0 left-0 w-full h-[3px] bg-[#5A67FF] rounded-full shadow-xs" />
+                    <span className="absolute bottom-0 left-0 w-full h-[3px] bg-brand rounded-full shadow-xs" />
                   )}
                 </button>
               );
             })}
 
-            {/* Search Button */}
             <button
               onClick={onSearchClick}
-              className="text-neutral-400 hover:text-neutral-700 transition-colors p-1"
+              className="text-foreground-subtle hover:text-foreground transition-colors p-1"
               aria-label="Search"
             >
               <Search className="w-4 h-4" />
@@ -258,15 +278,28 @@ export default function Header({
           </nav>
         </div>
 
-        {/* Right Side: Socials, Pill Badge, Profile */}
+        {/* Right Side: Socials, Theme Toggle, Pill Badge, Profile */}
         <div className="flex items-center space-x-4">
-          {/* Utility / Social Icons */}
-          <div className="hidden md:flex items-center space-x-3 text-neutral-400">
+          <div className="hidden md:flex items-center space-x-3 text-foreground-subtle">
             <button className="hover:text-rose-500 transition-colors p-1">
               <Heart className="w-4 h-4 fill-current stroke-none" />
             </button>
 
-            {/* Language Selector Dropdown */}
+            {/* Toggle Theme Button */}
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="hover:text-foreground transition-colors p-1"
+              aria-label="Toggle theme"
+              title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            >
+              {isDark ? (
+                <Sun className="w-4 h-4 text-amber-400 hover:rotate-45 transition-transform" />
+              ) : (
+                <Moon className="w-4 h-4 text-foreground-subtle hover:-rotate-12 transition-transform" />
+              )}
+            </button>
+
             <Dropdown
               align="right"
               width="w-36"
@@ -274,7 +307,7 @@ export default function Header({
               trigger={
                 <button
                   type="button"
-                  className="hover:text-neutral-700 transition-colors p-1 flex items-center space-x-1"
+                  className="hover:text-foreground transition-colors p-1 flex items-center space-x-1"
                 >
                   <Globe className="w-4 h-4" />
                 </button>
@@ -282,28 +315,26 @@ export default function Header({
             />
           </div>
 
-          {/* Chat & Notifications Pill Capsule */}
-          <div className="flex items-center space-x-3 bg-neutral-100 border border-neutral-200/80 rounded-full px-3.5 py-1 text-xs font-bold text-neutral-700">
-            <button className="flex items-center space-x-1.5 hover:text-[#5A67FF] transition-colors">
-              <MessageSquare className="w-3.5 h-3.5 text-neutral-400 fill-current" />
+          <div className="flex items-center space-x-3 bg-background-hover border border-border/80 rounded-full px-3.5 py-1 text-xs font-bold text-foreground">
+            <button className="flex items-center space-x-1.5 hover:text-brand transition-colors">
+              <MessageSquare className="w-3.5 h-3.5 text-foreground-subtle fill-current" />
               <span>{chatCount}</span>
             </button>
 
-            <span className="w-px h-3 bg-neutral-300" />
+            <span className="w-px h-3 bg-border" />
 
-            <button className="flex items-center space-x-1.5 hover:text-[#5A67FF] transition-colors">
-              <Bell className="w-3.5 h-3.5 text-neutral-400 fill-current" />
-              <span className="text-[#5A67FF]">{notificationCount}</span>
+            <button className="flex items-center space-x-1.5 hover:text-brand transition-colors">
+              <Bell className="w-3.5 h-3.5 text-foreground-subtle fill-current" />
+              <span className="text-brand">{notificationCount}</span>
             </button>
           </div>
 
-          {/* User Profile Avatar Dropdown */}
           <Dropdown
             align="right"
             width="w-48"
             items={profileMenuItems}
             trigger={
-              <div className="relative w-9 h-9 rounded-full overflow-hidden border-2 border-indigo-100 hover:border-[#5A67FF] transition-all shadow-xs shrink-0 cursor-pointer">
+              <div className="relative w-9 h-9 rounded-full overflow-hidden border-2 border-border hover:border-brand transition-all shadow-xs shrink-0 cursor-pointer">
                 <img
                   src={avatarUrl}
                   alt="User Avatar"
