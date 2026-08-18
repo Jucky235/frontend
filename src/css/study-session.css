@@ -1,0 +1,433 @@
+/* Flashcard Study Session Components
+   Built on top of the theme tokens defined in index.css.
+   Import this file after index.css. */
+
+@layer components {
+  /* ---------- Page shell ---------- */
+
+  .study-page {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: var(--color-background);
+  }
+
+  .study-footer {
+    width: 100%;
+    padding: 1.5rem;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-foreground-subtle);
+    background-color: var(--color-background-card);
+    border-top: 1px solid var(--color-border);
+  }
+
+  /* ---------- Header ---------- */
+
+  .study-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    background-color: var(--color-background-card);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: 0 1px 2px hsl(0 0% 0% / 0.03);
+  }
+
+  .study-header-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-foreground-subtle);
+    transition: color 0.15s ease;
+  }
+
+  .study-header-back-btn:hover {
+    color: var(--color-foreground);
+  }
+
+  .study-header-divider {
+    height: 1rem;
+    width: 1px;
+    background-color: var(--color-border);
+  }
+
+  .study-header-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.75rem;
+    font-weight: 800;
+    font-size: 1.125rem;
+    color: hsl(0 0% 100%);
+    background-image: linear-gradient(
+      135deg,
+      var(--color-banner-from),
+      var(--color-banner-to)
+    );
+    box-shadow: 0 4px 10px -3px hsl(0 0% 0% / 0.2);
+  }
+
+  .study-header-title {
+    font-weight: 700;
+    font-size: 1.125rem;
+    letter-spacing: -0.01em;
+    color: var(--color-foreground);
+  }
+
+  .study-header-user-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 9999px;
+    color: var(--color-foreground-muted);
+    background-color: var(--color-background-subtle-hover);
+    transition: background-color 0.15s ease;
+  }
+
+  .study-header-user-btn:hover {
+    background-color: var(--color-background-hover);
+  }
+
+  .study-header-logout-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-foreground-subtle);
+    transition: color 0.15s ease;
+  }
+
+  .study-header-logout-btn:hover {
+    color: var(--color-status-danger);
+  }
+
+  /* ---------- Session header block ---------- */
+
+  .study-mode-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.625rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-brand-text-subtle);
+    background-color: var(--color-brand-light);
+  }
+
+  .study-deck-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--color-foreground);
+    margin-top: 0.5rem;
+  }
+
+  .study-card-counter {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-foreground-subtle);
+  }
+
+  /* ---------- Progress bar ---------- */
+
+  .study-progress-track {
+    width: 100%;
+    height: 0.5rem;
+    border-radius: 9999px;
+    overflow: hidden;
+    background-color: var(--color-border);
+  }
+
+  .study-progress-fill {
+    height: 100%;
+    background-image: linear-gradient(
+      90deg,
+      var(--color-banner-from),
+      var(--color-banner-to)
+    );
+    transition: width 0.3s ease;
+  }
+
+  /* ---------- Flip card ---------- */
+
+  .study-card {
+    position: relative;
+    width: 100%;
+    height: 20rem;
+    min-height: 320px;
+    overflow: hidden;
+    padding: 2rem;
+    border-radius: 1.5rem;
+    background-color: var(--color-background-card);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 1px 2px hsl(0 0% 0% / 0.03);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
+  }
+
+  .study-card:hover {
+    box-shadow: 0 10px 24px -8px hsl(0 0% 0% / 0.12);
+  }
+
+  .study-card-accent-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0.25rem;
+    background-image: linear-gradient(
+      90deg,
+      var(--color-banner-from),
+      var(--color-banner-to)
+    );
+  }
+
+  .study-card-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-foreground-subtle);
+  }
+
+  .study-card-question {
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--color-foreground);
+  }
+
+  @media (min-width: 768px) {
+    .study-card-question {
+      font-size: 1.25rem;
+    }
+  }
+
+  .study-card-answer {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.6;
+    color: var(--color-foreground-muted);
+  }
+
+  @media (min-width: 768px) {
+    .study-card-answer {
+      font-size: 1rem;
+    }
+  }
+
+  .study-card-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-foreground-subtle);
+    transition: color 0.15s ease;
+  }
+
+  .study-card:hover .study-card-hint {
+    color: var(--color-brand-hover);
+  }
+
+  /* ---------- Decision buttons ---------- */
+
+  .study-btn-forgot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.25rem;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-foreground-muted);
+    background-color: var(--color-background-card);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 1px 2px hsl(0 0% 0% / 0.03);
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease,
+      border-color 0.15s ease;
+  }
+
+  .study-btn-forgot:hover {
+    background-color: var(--color-status-danger-bg);
+    color: var(--color-status-danger);
+    border-color: var(--color-status-danger-icon-bg);
+  }
+
+  .study-btn-knew {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.25rem;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: hsl(0 0% 100%);
+    background-color: var(--color-brand);
+    box-shadow: 0 4px 10px -3px hsl(0 0% 0% / 0.15);
+    transition: background-color 0.15s ease;
+  }
+
+  .study-btn-knew:hover {
+    background-color: var(--color-brand-hover);
+  }
+
+  /* ---------- Session summary ---------- */
+
+  .study-summary-panel {
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    padding: 2rem;
+    border-radius: 1.5rem;
+    background-color: var(--color-background-card);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 10px 24px -10px hsl(0 0% 0% / 0.12);
+  }
+
+  @media (min-width: 768px) {
+    .study-summary-panel {
+      padding: 2.5rem;
+    }
+  }
+
+  .study-summary-decoration {
+    position: absolute;
+    bottom: -2.5rem;
+    right: -2.5rem;
+    width: 12rem;
+    height: 12rem;
+    border-radius: 9999px;
+    background-color: var(--color-brand-light);
+    opacity: 0.6;
+    filter: blur(40px);
+    pointer-events: none;
+  }
+
+  .study-summary-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 4rem;
+    margin: 0 auto;
+    border-radius: 1rem;
+    color: var(--color-brand);
+    background-color: var(--color-brand-light);
+  }
+
+  .study-summary-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--color-foreground);
+  }
+
+  .study-summary-desc {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-foreground-subtle);
+    max-width: 20rem;
+    margin: 0 auto;
+  }
+
+  /* ---------- Stat blocks ---------- */
+
+  .study-stat-success {
+    padding: 1rem;
+    border-radius: 1rem;
+    background-color: var(--color-status-success-bg);
+    border: 1px solid
+      color-mix(in srgb, var(--color-status-success) 25%, transparent);
+  }
+
+  .study-stat-success-label {
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-status-success);
+  }
+
+  .study-stat-success-value {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--color-status-success);
+    margin-top: 0.25rem;
+  }
+
+  .study-stat-danger {
+    padding: 1rem;
+    border-radius: 1rem;
+    background-color: var(--color-status-danger-bg);
+    border: 1px solid
+      color-mix(in srgb, var(--color-status-danger) 25%, transparent);
+  }
+
+  .study-stat-danger-label {
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-status-danger);
+  }
+
+  .study-stat-danger-value {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--color-status-danger);
+    margin-top: 0.25rem;
+  }
+
+  /* ---------- Restart button ---------- */
+
+  .study-btn-restart {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.25rem;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-background);
+    background-color: var(--color-foreground);
+    box-shadow: 0 4px 10px -3px hsl(0 0% 0% / 0.15);
+    transition: opacity 0.15s ease;
+  }
+
+  .study-btn-restart:hover {
+    opacity: 0.85;
+  }
+}

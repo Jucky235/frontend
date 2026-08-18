@@ -1,7 +1,13 @@
 @import "tailwindcss";
+@import "@/css/profile.css";
+@import "@/css/modal.css";
+@import "@/css/faq.css";
+@import "@/css/deck.css";
+@import "@/css/study-session.css";
+@import "@/css/edit-deck.css";
 
 /* 1. Khai báo variant 'dark' kích hoạt khi có class .dark ở html/body */
-@variant dark (&:where(.dark, .dark *));
+@variant dark (&: where(.dark, .dark *));
 
 /* 2. Cấu hình Theme Tokens cho Tailwind v4 */
 @theme {

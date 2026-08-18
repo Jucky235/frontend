@@ -15,11 +15,9 @@ export default function FlashcardsListPage() {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [activeTab, setActiveTab] = React.useState<DeckFilterTab>("all");
-
   // RTK Query Hooks
   const { data: decks = [], isLoading, isError, refetch } = useGetDecksQuery();
   const [createDeck, { isLoading: isSubmitting }] = useCreateDeckMutation();
-
   // Filter logic works directly on API response
   const filteredDecks = React.useMemo(() => {
     return decks.filter((deck: any) => {
@@ -28,15 +26,12 @@ export default function FlashcardsListPage() {
       const matchesSearch =
         title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         desc.toLowerCase().includes(searchQuery.toLowerCase());
-
       const progress = deck.progress ?? 0;
-
       if (activeTab === "completed") return matchesSearch && progress === 100;
       if (activeTab === "in-progress") return matchesSearch && progress < 100;
       return matchesSearch;
     });
   }, [decks, searchQuery, activeTab]);
-
   // Real RTK Mutation handler with .unwrap()
   const handleCreateDeckSubmit = async (data: {
     name: string;
@@ -46,26 +41,22 @@ export default function FlashcardsListPage() {
   }) => {
     await createDeck(data).unwrap();
   };
-
   return (
-    <div className="min-h-screen w-full bg-neutral-50 font-inter flex flex-col justify-between">
+    <div className="deck-page font-inter">
       {/* Global Header Replacement */}
       <Header
         onProfileClick={() => console.log("Profile clicked")}
         onLogout={() => console.log("Logout clicked")}
         onSettingsClick={() => console.log("Settings clicked")}
       />
-
       <main className="flex-1 w-full max-w-5xl mx-auto px-6 py-10 flex flex-col space-y-8">
         <DeckHeader onCreateClick={() => setIsModalOpen(true)} />
-
         <DeckSearchFilterBar
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
           activeTab={activeTab}
           onTabChange={setActiveTab}
         />
-
         <DeckListFeed
           decks={filteredDecks}
           isLoading={isLoading}
@@ -73,11 +64,9 @@ export default function FlashcardsListPage() {
           onRefetch={refetch}
         />
       </main>
-
-      <footer className="w-full bg-white border-t border-neutral-200 py-6 text-center text-xs text-neutral-400 font-medium">
+      <footer className="deck-footer">
         &copy; {new Date().getFullYear()} Workspace System. All rights reserved.
       </footer>
-
       <CreateDeckModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
