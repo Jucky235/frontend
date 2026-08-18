@@ -192,59 +192,52 @@ export const CreateExamModal: React.FC<CreateExamModalProps> = ({
 
   return (
     <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
-        <div className="relative w-full max-w-3xl rounded-xl bg-white shadow-xl dark:bg-gray-800 flex flex-col max-h-[90vh]">
-          <div className="flex items-center justify-between border-b p-4 dark:border-gray-700">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-              <FileText className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+      <div className="modal-overlay">
+        <div className="modal-backdrop" />
+
+        <div className="modal-panel exam-modal-panel flex flex-col">
+          <div className="modal-header">
+            <h2 className="modal-title flex items-center gap-2">
+              <FileText className="h-4 w-4 text-brand" />
               Tạo đề thi mới
             </h2>
             <button
               type="button"
               onClick={handleClose}
-              className="cursor-pointer rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-200"
+              className="modal-close-btn cursor-pointer"
             >
-              <X className="h-5 w-5" />
+              <X className="h-4 w-4" />
             </button>
           </div>
 
-          <form
-            onSubmit={handleSubmit}
-            className="flex-1 overflow-y-auto p-6 space-y-6"
-          >
+          <form onSubmit={handleSubmit} className="exam-modal-form modal-form">
             {errorMessage && (
-              <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/30 dark:text-red-400">
-                {errorMessage}
-              </div>
+              <div className="modal-error-banner">{errorMessage}</div>
             )}
 
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider">
-                Thông tin chung
-              </h3>
+              <h3 className="exam-modal-section-heading">Thông tin chung</h3>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Tên đề thi <span className="text-red-500">*</span>
+              <div className="modal-field">
+                <label className="exam-modal-input-label">
+                  Tên đề thi <span className="exam-modal-required">*</span>
                 </label>
                 <input
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="VD: TOEIC Official Practice Test 2026 - Test 01"
-                  className="mt-1 w-full rounded-lg border border-gray-300 p-2.5 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-indigo-500"
+                  className="exam-modal-text-input"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Danh mục
-                  </label>
+                <div className="modal-field">
+                  <label className="exam-modal-input-label">Danh mục</label>
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="mt-1 w-full rounded-lg border border-gray-300 p-2.5 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                    className="exam-modal-select"
                   >
                     <option value="TOEIC">TOEIC</option>
                     <option value="IELTS">IELTS</option>
@@ -252,14 +245,12 @@ export const CreateExamModal: React.FC<CreateExamModalProps> = ({
                   </select>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Loại đề thi
-                  </label>
+                <div className="modal-field">
+                  <label className="exam-modal-input-label">Loại đề thi</label>
                   <select
                     value={type}
                     onChange={(e) => setType(e.target.value as any)}
-                    className="mt-1 w-full rounded-lg border border-gray-300 p-2.5 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                    className="exam-modal-select"
                   >
                     <option value="FULL_TEST">Full Test</option>
                     <option value="MINI_TEST">Mini Test</option>
@@ -267,10 +258,11 @@ export const CreateExamModal: React.FC<CreateExamModalProps> = ({
                   </select>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
-                    <Clock className="w-3.5 h-3.5 text-gray-500" />
-                    Thời gian (Phút) <span className="text-red-500">*</span>
+                <div className="modal-field">
+                  <label className="exam-modal-input-label">
+                    <Clock className="exam-modal-input-label-icon w-3.5 h-3.5" />
+                    Thời gian (Phút){" "}
+                    <span className="exam-modal-required">*</span>
                   </label>
                   <input
                     type="number"
@@ -282,15 +274,15 @@ export const CreateExamModal: React.FC<CreateExamModalProps> = ({
                       )
                     }
                     placeholder="120"
-                    className="mt-1 w-full rounded-lg border border-gray-300 p-2.5 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                    className="exam-modal-text-input"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
-                    <Award className="w-3.5 h-3.5 text-gray-500" />
+                <div className="modal-field">
+                  <label className="exam-modal-input-label">
+                    <Award className="exam-modal-input-label-icon w-3.5 h-3.5" />
                     Điểm đạt (Passing Score)
                   </label>
                   <input
@@ -303,12 +295,12 @@ export const CreateExamModal: React.FC<CreateExamModalProps> = ({
                       )
                     }
                     placeholder="450"
-                    className="mt-1 w-full rounded-lg border border-gray-300 p-2.5 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                    className="exam-modal-text-input"
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <div className="modal-field">
+                  <label className="exam-modal-input-label">
                     Mô tả / Ghi chú
                   </label>
                   <input
@@ -316,21 +308,21 @@ export const CreateExamModal: React.FC<CreateExamModalProps> = ({
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="VD: Đề thi thử cập nhật cấu trúc mới nhất"
-                    className="mt-1 w-full rounded-lg border border-gray-300 p-2.5 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                    className="exam-modal-text-input"
                   />
                 </div>
               </div>
             </div>
 
-            <hr className="border-gray-200 dark:border-gray-700" />
+            <hr className="modal-divider" />
 
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider">
+                  <h3 className="exam-modal-section-heading">
                     Cấu trúc đề thi (Sections)
                   </h3>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                  <p className="exam-modal-section-subtext">
                     Chia đề thi thành các phần nhỏ (Listening Part 1, Reading
                     Part 5...)
                   </p>
@@ -338,7 +330,7 @@ export const CreateExamModal: React.FC<CreateExamModalProps> = ({
                 <button
                   type="button"
                   onClick={handleAddSection}
-                  className="cursor-pointer flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400"
+                  className="exam-modal-add-section-btn cursor-pointer"
                 >
                   <Plus className="w-4 h-4" /> Thêm phần thi
                 </button>
@@ -346,13 +338,8 @@ export const CreateExamModal: React.FC<CreateExamModalProps> = ({
 
               <div className="space-y-3">
                 {sections.map((section, idx) => (
-                  <div
-                    key={idx}
-                    className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-3.5 rounded-lg border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-700/50"
-                  >
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-400">
-                      {idx + 1}
-                    </span>
+                  <div key={idx} className="exam-modal-section-row">
+                    <span className="exam-modal-section-index">{idx + 1}</span>
 
                     <div className="flex-1 w-full grid grid-cols-1 sm:grid-cols-2 gap-2">
                       <input
@@ -362,7 +349,7 @@ export const CreateExamModal: React.FC<CreateExamModalProps> = ({
                           handleSectionChange(idx, "title", e.target.value)
                         }
                         placeholder={`Tên phần thi ${idx + 1}`}
-                        className="w-full rounded-md border border-gray-300 p-2 text-xs dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                        className="exam-modal-section-input"
                       />
                       <input
                         type="text"
@@ -375,14 +362,14 @@ export const CreateExamModal: React.FC<CreateExamModalProps> = ({
                           )
                         }
                         placeholder="Mô tả ngắn (Tùy chọn)"
-                        className="w-full rounded-md border border-gray-300 p-2 text-xs dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                        className="exam-modal-section-input"
                       />
                     </div>
 
                     <button
                       type="button"
                       onClick={() => handleRemoveSection(idx)}
-                      className="cursor-pointer text-gray-400 hover:text-red-500 transition-colors p-1"
+                      className="exam-modal-section-remove-btn cursor-pointer"
                       title="Xóa phần thi này"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -392,18 +379,26 @@ export const CreateExamModal: React.FC<CreateExamModalProps> = ({
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 border-t pt-4 dark:border-gray-700">
+            <div
+              className="modal-actions"
+              style={{
+                borderTop: "1px solid var(--color-border)",
+                paddingTop: "1rem",
+              }}
+            >
               <button
                 type="button"
                 onClick={handleClose}
-                className="cursor-pointer rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+                className="modal-btn-cancel cursor-pointer"
               >
                 Hủy
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="cursor-pointer flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+                className={`modal-btn-submit cursor-pointer ${
+                  isSubmitting ? "is-disabled" : "is-enabled"
+                }`}
               >
                 {isSubmitting ? "Đang tạo..." : "Tạo đề thi"}
               </button>

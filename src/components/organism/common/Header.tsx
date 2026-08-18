@@ -92,7 +92,7 @@ export default function Header({
         {
           label: "Teams",
           icon: <FileText className="w-3.5 h-3.5" />,
-          onClick: () => navigate("/exams/mock"),
+          onClick: () => navigate("/teams"),
         },
       ],
       active: true,
@@ -114,7 +114,7 @@ export default function Header({
         {
           label: "Flashcard Listing",
           icon: <FileText className="w-3.5 h-3.5" />,
-          onClick: () => navigate("/exams/mock"),
+          onClick: () => navigate("/flashcards-list"),
         },
       ],
     },
@@ -139,12 +139,12 @@ export default function Header({
         {
           label: "Forums",
           icon: <Users className="w-3.5 h-3.5" />,
-          onClick: () => navigate("/community/groups"),
+          onClick: () => navigate("/forum"),
         },
         {
           label: "Chat",
           icon: <MessageSquare className="w-3.5 h-3.5" />,
-          onClick: () => navigate("/community/forum"),
+          onClick: () => navigate("/chat"),
         },
       ],
     },
@@ -154,7 +154,7 @@ export default function Header({
         {
           label: "FAQ & Docs",
           icon: <HelpCircle className="w-3.5 h-3.5" />,
-          onClick: () => navigate("/help/faq"),
+          onClick: () => navigate("/faq"),
         },
         {
           label: "Report",
@@ -176,7 +176,7 @@ export default function Header({
     {
       label: "My Profile",
       icon: <User className="w-3.5 h-3.5" />,
-      onClick: onProfileClick,
+      onClick: () => navigate("/profile"),
     },
     {
       label: "Settings",

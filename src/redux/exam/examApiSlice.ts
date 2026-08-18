@@ -12,13 +12,13 @@ export interface QuestionOptions {
 }
 
 export interface Question {
-  id: string;
+  id: number;
   content: string;
   options: QuestionOptions;
   right_answer: string;
   category: ExamCategory;
   partNumber?: number | null;
-  partId?: string;
+  partId?: number | null;
   sortOrder?: number;
   explanation?: string | null;
   imagePath?: string | null;
@@ -29,11 +29,12 @@ export interface Question {
 }
 
 export interface ExamPart {
-  id: string;
-  examId: string;
+  id: number;
+  examId: number;
   partNumber: number;
   name: string;
   instructions?: string | null;
+  description?: string | null;
   audioPath?: string | null;
   sortOrder: number;
   questions: Question[];
@@ -42,7 +43,7 @@ export interface ExamPart {
 }
 
 export interface Exam {
-  id: string;
+  id: number;
   name: string;
   code?: string | null;
   description?: string | null;
@@ -56,14 +57,14 @@ export interface Exam {
 }
 
 export interface SubmitExamPayload {
-  examId: string;
-  answers: Record<string, string>;
+  examId: number;
+  answers: Record<number | string, string>;
   startedAt: string;
   submittedAt: string;
 }
 
 export interface CreateExamQuestionItem {
-  questionId: string;
+  questionId: number;
   sortOrder: number;
   partNumber: number;
 }
@@ -88,13 +89,13 @@ export interface CreateExamPayload {
 }
 
 export interface AddQuestionsToExamItem {
-  questionId: string;
+  questionId: number;
   partNumber?: number;
   sortOrder?: number;
 }
 
 export interface AddQuestionsToExamPayload {
-  examId: string;
+  examId: number;
   questions: AddQuestionsToExamItem[];
 }
 
@@ -113,7 +114,7 @@ export const examApiSlice = baseApiSlice.injectEndpoints({
             ]
           : [{ type: "Exam", id: "LIST" }],
     }),
-    getExamById: builder.query<Exam, string>({
+    getExamById: builder.query<Exam, number | string>({
       query: (id) => ({
         url: `/exams/${id}`,
         method: "GET",

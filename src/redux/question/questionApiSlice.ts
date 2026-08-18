@@ -10,15 +10,16 @@ export interface QuestionOptions {
 }
 
 export interface Question {
-  id: string;
+  id: number;
   content: string;
   options: QuestionOptions;
-  right_answer: "A" | "B" | "C" | "D";
+  right_answer: "A" | "B" | "C" | "D" | string;
   category: ExamCategory;
   partNumber?: number | null;
   explanation?: string | null;
   imagePath?: string | null;
   audioPath?: string | null;
+  topicNumber?: number | null;
   status: "ACTIVE" | "INACTIVE";
   createdAt: string;
   updatedAt: string;
@@ -44,10 +45,13 @@ export interface GetQuestionsResponse {
 export interface CreateQuestionPayload {
   content: string;
   options: QuestionOptions;
-  right_answer: "A" | "B" | "C" | "D";
+  right_answer: "A" | "B" | "C" | "D" | string;
   category?: string;
   partNumber?: number;
   explanation?: string;
+  imagePath?: string;
+  audioPath?: string;
+  topicNumber?: number;
 }
 
 export interface BulkCreateQuestionsPayload {
@@ -81,7 +85,7 @@ export const questionApiSlice = baseApiSlice.injectEndpoints({
           : [{ type: "Question", id: "LIST" }],
     }),
 
-    getQuestionById: builder.query<Question, string>({
+    getQuestionById: builder.query<Question, number | string>({
       query: (id) => ({
         url: `/questions/${id}`,
         method: "GET",
@@ -112,7 +116,7 @@ export const questionApiSlice = baseApiSlice.injectEndpoints({
 
     updateQuestion: builder.mutation<
       Question,
-      { id: string; data: UpdateQuestionPayload }
+      { id: number | string; data: UpdateQuestionPayload }
     >({
       query: ({ id, data }) => ({
         url: `/questions/${id}`,
@@ -125,7 +129,7 @@ export const questionApiSlice = baseApiSlice.injectEndpoints({
       ],
     }),
 
-    deleteQuestion: builder.mutation<{ message: string }, string>({
+    deleteQuestion: builder.mutation<{ message: string }, number | string>({
       query: (id) => ({
         url: `/questions/${id}`,
         method: "DELETE",

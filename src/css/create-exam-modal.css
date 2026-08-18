@@ -1,0 +1,178 @@
+/* Create Exam Modal Components
+   Built on top of the theme tokens defined in index.css.
+   Reuses .modal-overlay/.modal-backdrop/.modal-panel/.modal-header/.modal-icon-badge/
+   .modal-title/.modal-close-btn/.modal-divider/.modal-form/.modal-error-banner/
+   .modal-field/.modal-field-label/.modal-input/.modal-actions/.modal-btn-cancel/
+   .modal-btn-submit from modal.css. Import this file after modal.css. */
+
+@layer components {
+  /* ---------- Modal panel size override ----------
+     CreateExamModal is wider and scrolls internally, unlike the smaller
+     fixed-height modals — override just those two properties. */
+
+  .exam-modal-panel {
+    max-width: 48rem;
+    max-height: 90vh;
+  }
+
+  .exam-modal-form {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  /* ---------- Section groups ---------- */
+
+  .exam-modal-section-heading {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-foreground);
+  }
+
+  .exam-modal-section-subtext {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-foreground-subtle);
+  }
+
+  .exam-modal-required {
+    color: var(--color-status-danger);
+  }
+
+  .exam-modal-input-label {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-foreground-muted);
+  }
+
+  .exam-modal-input-label-icon {
+    color: var(--color-foreground-subtle);
+  }
+
+  .exam-modal-select {
+    width: 100%;
+    margin-top: 0.25rem;
+    padding: 0.625rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--color-foreground);
+    background-color: var(--color-background-card);
+    border: 1px solid var(--color-border);
+    outline: none;
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  .exam-modal-select:focus {
+    border-color: var(--color-brand);
+    box-shadow: 0 0 0 3px var(--color-brand-light);
+  }
+
+  .exam-modal-text-input {
+    width: 100%;
+    margin-top: 0.25rem;
+    padding: 0.625rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--color-foreground);
+    background-color: var(--color-background-card);
+    border: 1px solid var(--color-border);
+    outline: none;
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  .exam-modal-text-input::placeholder {
+    color: var(--color-foreground-subtle);
+  }
+
+  .exam-modal-text-input:focus {
+    border-color: var(--color-brand);
+    box-shadow: 0 0 0 3px var(--color-brand-light);
+  }
+
+  .exam-modal-add-section-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-brand);
+    transition: color 0.15s ease;
+  }
+
+  .exam-modal-add-section-btn:hover {
+    color: var(--color-brand-hover);
+  }
+
+  /* ---------- Section row card ---------- */
+
+  .exam-modal-section-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.875rem;
+    border-radius: 0.5rem;
+    background-color: var(--color-background-subtle-hover);
+    border: 1px solid var(--color-border);
+  }
+
+  @media (min-width: 640px) {
+    .exam-modal-section-row {
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+
+  .exam-modal-section-index {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    flex-shrink: 0;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-brand);
+    background-color: var(--color-brand-light);
+  }
+
+  .exam-modal-section-input {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    color: var(--color-foreground);
+    background-color: var(--color-background-card);
+    border: 1px solid var(--color-border);
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
+
+  .exam-modal-section-input::placeholder {
+    color: var(--color-foreground-subtle);
+  }
+
+  .exam-modal-section-input:focus {
+    border-color: var(--color-brand);
+  }
+
+  .exam-modal-section-remove-btn {
+    padding: 0.25rem;
+    flex-shrink: 0;
+    color: var(--color-foreground-subtle);
+    transition: color 0.15s ease;
+  }
+
+  .exam-modal-section-remove-btn:hover {
+    color: var(--color-status-danger);
+  }
+}

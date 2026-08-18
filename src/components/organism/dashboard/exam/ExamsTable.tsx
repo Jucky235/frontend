@@ -116,18 +116,17 @@ export default function ExamsTable({
 
   // Derive target parts for the selected exam (Defaults to Part 1 for single-part exams)
   const examPartsForModal: ExamPart[] = useMemo(() => {
-    if (!selectedExamForAdd) return [{ partNumber: 1 }];
+    if (!selectedExamForAdd) return [];
 
     if (selectedExamForAdd.parts && selectedExamForAdd.parts.length > 0) {
       return selectedExamForAdd.parts.map((p, idx) => ({
-        partNumber: p.partNumber || p.part_number || idx + 1,
+        partNumber: p.partNumber ?? idx + 1,
         title: p.title || p.name,
       }));
     }
 
-    return [{ partNumber: 1 }];
+    return [];
   }, [selectedExamForAdd]);
-
   // Extract existing question IDs across single-part and multi-part exams
   const alreadySelectedQuestionIds: string[] = useMemo(() => {
     if (!selectedExamForAdd) return [];

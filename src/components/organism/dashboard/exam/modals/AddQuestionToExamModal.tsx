@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   X,
   Search,
@@ -8,6 +8,7 @@ import {
   HelpCircle,
   Filter,
   Layers,
+  Hash,
 } from "lucide-react";
 import {
   useGetQuestionsQuery,
@@ -20,7 +21,7 @@ export interface ExamPart {
 }
 
 export interface SelectedQuestionPayload {
-  questionId: string;
+  questionId: number;
   partNumber: number;
   question: Question;
 }
@@ -29,7 +30,7 @@ export interface AddQuestionToExamModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAddQuestions: (selectedQuestions: SelectedQuestionPayload[]) => void;
-  alreadySelectedIds?: string[];
+  alreadySelectedIds?: number[];
   /** Dynamic exam parts passed from parent exam state */
   examParts?: ExamPart[];
 }
@@ -65,8 +66,10 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
 
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("ALL");
+  const [fromId, setFromId] = useState<string>("");
+  const [toId, setToId] = useState<string>("");
   const [targetPart, setTargetPart] = useState<number>(availableParts[0] ?? 1);
-  const [selectedMap, setSelectedMap] = useState<Record<string, number>>({});
+  const [selectedMap, setSelectedMap] = useState<Record<number, number>>({});
 
   // Reset or update target part when available parts change or modal opens
   useEffect(() => {
@@ -96,19 +99,35 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
     return ["ALL", ...Array.from(set)];
   }, [questions]);
 
+  // Filtered and sorted by numeric ID (ascending)
   const filteredQuestions = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
-    return questions.filter((q) => {
-      const contentMatch = (q.content || "").toLowerCase().includes(query);
-      const idMatch = (q.id || "").toLowerCase().includes(query);
-      const matchesSearch = !query || contentMatch || idMatch;
+    const minId = fromId !== "" ? Number(fromId) : null;
+    const maxId = toId !== "" ? Number(toId) : null;
 
-      const matchesCategory =
-        categoryFilter === "ALL" || q.category === categoryFilter;
+    return questions
+      .filter((q) => {
+        // Search filter (ID or Content)
+        const contentMatch = (q.content || "").toLowerCase().includes(query);
+        const idMatch = String(q.id ?? "")
+          .toLowerCase()
+          .includes(query);
+        const matchesSearch = !query || contentMatch || idMatch;
 
-      return matchesSearch && matchesCategory;
-    });
-  }, [questions, searchQuery, categoryFilter]);
+        // Category filter
+        const matchesCategory =
+          categoryFilter === "ALL" || q.category === categoryFilter;
+
+        // ID Range filter
+        const matchesFromId =
+          minId === null || (q.id !== undefined && q.id >= minId);
+        const matchesToId =
+          maxId === null || (q.id !== undefined && q.id <= maxId);
+
+        return matchesSearch && matchesCategory && matchesFromId && matchesToId;
+      })
+      .sort((a, b) => a.id - b.id);
+  }, [questions, searchQuery, categoryFilter, fromId, toId]);
 
   if (!isOpen) return null;
 
@@ -155,8 +174,9 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
     setTargetPart(partNum);
     setSelectedMap((prev) => {
       const next = { ...prev };
-      Object.keys(next).forEach((id) => {
-        next[id] = partNum;
+      Object.keys(next).forEach((idKey) => {
+        const numericId = Number(idKey);
+        next[numericId] = partNum;
       });
       return next;
     });
@@ -164,7 +184,7 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
 
   const handleSingleItemPartChange = (
     e: React.ChangeEvent<HTMLSelectElement>,
-    questionId: string,
+    questionId: number,
   ) => {
     e.stopPropagation();
     const newPart = Number(e.target.value);
@@ -224,21 +244,57 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
         <div className="border-b border-neutral-200 bg-neutral-50/50 p-4 space-y-3 dark:border-neutral-700 dark:bg-neutral-800/50">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
             {/* Search Bar */}
-            <div className="relative md:col-span-5">
+            <div className="relative md:col-span-4">
               <Search className="absolute left-3 top-2.5 h-4 w-4 text-neutral-400" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Tìm kiếm theo nội dung câu hỏi..."
+                placeholder="Tìm theo ID hoặc nội dung..."
                 className="w-full rounded-xl border border-neutral-200 bg-white pl-9 pr-4 py-2 text-xs font-medium text-neutral-800 placeholder-neutral-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
               />
             </div>
 
+            {/* ID Range Filter (From ID -> To ID) */}
+            <div className="md:col-span-4 flex items-center gap-1.5 rounded-xl border border-neutral-200 bg-white px-2.5 py-1.5 dark:border-neutral-700 dark:bg-neutral-900">
+              <Hash className="h-3.5 w-3.5 text-neutral-400 shrink-0" />
+              <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 shrink-0">
+                ID:
+              </span>
+              <input
+                type="number"
+                value={fromId}
+                onChange={(e) => setFromId(e.target.value)}
+                placeholder="Từ ID"
+                className="w-full rounded-lg bg-neutral-100 px-2 py-1 text-xs font-semibold text-neutral-800 placeholder-neutral-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:bg-neutral-800 dark:text-white"
+              />
+              <span className="text-xs text-neutral-400 font-bold">-</span>
+              <input
+                type="number"
+                value={toId}
+                onChange={(e) => setToId(e.target.value)}
+                placeholder="Đến ID"
+                className="w-full rounded-lg bg-neutral-100 px-2 py-1 text-xs font-semibold text-neutral-800 placeholder-neutral-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:bg-neutral-800 dark:text-white"
+              />
+              {(fromId || toId) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFromId("");
+                    setToId("");
+                  }}
+                  className="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 p-0.5"
+                  title="Xóa lọc ID"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
+
             {/* Category Filter */}
-            <div className="relative md:col-span-3">
+            <div className="relative md:col-span-4">
               <div className="flex items-center rounded-xl border border-neutral-200 bg-white px-3 py-2 dark:border-neutral-700 dark:bg-neutral-900">
-                <Filter className="mr-2 h-3.5 w-3.5 text-neutral-400" />
+                <Filter className="mr-2 h-3.5 w-3.5 text-neutral-400 shrink-0" />
                 <select
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
@@ -256,9 +312,11 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
                 </select>
               </div>
             </div>
+          </div>
 
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
             {/* Target Exam Part Selector */}
-            <div className="relative md:col-span-4">
+            <div className="relative md:col-span-7">
               <div className="flex items-center rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 dark:border-indigo-800 dark:bg-indigo-950/40">
                 <Layers className="mr-2 h-4 w-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
                 <span className="mr-2 text-xs font-semibold text-indigo-900 dark:text-indigo-200 shrink-0">
@@ -291,24 +349,23 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
                 </select>
               </div>
             </div>
-          </div>
 
-          {/* Table Toolbar Info */}
-          <div className="flex items-center justify-between text-xs px-1">
-            <button
-              type="button"
-              onClick={handleSelectAll}
-              className="cursor-pointer font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 flex items-center gap-1.5 transition-colors"
-            >
-              Chọn tất cả ({filteredQuestions.length})
-            </button>
-            <span className="text-neutral-500 dark:text-neutral-400">
-              Đã chọn:{" "}
-              <strong className="text-indigo-600 dark:text-indigo-400">
-                {selectedCount}
-              </strong>{" "}
-              câu hỏi (sẽ chèn vào <strong>Part {targetPart}</strong>)
-            </span>
+            {/* Table Toolbar Info & Select All */}
+            <div className="md:col-span-5 flex items-center justify-between md:justify-end gap-3 text-xs px-1">
+              <button
+                type="button"
+                onClick={handleSelectAll}
+                className="cursor-pointer font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 flex items-center gap-1.5 transition-colors"
+              >
+                Chọn tất cả ({filteredQuestions.length})
+              </button>
+              <span className="text-neutral-500 dark:text-neutral-400">
+                Đã chọn:{" "}
+                <strong className="text-indigo-600 dark:text-indigo-400">
+                  {selectedCount}
+                </strong>
+              </span>
+            </div>
           </div>
         </div>
 
@@ -355,6 +412,9 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
 
                   <div className="flex-1 space-y-1">
                     <div className="flex items-center gap-2">
+                      <span className="rounded-md bg-indigo-100 px-2 py-0.5 text-[10px] font-bold text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300">
+                        #{q.id}
+                      </span>
                       {q.category && (
                         <span className="rounded-md bg-neutral-100 px-2 py-0.5 text-[10px] font-bold text-neutral-600 dark:bg-neutral-700 dark:text-neutral-300">
                           {q.category}

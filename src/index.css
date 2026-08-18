@@ -5,10 +5,10 @@
 @import "@/css/deck.css";
 @import "@/css/study-session.css";
 @import "@/css/edit-deck.css";
+@import "@/css/exam-list.css";
+@import "@/css/create-exam-modal.css";
 
-/* 1. Khai báo variant 'dark' kích hoạt khi có class .dark ở html/body */
-@variant dark (&: where(.dark, .dark *));
-
+@variant dark (&:where(.dark, .dark *));
 /* 2. Cấu hình Theme Tokens cho Tailwind v4 */
 @theme {
   --font-inter: "Inter", system-ui, -apple-system, sans-serif;
