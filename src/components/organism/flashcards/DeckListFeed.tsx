@@ -19,38 +19,33 @@ export const DeckListFeed: React.FC<DeckListFeedProps> = ({
 }) => {
   if (isLoading) {
     return (
-      <div className="bg-white border border-neutral-200 p-12 rounded-2xl flex items-center justify-center space-x-2 text-neutral-400 text-sm font-semibold">
-        <Loader2 className="w-5 h-5 animate-spin text-indigo-600" />
+      <div className="deck-feed-panel">
+        <Loader2 className="deck-feed-spinner w-5 h-5 animate-spin" />
         <span>Fetching study decks...</span>
       </div>
     );
   }
-
   if (isError) {
     return (
-      <div className="bg-red-50 border border-red-100 p-8 rounded-2xl text-center space-y-3">
-        <p className="text-xs font-bold text-red-600">
-          Failed to load deck collections.
-        </p>
+      <div className="deck-feed-error-panel">
+        <p className="deck-feed-error-text">Failed to load deck collections.</p>
         <button
           type="button"
           onClick={onRefetch}
-          className="px-3 py-1.5 bg-red-600 text-white text-xs font-bold rounded-lg hover:bg-red-700 transition-all"
+          className="deck-feed-error-btn cursor-pointer"
         >
           Try Again
         </button>
       </div>
     );
   }
-
   if (decks.length === 0) {
     return (
-      <div className="bg-white border border-dashed border-neutral-200 p-12 rounded-2xl text-center text-sm font-semibold text-neutral-400">
+      <div className="deck-feed-empty-panel">
         No matching collections found.
       </div>
     );
   }
-
   return (
     <div className="space-y-4">
       {decks.map((deck) => (

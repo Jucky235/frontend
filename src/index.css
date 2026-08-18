@@ -1,1 +1,172 @@
 @import "tailwindcss";
+@import "@/css/profile.css";
+@import "@/css/modal.css";
+@import "@/css/faq.css";
+@import "@/css/deck.css";
+@import "@/css/study-session.css";
+@import "@/css/edit-deck.css";
+
+/* 1. Khai báo variant 'dark' kích hoạt khi có class .dark ở html/body */
+@variant dark (&: where(.dark, .dark *));
+
+/* 2. Cấu hình Theme Tokens cho Tailwind v4 */
+@theme {
+  --font-inter: "Inter", system-ui, -apple-system, sans-serif;
+
+  /* Background Colors */
+  --color-background: var(--bg-main);
+  --color-background-card: var(--bg-card);
+  --color-background-feed: var(--bg-feed);
+  --color-background-hover: var(--bg-hover);
+  --color-background-subtle-hover: var(--bg-subtle-hover);
+  --color-background-input: var(--bg-input);
+
+  /* Text / Foreground Colors */
+  --color-foreground: var(--text-primary);
+  --color-foreground-muted: var(--text-muted);
+  --color-foreground-subtle: var(--text-subtle);
+
+  /* Border Colors */
+  --color-border: var(--border-color);
+  --color-border-subtle: var(--border-subtle);
+
+  /* Banner Colors */
+  --color-banner-from: var(--banner-from);
+  --color-banner-to: var(--banner-to);
+  --color-banner-border: var(--banner-border);
+
+  /* Brand Colors */
+  --color-brand: var(--brand-primary);
+  --color-brand-light: var(--brand-active-bg);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-text-subtle: var(--brand-text-subtle);
+
+  /* Status Colors */
+  --color-status-success: var(--status-success);
+  --color-status-success-bg: var(--status-success-bg);
+  --color-status-danger: var(--status-danger);
+  --color-status-danger-hover: var(--status-danger-hover);
+  --color-status-danger-bg: var(--status-danger-bg);
+  --color-status-danger-icon-bg: var(--status-danger-icon-bg);
+  --color-status-warning: var(--status-warning);
+  --color-status-warning-hover: var(--status-warning-hover);
+  --color-status-warning-icon-bg: var(--status-warning-icon-bg);
+  --color-status-info: var(--status-info);
+  --color-status-info-hover: var(--status-info-hover);
+  --color-status-info-icon-bg: var(--status-info-icon-bg);
+}
+
+/* 3. Định nghĩa giá trị biến HSL cho Light Mode */
+:root {
+  /* Backgrounds */
+  --bg-main: hsl(0 0% 98%);
+  --bg-card: hsl(0 0% 100%);
+  --bg-feed: hsl(0 0% 98%);
+  --bg-hover: hsl(0 0% 94%);
+  --bg-subtle-hover: hsl(0 0% 96%);
+  --bg-input: hsl(0 0% 95%);
+
+  /* Text */
+  --text-primary: hsl(0 0% 12%);
+  --text-muted: hsl(0 0% 40%);
+  --text-subtle: hsl(0 0% 60%);
+
+  /* Borders */
+  --border-color: hsl(0 0% 88%);
+  --border-subtle: hsl(0 0% 93%);
+
+  /* Banners */
+  --banner-from: hsl(221 83% 53%);
+  --banner-to: hsl(235 100% 68%);
+  --banner-border: hsl(235 100% 40%);
+
+  /* Brand */
+  --brand-primary: hsl(235 100% 68%);
+  --brand-active-bg: hsl(235 100% 97%);
+  --brand-hover: hsl(235 100% 60%);
+  --brand-text-subtle: hsl(235 80% 40%);
+
+  /* Statuses */
+  --status-success: hsl(152 76% 36%);
+  --status-success-bg: hsl(150 80% 95%);
+
+  --status-danger: hsl(0 84% 60%);
+  --status-danger-hover: hsl(0 72% 51%);
+  --status-danger-bg: hsl(0 86% 97%);
+  --status-danger-icon-bg: hsl(0 86% 93%);
+
+  --status-warning: hsl(38 92% 50%);
+  --status-warning-hover: hsl(35 92% 43%);
+  --status-warning-icon-bg: hsl(48 96% 89%);
+
+  --status-info: hsl(217 91% 60%);
+  --status-info-hover: hsl(217 91% 52%);
+  --status-info-icon-bg: hsl(214 95% 93%);
+}
+
+/* 4. Định nghĩa giá trị biến HSL cho Dark Mode */
+.dark {
+  /* Backgrounds */
+  --bg-main: hsl(240 10% 4%);
+  --bg-card: hsl(240 6% 10%);
+  --bg-feed: hsl(240 8% 7%);
+  --bg-hover: hsl(240 5% 16%);
+  --bg-subtle-hover: hsl(240 5% 12%);
+  --bg-input: hsl(240 5% 14%);
+
+  /* Text */
+  --text-primary: hsl(0 0% 98%);
+  --text-muted: hsl(240 5% 65%);
+  --text-subtle: hsl(240 4% 46%);
+
+  /* Borders */
+  --border-color: hsl(240 4% 18%);
+  --border-subtle: hsl(240 4% 14%);
+
+  /* Banners */
+  --banner-from: hsl(221 83% 40%);
+  --banner-to: hsl(235 80% 50%);
+  --banner-border: hsl(235 100% 30%);
+
+  /* Brand */
+  --brand-primary: hsl(235 100% 68%);
+  --brand-active-bg: hsl(235 50% 15%);
+  --brand-hover: hsl(235 100% 75%);
+  --brand-text-subtle: hsl(235 80% 85%);
+
+  /* Statuses */
+  --status-success: hsl(152 76% 46%);
+  --status-success-bg: hsl(152 50% 12%);
+
+  --status-danger: hsl(0 72% 51%);
+  --status-danger-hover: hsl(0 84% 60%);
+  --status-danger-bg: hsl(0 50% 12%);
+  --status-danger-icon-bg: hsl(0 50% 18%);
+
+  --status-warning: hsl(38 92% 50%);
+  --status-warning-hover: hsl(35 92% 60%);
+  --status-warning-icon-bg: hsl(38 50% 18%);
+
+  --status-info: hsl(217 91% 60%);
+  --status-info-hover: hsl(217 91% 70%);
+  --status-info-icon-bg: hsl(217 50% 18%);
+}
+
+/* 5. Base Styles */
+@layer base {
+  *,
+  ::after,
+  ::before {
+    border-color: var(--color-border);
+  }
+
+  body {
+    font-family: var(--font-inter);
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    min-height: 100vh;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+  }
+}

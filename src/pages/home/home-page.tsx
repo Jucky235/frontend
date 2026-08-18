@@ -47,42 +47,42 @@ export default function HomePage() {
     },
   ];
 
-  // Updated Features with tailored descriptions and icons
+  // Features with semantic theme colors
   const features: FeatureItem[] = [
     {
       title: "Test your ability",
       desc: "Challenging practice exams designed to evaluate your current proficiency level.",
-      icon: <Layers className="w-6 h-6 text-[#5A67FF]" />,
+      icon: <Layers className="w-6 h-6 text-brand" />,
     },
     {
       title: "Test your memory with words",
       desc: "Interactive flashcard decks and spaced-repetition drills to master vocabulary fast.",
-      icon: <Brain className="w-6 h-6 text-indigo-500" />,
+      icon: <Brain className="w-6 h-6 text-brand" />,
     },
     {
       title: "Joining the chat",
       desc: "Connect with native speakers and fellow learners in active study channels.",
-      icon: <MessageSquare className="w-6 h-6 text-[#5A67FF]" />,
+      icon: <MessageSquare className="w-6 h-6 text-brand" />,
     },
     {
       title: "Compete with others",
       desc: "Climb monthly leaderboards, earn achievement badges, and track your progress.",
-      icon: <Trophy className="w-6 h-6 text-amber-500" />,
+      icon: <Trophy className="w-6 h-6 text-status-warning" />,
     },
     {
       title: "Understand more with courses",
       desc: "Structured lessons covering core grammar, reading comprehension, and listening skills.",
-      icon: <BookOpen className="w-6 h-6 text-indigo-500" />,
+      icon: <BookOpen className="w-6 h-6 text-brand" />,
     },
     {
       title: "Discuss, share your own ideas",
       desc: "Engage in community forums to ask questions, post tips, and exchange study material.",
-      icon: <LayoutGrid className="w-6 h-6 text-[#5A67FF]" />,
+      icon: <LayoutGrid className="w-6 h-6 text-brand" />,
     },
   ];
 
   return (
-    <div className="min-h-screen w-full bg-neutral-50 font-inter flex flex-col justify-between">
+    <div className="min-h-screen w-full bg-background font-inter flex flex-col justify-between transition-colors">
       <Header />
 
       <main className="flex-1 w-full max-w-5xl mx-auto px-6 py-10 flex flex-col space-y-12">
@@ -92,10 +92,10 @@ export default function HomePage() {
         {/* Feature Cards Grid */}
         <section className="space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-extrabold text-neutral-800 tracking-tight">
+            <h2 className="text-xl font-extrabold text-foreground tracking-tight">
               What to do
             </h2>
-            <span className="text-xs font-semibold text-neutral-400">
+            <span className="text-xs font-semibold text-foreground-subtle">
               Pick a learning activity
             </span>
           </div>

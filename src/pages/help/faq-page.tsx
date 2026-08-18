@@ -106,14 +106,16 @@ export default function FAQPage() {
   });
 
   return (
-    <div className="min-h-screen w-full bg-neutral-50 font-inter flex flex-col justify-between">
+    <div className="faq-page font-inter">
       <Header />
 
       <main className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-10">
         {/* Hero Section */}
-        <div className="bg-gradient-to-br from-blue-600 via-indigo-600 to-indigo-700 rounded-3xl p-8 sm:p-12 text-white text-center relative overflow-hidden shadow-lg space-y-4">
-          <div className="inline-flex items-center space-x-1.5 bg-white/20 text-xs font-bold px-3.5 py-1 rounded-full backdrop-blur-md uppercase tracking-wider">
-            <HelpCircle className="w-3.5 h-3.5 text-indigo-200" />
+        <div className="faq-hero space-y-4">
+          <div className="faq-hero-decoration" />
+
+          <div className="faq-hero-badge">
+            <HelpCircle className="w-3.5 h-3.5" />
             <span>Help Center</span>
           </div>
 
@@ -126,21 +128,16 @@ export default function FAQPage() {
           </p>
 
           {/* Search Input Bar */}
-          <div className="max-w-xl mx-auto pt-4">
-            <div className="relative">
-              <Search className="w-4 h-4 text-neutral-400 absolute left-4 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                placeholder="Search keywords or questions..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3.5 bg-white text-neutral-800 placeholder-neutral-400 rounded-2xl text-xs font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-[#5A67FF] transition-all"
-              />
-            </div>
+          <div className="faq-search-wrapper">
+            <Search className="faq-search-icon w-4 h-4" />
+            <input
+              type="text"
+              placeholder="Search keywords or questions..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="faq-search-input"
+            />
           </div>
-
-          {/* Background decoration */}
-          <div className="absolute -top-12 -left-12 w-40 h-40 bg-indigo-400 rounded-full opacity-20 blur-2xl pointer-events-none" />
         </div>
 
         {/* Category Tabs */}
@@ -151,10 +148,8 @@ export default function FAQPage() {
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                  isActive
-                    ? "bg-[#5A67FF] text-white shadow-sm"
-                    : "bg-white text-neutral-600 hover:bg-neutral-100 border border-neutral-200/80"
+                className={`faq-category-btn cursor-pointer ${
+                  isActive ? "is-active" : "is-inactive"
                 }`}
               >
                 <span>{cat.icon}</span>
@@ -170,34 +165,29 @@ export default function FAQPage() {
             filteredFAQs.map((faq) => {
               const isOpen = !!openItems[faq.id];
               return (
-                <div
-                  key={faq.id}
-                  className="bg-white border border-neutral-200/80 rounded-2xl overflow-hidden shadow-xs transition-all"
-                >
+                <div key={faq.id} className="faq-accordion-item">
                   <button
                     onClick={() => toggleAccordion(faq.id)}
-                    className="w-full p-5 flex items-center justify-between text-left font-extrabold text-xs sm:text-sm text-neutral-800 hover:text-[#5A67FF] transition-colors cursor-pointer space-x-4"
+                    className="faq-accordion-trigger cursor-pointer"
                   >
                     <span>{faq.question}</span>
                     <ChevronDown
-                      className={`w-4 h-4 text-neutral-400 shrink-0 transition-transform duration-200 ${
-                        isOpen ? "rotate-180 text-[#5A67FF]" : ""
+                      className={`faq-accordion-chevron w-4 h-4 ${
+                        isOpen ? "is-open" : ""
                       }`}
                     />
                   </button>
 
                   {isOpen && (
-                    <div className="px-5 pb-5 text-xs text-neutral-600 font-medium leading-relaxed border-t border-neutral-100 pt-3">
-                      {faq.answer}
-                    </div>
+                    <div className="faq-accordion-content">{faq.answer}</div>
                   )}
                 </div>
               );
             })
           ) : (
-            <div className="text-center py-12 bg-white border border-neutral-200/80 rounded-2xl space-y-3">
-              <HelpCircle className="w-8 h-8 text-neutral-300 mx-auto" />
-              <p className="text-xs font-bold text-neutral-500">
+            <div className="faq-empty-state">
+              <HelpCircle className="faq-empty-state-icon w-8 h-8" />
+              <p className="faq-empty-state-text">
                 No matching questions found for "{searchQuery}".
               </p>
             </div>
@@ -205,23 +195,21 @@ export default function FAQPage() {
         </div>
 
         {/* Support Callout Footer Card */}
-        <div className="bg-indigo-50/60 border border-indigo-100 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 max-w-3xl mx-auto">
+        <div className="faq-support-card max-w-3xl mx-auto">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 rounded-2xl bg-[#5A67FF] text-white flex items-center justify-center shrink-0 shadow-xs">
+            <div className="faq-support-icon">
               <MessageSquare className="w-6 h-6" />
             </div>
             <div className="space-y-1">
-              <h3 className="text-sm font-extrabold text-neutral-800">
-                Still have questions?
-              </h3>
-              <p className="text-xs text-neutral-500 font-medium">
+              <h3 className="faq-support-title">Still have questions?</h3>
+              <p className="faq-support-text">
                 Can't find the answer you're looking for? Reach out to our
                 support team.
               </p>
             </div>
           </div>
 
-          <button className="bg-[#5A67FF] hover:bg-indigo-600 text-white text-xs font-bold px-5 py-3 rounded-xl shadow-xs transition-all flex items-center space-x-2 shrink-0 cursor-pointer active:scale-95">
+          <button className="faq-support-btn cursor-pointer active:scale-95">
             <Mail className="w-4 h-4" />
             <span>Contact Support</span>
           </button>

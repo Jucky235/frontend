@@ -75,26 +75,24 @@ export default function ChangePasswordModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 selection:bg-indigo-100">
+    <div className="modal-overlay selection:bg-brand-light">
       {/* 1. Blur Overlay Backdrop */}
       <div
-        className="fixed inset-0 bg-neutral-900/40 backdrop-blur-xs transition-opacity"
+        className="modal-backdrop"
         onClick={!isUpdating ? onClose : undefined}
       />
 
       {/* 2. Central Dialog Box Wrapper */}
-      <div className="bg-white w-full max-w-md rounded-2xl border border-neutral-200 shadow-2xl relative z-10 overflow-hidden font-inter animate-in fade-in zoom-in-95 duration-200">
+      <div className="modal-panel font-inter animate-in fade-in zoom-in-95 duration-200">
         {/* Header Block Panel */}
-        <div className="px-6 pt-6 pb-4 flex items-start justify-between">
+        <div className="modal-header">
           <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 bg-neutral-100 rounded-xl flex items-center justify-center text-neutral-700">
+            <div className="modal-icon-badge">
               <Lock className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-sm font-extrabold text-neutral-800 tracking-tight">
-                Update Security Credentials
-              </h2>
-              <p className="text-[11px] text-neutral-400 font-medium mt-0.5">
+              <h2 className="modal-title">Update Security Credentials</h2>
+              <p className="modal-subtitle">
                 Revoke current runtime tokens and provision a new access pass.
               </p>
             </div>
@@ -104,29 +102,25 @@ export default function ChangePasswordModal({
             type="button"
             onClick={onClose}
             disabled={isUpdating}
-            className="w-7 h-7 inline-flex items-center justify-center text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 rounded-lg transition-all cursor-pointer disabled:opacity-50"
+            className="modal-close-btn"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <hr className="border-neutral-100" />
+        <hr className="modal-divider" />
 
         {/* 3. High-Density Parameter Input Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="modal-form">
           {/* Runtime Error Message Notification Panel */}
           {errorMessage && (
-            <div className="p-3 text-xs bg-red-50 text-red-600 border border-red-100 rounded-xl font-semibold">
-              {errorMessage}
-            </div>
+            <div className="modal-error-banner">{errorMessage}</div>
           )}
 
           {/* Field: Current Token Verification */}
-          <div className="space-y-1">
-            <label className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
-              Current Password
-            </label>
-            <div className="relative">
+          <div className="modal-field">
+            <label className="modal-field-label">Current Password</label>
+            <div className="modal-input-wrapper">
               <input
                 type={showCurrent ? "text" : "password"}
                 disabled={isUpdating}
@@ -135,14 +129,14 @@ export default function ChangePasswordModal({
                   setFormData({ ...formData, currentPassword: e.target.value })
                 }
                 placeholder="Enter current password ..."
-                className="w-full pl-3 pr-10 py-2 rounded-xl border border-neutral-200 text-xs font-medium text-neutral-800 focus:outline-none focus:border-[#5A67FF] transition-all disabled:bg-neutral-50 disabled:text-neutral-400"
+                className="modal-input"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowCurrent(!showCurrent)}
                 disabled={isUpdating}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 cursor-pointer"
+                className="modal-input-toggle-btn"
               >
                 {showCurrent ? (
                   <EyeOff className="w-3.5 h-3.5" />
@@ -154,11 +148,9 @@ export default function ChangePasswordModal({
           </div>
 
           {/* Field: New Target Key Generation */}
-          <div className="space-y-1">
-            <label className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
-              New Password
-            </label>
-            <div className="relative">
+          <div className="modal-field">
+            <label className="modal-field-label">New Password</label>
+            <div className="modal-input-wrapper">
               <input
                 type={showNew ? "text" : "password"}
                 disabled={isUpdating}
@@ -167,14 +159,14 @@ export default function ChangePasswordModal({
                   setFormData({ ...formData, newPassword: e.target.value })
                 }
                 placeholder="Minimum 8 characters..."
-                className="w-full pl-3 pr-10 py-2 rounded-xl border border-neutral-200 text-xs font-medium text-neutral-800 focus:outline-none focus:border-[#5A67FF] transition-all disabled:bg-neutral-50 disabled:text-neutral-400"
+                className="modal-input"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowNew(!showNew)}
                 disabled={isUpdating}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 cursor-pointer"
+                className="modal-input-toggle-btn"
               >
                 {showNew ? (
                   <EyeOff className="w-3.5 h-3.5" />
@@ -186,11 +178,9 @@ export default function ChangePasswordModal({
           </div>
 
           {/* Field: Confirm Target Key Generation */}
-          <div className="space-y-1">
-            <label className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
-              Confirm New Password
-            </label>
-            <div className="relative">
+          <div className="modal-field">
+            <label className="modal-field-label">Confirm New Password</label>
+            <div className="modal-input-wrapper">
               <input
                 type={showConfirm ? "text" : "password"}
                 disabled={isUpdating}
@@ -199,14 +189,14 @@ export default function ChangePasswordModal({
                   setFormData({ ...formData, confirmPassword: e.target.value })
                 }
                 placeholder="Verify matching value..."
-                className="w-full pl-3 pr-10 py-2 rounded-xl border border-neutral-200 text-xs font-medium text-neutral-800 focus:outline-none focus:border-[#5A67FF] transition-all disabled:bg-neutral-50 disabled:text-neutral-400"
+                className="modal-input"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowConfirm(!showConfirm)}
                 disabled={isUpdating}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 cursor-pointer"
+                className="modal-input-toggle-btn"
               >
                 {showConfirm ? (
                   <EyeOff className="w-3.5 h-3.5" />
@@ -218,31 +208,23 @@ export default function ChangePasswordModal({
           </div>
 
           {/* 4. Real-time Array Condition Trackers */}
-          <div className="p-3.5 bg-neutral-50 rounded-xl border border-neutral-200/60 space-y-2 text-[11px] font-semibold">
-            <div className="flex items-center space-x-2">
+          <div className="modal-requirements-panel">
+            <div className="modal-requirement">
               <span
-                className={`w-1.5 h-1.5 rounded-full ${requirements.length ? "bg-emerald-500" : "bg-neutral-300"}`}
+                className={`modal-requirement-dot ${requirements.length ? "is-met" : ""}`}
               />
               <span
-                className={
-                  requirements.length
-                    ? "text-emerald-700 font-bold"
-                    : "text-neutral-400"
-                }
+                className={`modal-requirement-text ${requirements.length ? "is-met" : ""}`}
               >
                 Must contain at least 8 characters
               </span>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="modal-requirement">
               <span
-                className={`w-1.5 h-1.5 rounded-full ${requirements.match ? "bg-emerald-500" : "bg-neutral-300"}`}
+                className={`modal-requirement-dot ${requirements.match ? "is-met" : ""}`}
               />
               <span
-                className={
-                  requirements.match
-                    ? "text-emerald-700 font-bold"
-                    : "text-neutral-400"
-                }
+                className={`modal-requirement-text ${requirements.match ? "is-met" : ""}`}
               >
                 New credentials match perfectly
               </span>
@@ -250,22 +232,20 @@ export default function ChangePasswordModal({
           </div>
 
           {/* 5. Execution Controls Baseline Row */}
-          <div className="flex items-center justify-end space-x-3 pt-2">
+          <div className="modal-actions">
             <button
               type="button"
               onClick={onClose}
               disabled={isUpdating}
-              className="bg-white hover:bg-neutral-50 text-neutral-600 border border-neutral-200 font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-xs cursor-pointer active:scale-97 disabled:opacity-50"
+              className="modal-btn-cancel active:scale-97"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={!canSubmit}
-              className={`font-bold text-xs px-4 py-2.5 rounded-xl tracking-wide shadow-md transition-all flex items-center space-x-1.5 cursor-pointer active:scale-97 ${
-                canSubmit
-                  ? "bg-indigo-600 hover:bg-indigo-700 text-white"
-                  : "bg-neutral-100 text-neutral-400 border border-neutral-200 cursor-not-allowed shadow-none"
+              className={`modal-btn-submit active:scale-97 ${
+                canSubmit ? "is-enabled" : "is-disabled"
               }`}
             >
               {isUpdating ? (

@@ -79,26 +79,21 @@ export default function CreateDeckModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="modal-overlay">
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-neutral-900/40 backdrop-blur-xs transition-opacity"
-        onClick={onClose}
-      />
+      <div className="modal-backdrop" onClick={onClose} />
 
       {/* Modal Container */}
-      <div className="relative w-full max-w-md bg-white border border-neutral-200/80 rounded-2xl shadow-xl overflow-hidden flex flex-col z-10 font-inter transform transition-all animate-in fade-in zoom-in-95 duration-200">
+      <div className="modal-panel flex flex-col font-inter animate-in fade-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="bg-gradient-to-br from-blue-600 to-indigo-600 px-6 py-4 flex items-center justify-between text-white relative">
+        <div className="deck-modal-header">
           <div className="flex items-center space-x-2.5">
-            <div className="w-8 h-8 rounded-lg bg-white/10 backdrop-blur-md flex items-center justify-center">
-              <FolderPlus className="w-4 h-4 text-white" />
+            <div className="deck-modal-header-badge">
+              <FolderPlus className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-extrabold tracking-tight">
-                Create Study Deck
-              </h3>
-              <p className="text-[10px] text-white/80 font-medium">
+              <h3 className="deck-modal-header-title">Create Study Deck</h3>
+              <p className="deck-modal-header-subtitle">
                 Flashcard Workspace Management
               </p>
             </div>
@@ -108,27 +103,24 @@ export default function CreateDeckModal({
             type="button"
             onClick={onClose}
             disabled={isSubmitting}
-            className="w-7 h-7 bg-white/10 hover:bg-white/20 active:scale-90 rounded-full flex items-center justify-center transition-all cursor-pointer disabled:opacity-50"
+            className="deck-modal-header-close active:scale-90 cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 flex flex-col space-y-5">
+        <form onSubmit={handleSubmit} className="modal-form">
           {error && (
-            <div className="flex items-start space-x-2 p-3 bg-red-50 border border-red-100 rounded-xl text-xs font-semibold text-red-600">
+            <div className="modal-error-banner flex items-start space-x-2">
               <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
           )}
 
           {/* Title Input */}
-          <div className="space-y-1.5">
-            <label
-              htmlFor="name"
-              className="text-xs font-bold text-neutral-600 uppercase tracking-wider"
-            >
+          <div className="modal-field">
+            <label htmlFor="name" className="modal-field-label">
               Deck Title
             </label>
             <input
@@ -140,17 +132,14 @@ export default function CreateDeckModal({
               value={formData.name}
               onChange={handleInputChange}
               disabled={isSubmitting}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-200 text-xs font-medium text-neutral-800 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all placeholder:text-neutral-400 disabled:bg-neutral-50"
+              className="modal-input"
               required
             />
           </div>
 
           {/* Description Input */}
-          <div className="space-y-1.5">
-            <label
-              htmlFor="description"
-              className="text-xs font-bold text-neutral-600 uppercase tracking-wider"
-            >
+          <div className="modal-field">
+            <label htmlFor="description" className="modal-field-label">
               Short Summary Description
             </label>
             <textarea
@@ -162,45 +151,39 @@ export default function CreateDeckModal({
               value={formData.description}
               onChange={handleInputChange}
               disabled={isSubmitting}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-200 text-xs font-medium text-neutral-800 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all placeholder:text-neutral-400 resize-none disabled:bg-neutral-50"
+              className="modal-input resize-none"
             />
           </div>
 
           {/* Category Scope (Read-only) */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-neutral-600 uppercase tracking-wider">
-              Target Category Scope
-            </label>
-            <div className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-xs font-bold text-neutral-500 select-none">
+          <div className="modal-field">
+            <label className="modal-field-label">Target Category Scope</label>
+            <div className="deck-modal-readonly">
               {formData.category} Module Baseline
             </div>
           </div>
 
           {/* Visibility Controls */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-neutral-600 uppercase tracking-wider">
-              Deck Visibility Privacy
-            </label>
-            <div className="grid grid-cols-2 gap-3">
+          <div className="modal-field">
+            <label className="modal-field-label">Deck Visibility Privacy</label>
+            <div className="deck-visibility-grid">
               <button
                 type="button"
                 onClick={() => handleVisibilityChange("PRIVATE")}
                 disabled={isSubmitting}
-                className={`p-3 rounded-xl border flex flex-col items-start text-left cursor-pointer transition-all ${
-                  formData.visibility === "PRIVATE"
-                    ? "border-indigo-600 bg-indigo-50/50 ring-1 ring-indigo-600"
-                    : "border-neutral-200 bg-white hover:bg-neutral-50"
-                } disabled:opacity-50`}
+                className={`deck-visibility-option cursor-pointer ${
+                  formData.visibility === "PRIVATE" ? "is-selected" : ""
+                }`}
               >
                 <div className="flex items-center space-x-1.5 mb-1">
                   <ShieldCheck
-                    className={`w-4 h-4 ${formData.visibility === "PRIVATE" ? "text-indigo-600" : "text-neutral-400"}`}
+                    className={`deck-visibility-icon w-4 h-4 ${
+                      formData.visibility === "PRIVATE" ? "is-selected" : ""
+                    }`}
                   />
-                  <span className="text-xs font-bold text-neutral-800">
-                    Private
-                  </span>
+                  <span className="deck-visibility-label">Private</span>
                 </div>
-                <p className="text-[10px] text-neutral-400 font-medium leading-relaxed">
+                <p className="deck-visibility-desc">
                   Only accessible inside your individual workspace context.
                 </p>
               </button>
@@ -209,43 +192,45 @@ export default function CreateDeckModal({
                 type="button"
                 onClick={() => handleVisibilityChange("PUBLIC")}
                 disabled={isSubmitting}
-                className={`p-3 rounded-xl border flex flex-col items-start text-left cursor-pointer transition-all ${
-                  formData.visibility === "PUBLIC"
-                    ? "border-indigo-600 bg-indigo-50/50 ring-1 ring-indigo-600"
-                    : "border-neutral-200 bg-white hover:bg-neutral-50"
-                } disabled:opacity-50`}
+                className={`deck-visibility-option cursor-pointer ${
+                  formData.visibility === "PUBLIC" ? "is-selected" : ""
+                }`}
               >
                 <div className="flex items-center space-x-1.5 mb-1">
                   <Globe
-                    className={`w-4 h-4 ${formData.visibility === "PUBLIC" ? "text-indigo-600" : "text-neutral-400"}`}
+                    className={`deck-visibility-icon w-4 h-4 ${
+                      formData.visibility === "PUBLIC" ? "is-selected" : ""
+                    }`}
                   />
-                  <span className="text-xs font-bold text-neutral-800">
-                    Public Shared
-                  </span>
+                  <span className="deck-visibility-label">Public Shared</span>
                 </div>
-                <p className="text-[10px] text-neutral-400 font-medium leading-relaxed">
+                <p className="deck-visibility-desc">
                   Discoverable and shareable across all system account domains.
                 </p>
               </button>
             </div>
           </div>
 
-          <hr className="border-neutral-200/60 pt-1" />
+          <hr className="modal-divider" />
 
           {/* Action Buttons */}
-          <div className="flex items-center justify-end space-x-3">
+          <div className="modal-actions">
             <button
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
-              className="px-4 py-2 bg-white hover:bg-neutral-50 text-neutral-600 border border-neutral-200 text-xs font-bold rounded-xl transition-all cursor-pointer disabled:opacity-50"
+              className="modal-btn-cancel cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting || !formData.name.trim()}
-              className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-xs font-bold rounded-xl shadow-md transition-all cursor-pointer active:scale-95 flex items-center justify-center min-w-[90px]"
+              className={`modal-btn-submit cursor-pointer active:scale-95 flex items-center justify-center min-w-[90px] ${
+                isSubmitting || !formData.name.trim()
+                  ? "is-disabled"
+                  : "is-enabled"
+              }`}
             >
               {isSubmitting ? "Creating..." : "Build Deck"}
             </button>

@@ -1,0 +1,283 @@
+/* Change Password Modal Components
+   Built on top of the theme tokens defined in index.css.
+   Import this file after index.css. */
+
+@layer components {
+  /* ---------- Overlay & panel ---------- */
+
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: hsl(0 0% 0% / 0.45);
+    backdrop-filter: blur(2px);
+    transition: opacity 0.15s ease;
+  }
+
+  .modal-panel {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 28rem;
+    overflow: hidden;
+    border-radius: 1rem;
+    background-color: var(--color-background-card);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 20px 40px -8px hsl(0 0% 0% / 0.25);
+  }
+
+  /* ---------- Header ---------- */
+
+  .modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 1.5rem 1.5rem 1rem;
+  }
+
+  .modal-icon-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    flex-shrink: 0;
+    border-radius: 0.75rem;
+    background-color: var(--color-background-subtle-hover);
+    color: var(--color-foreground-muted);
+  }
+
+  .modal-title {
+    font-size: 0.875rem;
+    font-weight: 800;
+    color: var(--color-foreground);
+    letter-spacing: -0.01em;
+  }
+
+  .modal-subtitle {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: var(--color-foreground-subtle);
+    margin-top: 0.125rem;
+  }
+
+  .modal-close-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    flex-shrink: 0;
+    border-radius: 0.5rem;
+    color: var(--color-foreground-subtle);
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease;
+  }
+
+  .modal-close-btn:hover:not(:disabled) {
+    background-color: var(--color-background-subtle-hover);
+    color: var(--color-foreground);
+  }
+
+  .modal-close-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .modal-divider {
+    border: none;
+    border-top: 1px solid var(--color-border-subtle);
+  }
+
+  /* ---------- Form ---------- */
+
+  .modal-form {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .modal-error-banner {
+    padding: 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-status-danger);
+    background-color: var(--color-status-danger-bg);
+    border: 1px solid var(--color-status-danger-icon-bg);
+    border-radius: 0.75rem;
+  }
+
+  .modal-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .modal-field-label {
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-foreground-subtle);
+  }
+
+  .modal-input-wrapper {
+    position: relative;
+  }
+
+  .modal-input {
+    width: 100%;
+    padding: 0.5rem 2.5rem 0.5rem 0.75rem;
+    border-radius: 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-foreground);
+    background-color: var(--color-background-card);
+    border: 1px solid var(--color-border);
+    outline: none;
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  .modal-input::placeholder {
+    color: var(--color-foreground-subtle);
+  }
+
+  .modal-input:focus {
+    border-color: var(--color-brand);
+    box-shadow: 0 0 0 3px var(--color-brand-light);
+  }
+
+  .modal-input:disabled {
+    background-color: var(--color-background-subtle-hover);
+    color: var(--color-foreground-subtle);
+    cursor: not-allowed;
+  }
+
+  .modal-input-toggle-btn {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-foreground-subtle);
+    transition: color 0.15s ease;
+  }
+
+  .modal-input-toggle-btn:hover:not(:disabled) {
+    color: var(--color-foreground-muted);
+  }
+
+  /* ---------- Requirements checklist ---------- */
+
+  .modal-requirements-panel {
+    padding: 0.875rem;
+    background-color: var(--color-background-subtle-hover);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+  }
+
+  .modal-requirement {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .modal-requirement-dot {
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 9999px;
+    background-color: var(--color-border);
+    transition: background-color 0.15s ease;
+  }
+
+  .modal-requirement-dot.is-met {
+    background-color: var(--color-status-success);
+  }
+
+  .modal-requirement-text {
+    color: var(--color-foreground-subtle);
+  }
+
+  .modal-requirement-text.is-met {
+    color: var(--color-status-success);
+    font-weight: 700;
+  }
+
+  /* ---------- Actions ---------- */
+
+  .modal-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding-top: 0.5rem;
+  }
+
+  .modal-btn-cancel {
+    padding: 0.625rem 1rem;
+    border-radius: 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-foreground-muted);
+    background-color: var(--color-background-card);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 1px 2px hsl(0 0% 0% / 0.04);
+    transition: background-color 0.15s ease;
+  }
+
+  .modal-btn-cancel:hover:not(:disabled) {
+    background-color: var(--color-background-subtle-hover);
+  }
+
+  .modal-btn-cancel:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .modal-btn-submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.625rem 1rem;
+    border-radius: 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    transition: background-color 0.15s ease;
+    box-shadow: 0 4px 10px -2px hsl(0 0% 0% / 0.12);
+  }
+
+  .modal-btn-submit.is-enabled {
+    color: hsl(0 0% 100%);
+    background-color: var(--color-brand);
+  }
+
+  .modal-btn-submit.is-enabled:hover {
+    background-color: var(--color-brand-hover);
+  }
+
+  .modal-btn-submit.is-disabled {
+    color: var(--color-foreground-subtle);
+    background-color: var(--color-background-subtle-hover);
+    border: 1px solid var(--color-border);
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+}

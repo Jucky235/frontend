@@ -35,30 +35,30 @@ export function ToastItem({ toast, onDismiss }: ToastProps) {
     success: <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />,
     error: <AlertCircle className="w-5 h-5 text-red-500 shrink-0" />,
     warning: <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />,
-    info: <Info className="w-5 h-5 text-indigo-500 shrink-0" />,
+    info: <Info className="w-5 h-5 text-brand shrink-0" />,
   };
 
   const borders = {
-    success: "border-emerald-200/80 bg-emerald-50/30",
-    error: "border-red-200/80 bg-red-50/30",
-    warning: "border-amber-200/80 bg-amber-50/30",
-    info: "border-indigo-200/80 bg-indigo-50/30",
+    success: "border-emerald-500/20 bg-emerald-500/10",
+    error: "border-red-500/20 bg-red-500/10",
+    warning: "border-amber-500/20 bg-amber-500/10",
+    info: "border-brand/20 bg-brand-light/30",
   };
 
   return (
     <div
-      className={`flex items-start space-x-3 w-80 p-4 bg-white/95 backdrop-blur-md rounded-2xl border shadow-lg transition-all duration-300 animate-in slide-in-from-bottom-5 fade-in ${
+      className={`flex items-start space-x-3 w-80 p-4 bg-background-card/95 backdrop-blur-md rounded-2xl border shadow-lg transition-all duration-300 animate-in slide-in-from-bottom-5 fade-in ${
         borders[toast.type]
       }`}
     >
       {icons[toast.type]}
 
       <div className="flex-1 pr-2">
-        <h4 className="text-xs font-extrabold text-neutral-800 tracking-tight">
+        <h4 className="text-xs font-extrabold text-foreground tracking-tight">
           {toast.title}
         </h4>
         {toast.message && (
-          <p className="text-[11px] font-medium text-neutral-500 mt-0.5 leading-relaxed">
+          <p className="text-[11px] font-medium text-foreground-subtle mt-0.5 leading-relaxed">
             {toast.message}
           </p>
         )}
@@ -66,7 +66,7 @@ export function ToastItem({ toast, onDismiss }: ToastProps) {
 
       <button
         onClick={() => onDismiss(toast.id)}
-        className="p-1 text-neutral-400 hover:text-neutral-600 rounded-lg hover:bg-neutral-100 transition-colors"
+        className="p-1 text-foreground-subtle hover:text-foreground rounded-lg hover:bg-background-hover transition-colors"
       >
         <X className="w-3.5 h-3.5" />
       </button>
@@ -74,7 +74,6 @@ export function ToastItem({ toast, onDismiss }: ToastProps) {
   );
 }
 
-// Container component that stays fixed in the corner
 export function ToastContainer({
   toasts,
   onDismiss,

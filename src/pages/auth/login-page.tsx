@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Lock } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -49,16 +48,16 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative min-h-screen w-full bg-white font-inter overflow-x-hidden flex flex-col justify-between pb-8">
+    <div className="relative min-h-screen w-full bg-background font-inter overflow-x-hidden flex flex-col justify-between pb-8">
       {/* Top Decorative Blob Backdrop */}
-      <div className="absolute top-0 right-0 left-0 h-[38vh] bg-gradient-to-br from-blue-600 to-indigo-600 rounded-b-[35%] md:rounded-b-[45%] flex flex-col justify-center px-10 text-white shadow-lg">
+      <div className="absolute top-0 right-0 left-0 h-[38vh] bg-gradient-to-br from-banner-from to-banner-to rounded-b-[35%] md:rounded-b-[45%] flex flex-col justify-center px-10 text-white shadow-lg">
         <p className="text-xl font-medium tracking-wide opacity-90">
           Welcome Back,
         </p>
         <h1 className="text-4xl md:text-5xl font-extrabold mt-1 tracking-tight">
           Log In!
         </h1>
-        <div className="absolute top-0 right-0 w-32 h-20 bg-indigo-600 rounded-bl-full opacity-40 blur-sm pointer-events-none" />
+        <div className="absolute top-0 right-0 w-32 h-20 bg-brand rounded-bl-full opacity-40 blur-sm pointer-events-none" />
       </div>
 
       <div className="h-[40vh]" />
@@ -70,15 +69,19 @@ export default function LoginPage() {
       >
         {/* Email Address Input Field */}
         <div>
-          <div className="relative border border-neutral-300 rounded-xl px-4 py-3 focus-within:border-indigo-500 transition-colors">
-            <label className="absolute -top-2.5 left-4 bg-white px-1 text-xs font-semibold text-neutral-500 tracking-wide">
+          <div
+            className={`relative border rounded-xl px-4 py-3 focus-within:border-brand transition-colors ${
+              errors.email ? "border-red-500" : "border-border"
+            }`}
+          >
+            <label className="absolute -top-2.5 left-4 bg-background px-1 text-xs font-semibold text-muted-foreground tracking-wide">
               EMAIL ADDRESS
             </label>
             <input
               type="text"
               placeholder="example@domain.com"
               {...register("email")}
-              className="w-full bg-transparent text-sm text-neutral-800 placeholder-neutral-400 outline-none pt-1"
+              className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none pt-1"
             />
           </div>
           {errors.email && (
@@ -90,18 +93,22 @@ export default function LoginPage() {
 
         {/* Password Input Field */}
         <div>
-          <div className="relative border border-neutral-300 rounded-xl px-4 py-3 flex items-center justify-between focus-within:border-indigo-500 transition-colors">
-            <label className="absolute -top-2.5 left-4 bg-white px-1 text-xs font-semibold text-neutral-500 tracking-wide">
+          <div
+            className={`relative border rounded-xl px-4 py-3 flex items-center justify-between focus-within:border-brand transition-colors ${
+              errors.password ? "border-red-500" : "border-border"
+            }`}
+          >
+            <label className="absolute -top-2.5 left-4 bg-background px-1 text-xs font-semibold text-muted-foreground tracking-wide">
               PASSWORD
             </label>
             <input
               type="password"
               placeholder="Enter password"
               {...register("password")}
-              className="w-full bg-transparent text-sm text-neutral-800 placeholder-neutral-400 outline-none pt-1 pr-2"
+              className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none pt-1 pr-2"
             />
             <Lock
-              className="w-5 h-5 text-neutral-400 shrink-0"
+              className="w-5 h-5 text-muted-foreground shrink-0"
               strokeWidth={1.5}
             />
           </div>
@@ -117,16 +124,16 @@ export default function LoginPage() {
           <div className="flex items-center space-x-3">
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" className="sr-only peer" />
-              <div className="w-9 h-5 bg-neutral-300 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-500" />
+              <div className="w-9 h-5 bg-border rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand" />
             </label>
-            <span className="text-xs text-neutral-500 font-medium">
+            <span className="text-xs text-muted-foreground font-medium">
               Remember me
             </span>
           </div>
 
           <a
             href="/forgot-password"
-            className="text-xs font-semibold text-[#5A67FF] hover:text-indigo-600 transition-colors"
+            className="text-xs font-semibold text-brand hover:opacity-80 transition-opacity"
           >
             Forgot password?
           </a>
@@ -137,7 +144,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-[#5A67FF] hover:bg-indigo-600 disabled:bg-neutral-400 text-white font-bold text-base py-3.5 rounded-full tracking-wide transition-all shadow-[0_8px_20px_rgba(90,103,255,0.35)] cursor-pointer active:scale-[0.99] disabled:cursor-not-allowed"
+            className="w-full bg-brand hover:opacity-90 disabled:bg-muted text-white font-bold text-base py-3.5 rounded-full tracking-wide transition-all shadow-md disabled:shadow-none cursor-pointer active:scale-[0.99] disabled:cursor-not-allowed"
           >
             {isLoading ? "Đang xử lý..." : "Log in"}
           </button>

@@ -25,13 +25,13 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
   onSelectChannel,
 }) => {
   return (
-    <aside className="w-64 bg-white border border-neutral-200/80 rounded-2xl flex flex-col justify-between overflow-y-auto shrink-0 py-4 text-xs font-semibold shadow-xs">
+    <aside className="w-64 bg-background-card border border-border/80 rounded-2xl flex flex-col justify-between overflow-y-auto shrink-0 py-4 text-xs font-semibold shadow-xs">
       <div className="space-y-6">
         {/* CHANNELS SECTION */}
         <div className="space-y-1">
-          <div className="px-6 flex items-center space-x-2 text-neutral-400 font-bold uppercase tracking-wider text-[11px] mb-2">
+          <div className="px-6 flex items-center space-x-2 text-foreground-subtle font-bold uppercase tracking-wider text-[11px] mb-2">
             <span>CHANNELS</span>
-            <MessageSquare className="w-3.5 h-3.5 text-neutral-400" />
+            <MessageSquare className="w-3.5 h-3.5 text-foreground-subtle" />
           </div>
 
           {channels.map((ch) => (
@@ -45,8 +45,8 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
             />
           ))}
 
-          <button className="w-full px-6 py-2 flex items-center space-x-3 text-neutral-400 hover:text-neutral-700 transition-colors cursor-pointer">
-            <div className="w-6 h-6 rounded bg-neutral-100 flex items-center justify-center">
+          <button className="w-full px-6 py-2 flex items-center space-x-3 text-foreground-subtle hover:text-foreground transition-colors cursor-pointer">
+            <div className="w-6 h-6 rounded bg-background-hover flex items-center justify-center">
               <Plus className="w-3.5 h-3.5" />
             </div>
             <span className="font-extrabold text-sm">join channel</span>
@@ -55,13 +55,13 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
 
         {/* TEAM SECTION */}
         <div className="space-y-1">
-          <div className="px-6 flex items-center space-x-2 text-neutral-400 font-bold uppercase tracking-wider text-[11px] mb-2">
+          <div className="px-6 flex items-center space-x-2 text-foreground-subtle font-bold uppercase tracking-wider text-[11px] mb-2">
             <span>TEAM</span>
             <Users className="w-3.5 h-3.5" />
           </div>
 
-          <button className="w-full px-6 py-2 flex items-center space-x-3 text-neutral-700 hover:bg-neutral-100 transition-colors cursor-pointer">
-            <div className="w-6 h-6 rounded bg-neutral-100 flex items-center justify-center text-neutral-500">
+          <button className="w-full px-6 py-2 flex items-center space-x-3 text-foreground hover:bg-background-hover transition-colors cursor-pointer">
+            <div className="w-6 h-6 rounded bg-background-hover flex items-center justify-center text-foreground-muted">
               <Hash className="w-3.5 h-3.5" />
             </div>
             <span className="font-extrabold text-sm">Maesre</span>
@@ -70,7 +70,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
 
         {/* DIRECT MESSAGES SECTION */}
         <div className="space-y-1">
-          <div className="px-6 flex items-center space-x-2 text-neutral-400 font-bold uppercase tracking-wider text-[11px] mb-2">
+          <div className="px-6 flex items-center space-x-2 text-foreground-subtle font-bold uppercase tracking-wider text-[11px] mb-2">
             <span>DIRECT MESSAGES</span>
             <Mail className="w-3.5 h-3.5" />
           </div>

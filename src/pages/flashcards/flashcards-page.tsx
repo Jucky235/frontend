@@ -75,39 +75,26 @@ export default function FlashcardsPage() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-neutral-50 font-inter flex flex-col justify-between">
+    <div className="study-page font-inter">
       {/* 1. Dynamic Top Navigation Hub Bar */}
-      <header className="w-full bg-white border-b border-neutral-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50 shadow-xs">
+      <header className="study-header">
         <div className="flex items-center space-x-4">
-          <button
-            type="button"
-            className="flex items-center space-x-1.5 text-sm font-semibold text-neutral-500 hover:text-neutral-800 transition-colors"
-          >
+          <button type="button" className="study-header-back-btn">
             <ArrowLeft className="w-4 h-4" />
             <span className="hidden sm:inline">Exit Session</span>
           </button>
-          <div className="h-4 w-px bg-neutral-200 hidden sm:block" />
+          <div className="study-header-divider hidden sm:block" />
           <div className="flex items-center space-x-2">
-            <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-extrabold text-lg shadow-md">
-              J
-            </div>
-            <span className="font-bold text-lg text-neutral-800 tracking-tight">
-              Review Hub
-            </span>
+            <div className="study-header-badge">J</div>
+            <span className="study-header-title">Review Hub</span>
           </div>
         </div>
 
         <div className="flex items-center space-x-4">
-          <button
-            type="button"
-            className="w-9 h-9 bg-neutral-100 rounded-full flex items-center justify-center text-neutral-600 hover:bg-neutral-200 transition-colors"
-          >
+          <button type="button" className="study-header-user-btn">
             <User className="w-4 h-4" />
           </button>
-          <button
-            type="button"
-            className="flex items-center space-x-1.5 text-sm font-semibold text-neutral-500 hover:text-red-500 transition-colors px-2 py-1"
-          >
+          <button type="button" className="study-header-logout-btn">
             <LogOut className="w-4 h-4" />
             <span className="hidden sm:inline">Logout</span>
           </button>
@@ -122,22 +109,18 @@ export default function FlashcardsPage() {
             <div className="space-y-2">
               <div className="flex justify-between items-end">
                 <div>
-                  <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-md uppercase tracking-wider">
-                    Testing Mode
-                  </span>
-                  <h1 className="text-xl font-extrabold text-neutral-800 tracking-tight mt-2">
-                    {deckTitle}
-                  </h1>
+                  <span className="study-mode-badge">Testing Mode</span>
+                  <h1 className="study-deck-title">{deckTitle}</h1>
                 </div>
-                <span className="text-xs font-bold text-neutral-400">
+                <span className="study-card-counter">
                   Card {currentIndex + 1} of {cards.length}
                 </span>
               </div>
 
               {/* Progress Bar Container */}
-              <div className="w-full h-2 bg-neutral-200 rounded-full overflow-hidden">
+              <div className="study-progress-track">
                 <div
-                  className="h-full bg-gradient-to-r from-blue-600 to-indigo-600 transition-all duration-300"
+                  className="study-progress-fill"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
@@ -146,31 +129,27 @@ export default function FlashcardsPage() {
             {/* Interactive Animated Card View Area */}
             <div
               onClick={() => setIsFlipped(!isFlipped)}
-              className="w-full h-80 min-h-[320px] bg-white border border-neutral-200 rounded-3xl p-8 shadow-xs hover:shadow-md transition-all duration-300 cursor-pointer flex flex-col justify-between items-center group relative overflow-hidden selection:bg-transparent"
+              className="study-card group selection:bg-transparent"
             >
               {/* Pure visual highlight indicators matching system guidelines */}
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-500" />
+              <div className="study-card-accent-bar" />
 
-              <span className="text-[10px] font-bold tracking-widest text-neutral-400 uppercase flex items-center space-x-1">
-                <BookOpen className="w-3 h-3 text-neutral-400" />
+              <span className="study-card-label">
+                <BookOpen className="w-3 h-3" />
                 <span>{isFlipped ? "The Answer" : "The Question"}</span>
               </span>
 
               {/* Dynamic Content Switching Injection */}
               <div className="w-full text-center px-4 max-h-48 overflow-y-auto">
                 {!isFlipped ? (
-                  <p className="text-lg md:text-xl font-bold text-neutral-800 leading-snug">
-                    {activeCard.question}
-                  </p>
+                  <p className="study-card-question">{activeCard.question}</p>
                 ) : (
-                  <p className="text-sm md:text-base text-neutral-600 font-medium leading-relaxed">
-                    {activeCard.answer}
-                  </p>
+                  <p className="study-card-answer">{activeCard.answer}</p>
                 )}
               </div>
 
               {/* Action Prompt Banner Area */}
-              <div className="text-xs font-bold text-neutral-400 group-hover:text-indigo-500 transition-colors flex items-center space-x-1.5">
+              <div className="study-card-hint">
                 <RotateCw className="w-3.5 h-3.5" />
                 <span>Click card frame to flip</span>
               </div>
@@ -181,7 +160,7 @@ export default function FlashcardsPage() {
               <button
                 type="button"
                 onClick={() => handleScore(false)}
-                className="bg-white hover:bg-red-50 text-neutral-700 hover:text-red-600 border border-neutral-200 hover:border-red-200 font-bold text-sm px-5 py-3.5 rounded-xl transition-all shadow-xs flex items-center justify-center space-x-2 cursor-pointer active:scale-95"
+                className="study-btn-forgot cursor-pointer active:scale-95"
               >
                 <XCircle className="w-4 h-4" />
                 <span>Forgot It</span>
@@ -190,7 +169,7 @@ export default function FlashcardsPage() {
               <button
                 type="button"
                 onClick={() => handleScore(true)}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm px-5 py-3.5 rounded-xl tracking-wide shadow-md transition-all flex items-center justify-center space-x-2 cursor-pointer active:scale-95"
+                className="study-btn-knew cursor-pointer active:scale-95"
               >
                 <CheckCircle2 className="w-4 h-4" />
                 <span>I Knew It</span>
@@ -199,18 +178,16 @@ export default function FlashcardsPage() {
           </div>
         ) : (
           /* Session Completed Summary View Panel */
-          <div className="bg-white border border-neutral-200 rounded-3xl p-8 md:p-10 text-center space-y-6 shadow-md relative overflow-hidden">
-            <div className="absolute -bottom-10 -right-10 w-48 h-48 bg-indigo-50 rounded-full opacity-60 blur-2xl pointer-events-none" />
+          <div className="study-summary-panel space-y-6">
+            <div className="study-summary-decoration" />
 
-            <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center mx-auto text-[#5A67FF]">
+            <div className="study-summary-icon">
               <HelpCircle className="w-8 h-8" />
             </div>
 
             <div className="space-y-2">
-              <h2 className="text-2xl font-extrabold text-neutral-800 tracking-tight">
-                Review Session Complete!
-              </h2>
-              <p className="text-xs text-neutral-400 max-w-xs mx-auto font-medium">
+              <h2 className="study-summary-title">Review Session Complete!</h2>
+              <p className="study-summary-desc">
                 You have finished working through the arrays inside this deck.
                 Let's see your data output:
               </p>
@@ -218,19 +195,15 @@ export default function FlashcardsPage() {
 
             {/* Performance Stat Blocks Grid Layout */}
             <div className="grid grid-cols-2 gap-4 max-w-sm mx-auto pt-2">
-              <div className="bg-emerald-50/60 border border-emerald-100 rounded-2xl p-4">
-                <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">
-                  Knew It
-                </p>
-                <p className="text-2xl font-black text-emerald-700 mt-1">
+              <div className="study-stat-success">
+                <p className="study-stat-success-label">Knew It</p>
+                <p className="study-stat-success-value">
                   {sessionScore.correct}
                 </p>
               </div>
-              <div className="bg-red-50/60 border border-red-100 rounded-2xl p-4">
-                <p className="text-[10px] font-bold text-red-600 uppercase tracking-wider">
-                  Forgot It
-                </p>
-                <p className="text-2xl font-black text-red-700 mt-1">
+              <div className="study-stat-danger">
+                <p className="study-stat-danger-label">Forgot It</p>
+                <p className="study-stat-danger-value">
                   {sessionScore.incorrect}
                 </p>
               </div>
@@ -240,7 +213,7 @@ export default function FlashcardsPage() {
               <button
                 type="button"
                 onClick={resetDeck}
-                className="w-full bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-sm px-5 py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center space-x-2 cursor-pointer active:scale-95"
+                className="study-btn-restart cursor-pointer active:scale-95"
               >
                 <RotateCcw className="w-4 h-4" />
                 <span>Restart Session</span>
@@ -251,7 +224,7 @@ export default function FlashcardsPage() {
       </main>
 
       {/* 4. Footer Baseline Component Group */}
-      <footer className="w-full bg-white border-t border-neutral-200 py-6 text-center text-xs text-neutral-400 font-medium">
+      <footer className="study-footer">
         &copy; 2026 Workspace System. All rights reserved.
       </footer>
     </div>
