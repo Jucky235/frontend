@@ -8,6 +8,7 @@ interface DeckListFeedProps {
   isError: boolean;
   onRefetch: () => void;
   onStudyDeck?: (deckId: string | number) => void;
+  onEditDeck?: (deckId: string | number) => void;
 }
 
 export const DeckListFeed: React.FC<DeckListFeedProps> = ({
@@ -16,6 +17,7 @@ export const DeckListFeed: React.FC<DeckListFeedProps> = ({
   isError,
   onRefetch,
   onStudyDeck,
+  onEditDeck,
 }) => {
   if (isLoading) {
     return (
@@ -25,6 +27,7 @@ export const DeckListFeed: React.FC<DeckListFeedProps> = ({
       </div>
     );
   }
+
   if (isError) {
     return (
       <div className="deck-feed-error-panel">
@@ -39,6 +42,7 @@ export const DeckListFeed: React.FC<DeckListFeedProps> = ({
       </div>
     );
   }
+
   if (decks.length === 0) {
     return (
       <div className="deck-feed-empty-panel">
@@ -46,10 +50,16 @@ export const DeckListFeed: React.FC<DeckListFeedProps> = ({
       </div>
     );
   }
+
   return (
     <div className="space-y-4">
       {decks.map((deck) => (
-        <DeckCard key={deck.id} deck={deck} onStudyClick={onStudyDeck} />
+        <DeckCard
+          key={deck.id}
+          deck={deck}
+          onStudyClick={onStudyDeck}
+          onEditClick={onEditDeck}
+        />
       ))}
     </div>
   );

@@ -1,5 +1,16 @@
 import * as React from "react";
-import { Layers, CheckCircle2, Clock, Play } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import {
+  Layers,
+  Clock,
+  Play,
+  Settings,
+  AlertCircle,
+  Sparkles,
+  RotateCcw,
+  BookOpen,
+} from "lucide-react";
+import { useGetDeckStudyStatsQuery } from "@/redux/flashcard/flashcardApiSlice";
 
 export interface DeckItemData {
   id: string | number;
@@ -8,86 +19,156 @@ export interface DeckItemData {
   description?: string;
   desc?: string;
   cardCount?: number;
-  _count?: { flashcards: number };
-  progress?: number;
+  _count?: { cards?: number; flashcards?: number };
   category?: string;
   tag?: string;
   lastStudied?: string;
+  // Explicit FSRS metrics override (optional)
+  dueCount?: number;
+  newCount?: number;
+  learningCount?: number;
+  reviewCount?: number;
 }
 
 interface DeckCardProps {
   deck: DeckItemData;
   onStudyClick?: (deckId: string | number) => void;
+  onEditClick?: (deckId: string | number) => void;
 }
 
-export const DeckCard: React.FC<DeckCardProps> = ({ deck, onStudyClick }) => {
+export const DeckCard: React.FC<DeckCardProps> = ({
+  deck,
+  onStudyClick,
+  onEditClick,
+}) => {
+  const navigate = useNavigate();
+
+  // Fetch live deck stats via RTK Query
+  const { data: stats } = useGetDeckStudyStatsQuery(String(deck.id), {
+    skip: !deck.id,
+  });
+
   const title = deck.name || deck.title || "Untitled Deck";
   const desc = deck.description || deck.desc || "No description provided.";
-  const cardCount = deck.cardCount ?? deck._count?.flashcards ?? 0;
-  const progress = deck.progress ?? 0;
   const tag = deck.category || deck.tag || "TOEIC";
-  const lastStudied = deck.lastStudied || "Recently";
+  const lastStudied = deck.lastStudied || "Not studied yet";
+
+  // Priority: Direct Props -> Fetched RTK Query Stats -> Prisma Counts -> 0
+  const cardCount =
+    deck.cardCount ??
+    stats?.totalCards ??
+    deck._count?.cards ??
+    deck._count?.flashcards ??
+    0;
+
+  const newCount = deck.newCount ?? stats?.newCardsCount ?? 0;
+  const learningCount = deck.learningCount ?? stats?.learningCount ?? 0;
+  const reviewCount = deck.reviewCount ?? stats?.reviewCount ?? 0;
+  const dueCount =
+    deck.dueCount ?? stats?.totalDue ?? newCount + learningCount + reviewCount;
+
+  const handleStudy = () => {
+    if (onStudyClick) {
+      onStudyClick(deck.id);
+    } else {
+      navigate(`/flashcards/${deck.id}`);
+    }
+  };
 
   return (
-    <div className="bg-white border border-neutral-200/80 hover:border-indigo-200 p-6 rounded-2xl transition-all shadow-xs hover:shadow-md group flex flex-col md:flex-row md:items-center justify-between gap-6">
-      <div className="flex flex-start space-x-4 flex-1">
-        <div className="w-12 h-12 bg-neutral-100 group-hover:bg-indigo-50 rounded-xl flex items-center justify-center transition-colors flex-shrink-0">
-          <Layers className="w-6 h-6 text-indigo-600" />
+    <div className="deckcard group">
+      {/* Left Column: Icon & Basic Info */}
+      <div className="flex items-start space-x-4 flex-1">
+        <div className="deckcard-icon-wrapper">
+          <div className="deckcard-icon-box">
+            <Layers className="w-6 h-6" />
+          </div>
+          {dueCount > 0 && (
+            <span className="deckcard-due-badge">
+              <AlertCircle className="w-3 h-3" />
+              {dueCount}
+            </span>
+          )}
         </div>
 
         <div className="space-y-1.5">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-base font-bold text-neutral-800 group-hover:text-indigo-600 transition-colors leading-tight">
-              {title}
-            </h3>
-            <span className="bg-neutral-100 text-neutral-500 font-bold text-[10px] uppercase px-2 py-0.5 rounded-md tracking-wide">
-              {tag}
-            </span>
+            <h3 className="deckcard-title">{title}</h3>
+            <span className="deckcard-tag">{tag}</span>
           </div>
-          <p className="text-xs text-neutral-500 leading-relaxed font-medium max-w-2xl">
-            {desc}
-          </p>
+          <p className="deckcard-desc line-clamp-2">{desc}</p>
         </div>
       </div>
 
-      <div className="flex items-center justify-between md:justify-end gap-6 border-t md:border-t-0 border-neutral-100 pt-4 md:pt-0">
-        <div className="flex items-center space-x-6">
-          <div className="text-left md:text-right min-w-[80px]">
-            <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
-              Progress
-            </p>
-            <div className="flex items-center md:justify-end space-x-1.5 mt-0.5">
-              {progress === 100 ? (
-                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-              ) : (
-                <span className="text-sm font-extrabold text-neutral-700">
-                  {progress}%
-                </span>
-              )}
-              <span className="text-xs text-neutral-400 font-medium">
-                ({cardCount} cards)
+      {/* Right Column: FSRS Metrics & Actions */}
+      <div className="flex items-center justify-between md:justify-end gap-6 border-t md:border-t-0 border-border pt-4 md:pt-0">
+        {/* FSRS Queue Breakdown */}
+        <div className="flex items-center space-x-4">
+          <div className="deckcard-stats-pill">
+            {/* New Cards */}
+            <div className="deckcard-stat-item" title="New cards to learn">
+              <Sparkles className="deckcard-stat-icon variant-new w-3.5 h-3.5" />
+              <span className="deckcard-stat-value variant-new">
+                {newCount}
+              </span>
+            </div>
+
+            {/* Learning Cards */}
+            <div
+              className="deckcard-stat-item"
+              title="Cards currently in learning phase"
+            >
+              <RotateCcw className="deckcard-stat-icon variant-learning w-3.5 h-3.5" />
+              <span className="deckcard-stat-value variant-learning">
+                {learningCount}
+              </span>
+            </div>
+
+            {/* Review Cards */}
+            <div className="deckcard-stat-item" title="Cards due for review">
+              <BookOpen className="deckcard-stat-icon variant-review w-3.5 h-3.5" />
+              <span className="deckcard-stat-value variant-review">
+                {reviewCount}
               </span>
             </div>
           </div>
 
-          <div className="hidden sm:block text-right min-w-[100px]">
-            <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider flex items-center justify-end space-x-1">
+          {/* Total & Last Studied */}
+          <div className="deckcard-meta hidden lg:block">
+            <p className="deckcard-meta-label">
               <Clock className="w-3 h-3" />
               <span>Studied</span>
             </p>
-            <p className="text-xs font-semibold text-neutral-600 mt-1">
-              {lastStudied}
-            </p>
+            <p className="deckcard-meta-value">{lastStudied}</p>
+            <p className="deckcard-meta-sub">{cardCount} total cards</p>
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={() => onStudyClick?.(deck.id)}
-          className="bg-neutral-50 group-hover:bg-indigo-600 text-neutral-600 group-hover:text-white border border-neutral-200 group-hover:border-indigo-600 p-3 rounded-xl transition-all shadow-xs cursor-pointer active:scale-95 flex-shrink-0"
-        >
-          <Play className="w-4 h-4 fill-current group-hover:fill-transparent" />
-        </button>
+        {/* Action Buttons */}
+        <div className="flex items-center space-x-2 flex-shrink-0">
+          <button
+            type="button"
+            title="Edit Deck"
+            onClick={() => onEditClick?.(deck.id)}
+            className="deckcard-btn-edit cursor-pointer active:scale-95"
+          >
+            <Settings className="w-4 h-4" />
+          </button>
+
+          <button
+            type="button"
+            title={dueCount > 0 ? "Review Due Cards" : "Start Studying"}
+            onClick={handleStudy}
+            className={`deckcard-btn-study cursor-pointer active:scale-95 ${
+              dueCount > 0 ? "is-due" : "is-idle"
+            }`}
+          >
+            <Play className="w-4 h-4 fill-current" />
+            <span className="hidden sm:inline">
+              {dueCount > 0 ? `Study (${dueCount})` : "Study"}
+            </span>
+          </button>
+        </div>
       </div>
     </div>
   );

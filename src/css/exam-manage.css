@@ -1,0 +1,310 @@
+/* Exams Management Components
+   Built on top of the theme tokens defined in index.css.
+   Reuses .deck-page, .deck-header-title/.deck-header-subtitle,
+   .deck-header-create-btn, .deck-filter-bar, .deck-filter-search-icon/input
+   from deck.css. Import this file after deck.css. */
+
+@layer components {
+  /* ---------- Toolbar buttons ---------- */
+
+  .examsmgmt-btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 0.875rem;
+    border-radius: 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-foreground-muted);
+    background-color: var(--color-background-card);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 1px 2px hsl(0 0% 0% / 0.03);
+    transition: background-color 0.15s ease;
+  }
+
+  .examsmgmt-btn-outline:hover {
+    background-color: var(--color-background-subtle-hover);
+  }
+
+  .examsmgmt-btn-icon-success {
+    color: var(--color-status-success);
+  }
+
+  .examsmgmt-btn-icon-brand {
+    color: var(--color-brand);
+  }
+
+  /* ---------- Stat cards ---------- */
+
+  .examstat-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem;
+    border-radius: 1rem;
+    background-color: var(--color-background-card);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 1px 2px hsl(0 0% 0% / 0.03);
+  }
+
+  .examstat-icon-wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
+    border-radius: 0.75rem;
+  }
+
+  .examstat-icon-wrapper.variant-brand {
+    color: var(--color-brand);
+    background-color: var(--color-brand-light);
+  }
+
+  .examstat-icon-wrapper.variant-success {
+    color: var(--color-status-success);
+    background-color: var(--color-status-success-bg);
+  }
+
+  .examstat-icon-wrapper.variant-warning {
+    color: var(--color-status-warning);
+    background-color: var(--color-status-warning-icon-bg);
+  }
+
+  .examstat-icon-wrapper.variant-danger {
+    color: var(--color-status-danger);
+    background-color: var(--color-status-danger-bg);
+  }
+
+  .examstat-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-foreground-subtle);
+  }
+
+  .examstat-value {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-foreground);
+    margin-top: 0.125rem;
+  }
+
+  /* ---------- Filter bar extras (category select) ---------- */
+
+  .examsfilter-select-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.75rem;
+    background-color: var(--color-background-subtle-hover);
+    border: 1px solid var(--color-border);
+    font-size: 0.75rem;
+    color: var(--color-foreground-muted);
+  }
+
+  .examsfilter-select-icon {
+    color: var(--color-foreground-subtle);
+  }
+
+  .examsfilter-select {
+    background-color: transparent;
+    font-weight: 600;
+    color: var(--color-foreground);
+    outline: none;
+    cursor: pointer;
+  }
+
+  .examsfilter-status-tabs {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    border-radius: 0.75rem;
+    background-color: var(--color-background-subtle-hover);
+  }
+
+  /* ---------- Table ---------- */
+
+  .examstable-wrapper {
+    background-color: var(--color-background-card);
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+    box-shadow: 0 1px 2px hsl(0 0% 0% / 0.03);
+    overflow: hidden;
+  }
+
+  .examstable-head-row {
+    background-color: var(--color-background-subtle-hover);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .examstable-head-cell {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-foreground-subtle);
+    padding: 0.875rem 1rem;
+  }
+
+  .examstable-body {
+    color: var(--color-foreground-muted);
+  }
+
+  .examstable-body-row {
+    border-bottom: 1px solid var(--color-border-subtle);
+    transition: background-color 0.15s ease;
+  }
+
+  .examstable-body-row:last-child {
+    border-bottom: none;
+  }
+
+  .examstable-body-row:hover {
+    background-color: var(--color-background-subtle-hover);
+  }
+
+  .examstable-cell {
+    padding: 1rem;
+  }
+
+  .examstable-name {
+    font-weight: 700;
+    color: var(--color-foreground);
+    transition: color 0.15s ease;
+  }
+
+  .examstable-body-row:hover .examstable-name {
+    color: var(--color-brand);
+  }
+
+  .examstable-id {
+    font-size: 0.6875rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    color: var(--color-foreground-subtle);
+  }
+
+  .examstable-category-badge {
+    display: inline-block;
+    padding: 0.25rem 0.625rem;
+    border-radius: 0.5rem;
+    background-color: var(--color-background-subtle-hover);
+    color: var(--color-foreground-muted);
+    font-weight: 600;
+    font-size: 0.6875rem;
+  }
+
+  .examstable-duration {
+    color: var(--color-foreground-muted);
+  }
+
+  .examstable-duration-strong {
+    font-weight: 700;
+  }
+
+  .examstable-duration-divider {
+    color: var(--color-border);
+    margin: 0 0.375rem;
+  }
+
+  .examstable-parts {
+    font-weight: 700;
+    color: var(--color-foreground);
+  }
+
+  .examstable-row-menu-btn {
+    padding: 0.375rem;
+    border-radius: 0.5rem;
+    color: var(--color-foreground-subtle);
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease;
+  }
+
+  .examstable-row-menu-btn:hover {
+    background-color: var(--color-background-hover);
+    color: var(--color-foreground);
+  }
+
+  .examstable-empty-cell {
+    padding: 3rem 1rem;
+    text-align: center;
+    color: var(--color-foreground-subtle);
+    font-weight: 600;
+  }
+
+  /* ---------- Table loading / error states ---------- */
+
+  .examstable-state-panel {
+    background-color: var(--color-background-card);
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+    padding: 3rem;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-foreground-subtle);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .examstable-state-spinner {
+    color: var(--color-brand);
+  }
+
+  .examstable-state-error-text {
+    color: var(--color-status-danger);
+  }
+
+  .examstable-state-retry-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-status-danger);
+    background-color: var(--color-status-danger-bg);
+    transition: background-color 0.15s ease;
+  }
+
+  .examstable-state-retry-btn:hover {
+    background-color: var(--color-status-danger-icon-bg);
+  }
+
+  /* ---------- Status badges ---------- */
+
+  .examstable-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.625rem;
+    border-radius: 9999px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+  }
+
+  .examstable-badge.variant-success {
+    color: var(--color-status-success);
+    background-color: var(--color-status-success-bg);
+    border: 1px solid
+      color-mix(in srgb, var(--color-status-success) 25%, transparent);
+  }
+
+  .examstable-badge.variant-warning {
+    color: var(--color-status-warning);
+    background-color: var(--color-status-warning-icon-bg);
+    border: 1px solid
+      color-mix(in srgb, var(--color-status-warning) 30%, transparent);
+  }
+
+  .examstable-badge.variant-neutral {
+    color: var(--color-foreground-muted);
+    background-color: var(--color-background-subtle-hover);
+    border: 1px solid var(--color-border);
+  }
+}

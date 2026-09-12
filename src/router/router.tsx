@@ -21,6 +21,8 @@ import NewsContentPage from "@/pages/home/news-content-page";
 import ExamsManagementPage from "@/pages/dashboard/exams-management-page";
 import QuestionManagementPage from "@/pages/dashboard/question-management-page";
 import ForumPostDetailPage from "@/pages/community/post-page";
+import RankingPage from "@/pages/community/ranking-page";
+import RoadmapPage from "@/pages/community/roadmap-page";
 
 export const router = createBrowserRouter([
   // Auth Routes
@@ -57,7 +59,7 @@ export const router = createBrowserRouter([
 
   // Flashcards Routes
   {
-    path: "/flashcards",
+    path: "/flashcards/:deckId",
     element: <FlashcardsPage />,
   },
   {
@@ -65,7 +67,7 @@ export const router = createBrowserRouter([
     element: <FlashcardsListPage />,
   },
   {
-    path: "/deck/edit",
+    path: "/deck/edit/:deckId",
     element: <EditDeckPage />,
   },
 
@@ -95,6 +97,14 @@ export const router = createBrowserRouter([
   {
     path: "/forum/:id",
     element: <ForumPostDetailPage />,
+  },
+  {
+    path: "/ranking",
+    element: <RankingPage />,
+  },
+  {
+    path: "/roadmap",
+    element: <RoadmapPage />,
   },
 
   // Protected Admin Routes

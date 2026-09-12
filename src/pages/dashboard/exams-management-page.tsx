@@ -149,16 +149,14 @@ export default function ExamsManagementPage() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-neutral-50 font-inter flex flex-col justify-between">
+    <div className="deck-page font-inter">
       <Header />
 
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col space-y-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-extrabold text-neutral-800 tracking-tight">
-              Exams Management
-            </h1>
-            <p className="text-xs text-neutral-500 font-medium mt-1">
+            <h1 className="deck-header-title">Exams Management</h1>
+            <p className="deck-header-subtitle">
               Create, organize, and monitor performance analytics across all
               examination suites.
             </p>
@@ -168,25 +166,25 @@ export default function ExamsManagementPage() {
             <button
               type="button"
               onClick={() => setIsCsvModalOpen(true)}
-              className="bg-white hover:bg-neutral-100 text-neutral-700 border border-neutral-200 font-bold text-xs px-3.5 py-2.5 rounded-xl shadow-xs transition-all flex items-center space-x-2 cursor-pointer active:scale-95"
+              className="examsmgmt-btn-outline cursor-pointer active:scale-95"
             >
-              <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+              <FileSpreadsheet className="examsmgmt-btn-icon-success w-4 h-4" />
               <span>Import CSV</span>
             </button>
 
             <button
               type="button"
               onClick={() => setIsQuestionModalOpen(true)}
-              className="bg-white hover:bg-neutral-100 text-neutral-700 border border-neutral-200 font-bold text-xs px-3.5 py-2.5 rounded-xl shadow-xs transition-all flex items-center space-x-2 cursor-pointer active:scale-95"
+              className="examsmgmt-btn-outline cursor-pointer active:scale-95"
             >
-              <HelpCircle className="w-4 h-4 text-indigo-600" />
+              <HelpCircle className="examsmgmt-btn-icon-brand w-4 h-4" />
               <span>Add Question</span>
             </button>
 
             <button
               type="button"
               onClick={() => setIsExamModalOpen(true)}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-md transition-all flex items-center space-x-2 cursor-pointer active:scale-95"
+              className="deck-header-create-btn cursor-pointer active:scale-95"
             >
               <Plus className="w-4 h-4" />
               <span>Create New Exam</span>

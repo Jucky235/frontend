@@ -1,23 +1,22 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { FSRSRating, type Flashcard } from "./flashcardApiSlice";
 
-// Types matching your Prisma Flashcard model
-export interface Flashcard {
-  id: string;
-  deckId: string;
-  frontContent: string;
-  backContent: string;
-  explanation?: string | null;
-  imagePath?: string | null;
-  audioPath?: string | null;
-  partNumber?: number | null;
+// Re-export or align interface with backend Prisma model
+export type { Flashcard } from "./flashcardApiSlice";
+
+export interface SessionCounts {
+  new: number;
+  learning: number;
+  review: number;
 }
 
 interface FlashcardState {
   activeDeckId: string | null;
   cards: Flashcard[];
+  counts: SessionCounts;
   currentCardIndex: number;
   isFlipped: boolean;
-  userRatings: Record<string, number>; // Maps cardId -> quality score (0 to 5)
+  userRatings: Record<string, FSRSRating>; // Maps cardId -> FSRSRating (1, 2, 3, 4)
   isSubmitting: boolean;
   isLoading: boolean;
   error: string | null;
@@ -26,6 +25,11 @@ interface FlashcardState {
 const initialState: FlashcardState = {
   activeDeckId: null,
   cards: [],
+  counts: {
+    new: 0,
+    learning: 0,
+    review: 0,
+  },
   currentCardIndex: 0,
   isFlipped: false,
   userRatings: {},
@@ -40,10 +44,19 @@ const flashcardSlice = createSlice({
   reducers: {
     startSession: (
       state,
-      action: PayloadAction<{ deckId: string; cards: Flashcard[] }>,
+      action: PayloadAction<{
+        deckId: string;
+        cards: Flashcard[];
+        counts?: SessionCounts;
+      }>,
     ) => {
       state.activeDeckId = action.payload.deckId;
       state.cards = action.payload.cards;
+      state.counts = action.payload.counts ?? {
+        new: 0,
+        learning: 0,
+        review: 0,
+      };
       state.currentCardIndex = 0;
       state.isFlipped = false;
       state.userRatings = {};
@@ -58,15 +71,29 @@ const flashcardSlice = createSlice({
     },
     recordRating: (
       state,
-      action: PayloadAction<{ cardId: string; quality: number }>,
+      action: PayloadAction<{ cardId: string; rating: FSRSRating }>,
     ) => {
-      const { cardId, quality } = action.payload;
-      state.userRatings[cardId] = quality;
+      const { cardId, rating } = action.payload;
+      state.userRatings[cardId] = rating;
+
+      // Automatically advance card and reset flip on review rating
+      if (state.currentCardIndex < state.cards.length - 1) {
+        state.currentCardIndex += 1;
+        state.isFlipped = false;
+      }
+    },
+    removeCurrentCard: (state) => {
+      // Removes reviewed card from active deck array and adjusts current index
+      state.cards.splice(state.currentCardIndex, 1);
+      state.isFlipped = false;
+      if (state.currentCardIndex >= state.cards.length) {
+        state.currentCardIndex = Math.max(0, state.cards.length - 1);
+      }
     },
     nextCard: (state) => {
       if (state.currentCardIndex < state.cards.length - 1) {
         state.currentCardIndex += 1;
-        state.isFlipped = false; // Reset flip state for the next card
+        state.isFlipped = false;
       }
     },
     prevCard: (state) => {
@@ -101,6 +128,7 @@ export const {
   toggleFlip,
   setFlipped,
   recordRating,
+  removeCurrentCard,
   nextCard,
   prevCard,
   setCardIndex,

@@ -7,6 +7,8 @@ import newsReducer from "./news/newsSlice";
 import questionReducer from "./question/questionSlice";
 import channelReducer from "./channel/channelSlice";
 import forumReducer from "./forum/forumSlice";
+import flashcardReducer from "./flashcard/flashcardSlice";
+import analyticsReducer from "./analytics/analyticsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -18,6 +20,8 @@ export const store = configureStore({
     question: questionReducer,
     channel: channelReducer,
     forum: forumReducer,
+    flashcard: flashcardReducer,
+    analytics: analyticsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(baseApiSlice.middleware),

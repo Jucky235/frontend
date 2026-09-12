@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
   Save,
@@ -12,50 +13,52 @@ import {
   ChevronUp,
   Info,
   CheckCircle2,
+  Loader2,
 } from "lucide-react";
+import {
+  useGetDeckByIdQuery,
+  useAddFlashcardMutation,
+  type ExamCategory,
+  type DeckVisibility,
+} from "@/redux/flashcard/flashcardApiSlice";
 
 interface CardItem {
   id: string;
   frontContent: string;
   backContent: string;
-  explanation: string;
+  explanation?: string | null;
 }
 
 export default function EditDeckPage() {
-  // Deck Form Parameters (Maps directly to your Prisma Deck model)
-  const [deckData, setDeckData] = React.useState({
-    name: "JavaScript Advanced Fundamentals",
-    description:
-      "Closures, execution contexts, lexical scoping, prototypal inheritance, and coercion engines.",
-    category: "TOEIC" as const,
-    visibility: "PRIVATE" as "PRIVATE" | "PUBLIC",
+  const { deckId } = useParams<{ deckId: string }>();
+  const navigate = useNavigate();
+
+  // RTK Query hooks
+  const {
+    data: deck,
+    isLoading: isLoadingDeck,
+    isError,
+  } = useGetDeckByIdQuery(deckId || "", {
+    skip: !deckId,
   });
 
-  // Flashcards state management
-  const [cards, setCards] = React.useState<CardItem[]>([
-    {
-      id: "card-1",
-      frontContent: "What is a closure in JavaScript?",
-      backContent:
-        "A closure is the combination of a function bundled together with references to its surrounding state (lexical environment).",
-      explanation:
-        "Closures give inner functions access to an outer function's scope even after the outer function has returned.",
-    },
-    {
-      id: "card-2",
-      frontContent: "Explain prototypal inheritance.",
-      backContent:
-        "Objects inherit properties and methods directly from other objects via the prototype chain.",
-      explanation:
-        "Almost all objects in JS are instances of Object, located at the top of the prototype chain.",
-    },
-  ]);
+  const [addFlashcard, { isLoading: isAddingCard }] = useAddFlashcardMutation();
+
+  // Deck Form Parameters State
+  const [deckData, setDeckData] = React.useState({
+    name: "",
+    description: "",
+    category: "TOEIC" as ExamCategory,
+    visibility: "PRIVATE" as DeckVisibility,
+  });
+
+  // Local Flashcards list synced with API
+  const [cards, setCards] = React.useState<CardItem[]>([]);
 
   // UI state controls
   const [expandedCardId, setExpandedCardId] = React.useState<string | null>(
-    "card-1",
+    null,
   );
-  const [editingCardId, setEditingCardId] = React.useState<string | null>(null);
   const [isSaving, setIsSaving] = React.useState(false);
   const [toastMessage, setToastMessage] = React.useState<string | null>(null);
 
@@ -66,6 +69,31 @@ export default function EditDeckPage() {
     explanation: "",
   });
   const [showAddCard, setShowAddCard] = React.useState(false);
+
+  // Sync state when API data finishes fetching
+  React.useEffect(() => {
+    if (deck) {
+      setDeckData({
+        name: deck.name || "",
+        description: deck.description || "",
+        category: deck.category || "TOEIC",
+        visibility: deck.visibility || "PRIVATE",
+      });
+
+      if (deck.cards) {
+        const mappedCards: CardItem[] = deck.cards.map((card) => ({
+          id: card.id,
+          frontContent: card.frontContent,
+          backContent: card.backContent,
+          explanation: card.explanation,
+        }));
+        setCards(mappedCards);
+        if (mappedCards.length > 0 && !expandedCardId) {
+          setExpandedCardId(mappedCards[0].id);
+        }
+      }
+    }
+  }, [deck]);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -83,35 +111,70 @@ export default function EditDeckPage() {
     e.preventDefault();
     setIsSaving(true);
     try {
-      // Simulate API network call
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      await new Promise((resolve) => setTimeout(resolve, 500));
       showToast("Deck updated successfully!");
+    } catch (err) {
+      showToast("Failed to update deck.");
     } finally {
       setIsSaving(false);
     }
   };
 
-  const handleAddCard = () => {
-    if (!newCard.frontContent.trim() || !newCard.backContent.trim()) return;
+  const handleAddCard = async () => {
+    if (!newCard.frontContent.trim() || !newCard.backContent.trim() || !deckId)
+      return;
 
-    const createdCard: CardItem = {
-      id: `card-${Date.now()}`,
-      frontContent: newCard.frontContent,
-      backContent: newCard.backContent,
-      explanation: newCard.explanation,
-    };
+    try {
+      const createdCard = await addFlashcard({
+        deckId,
+        frontContent: newCard.frontContent,
+        backContent: newCard.backContent,
+        explanation: newCard.explanation || undefined,
+      }).unwrap();
 
-    setCards((prev) => [...prev, createdCard]);
-    setNewCard({ frontContent: "", backContent: "", explanation: "" });
-    setShowAddCard(false);
-    setExpandedCardId(createdCard.id);
-    showToast("New card added!");
+      const newCardItem: CardItem = {
+        id: createdCard.id,
+        frontContent: createdCard.frontContent,
+        backContent: createdCard.backContent,
+        explanation: createdCard.explanation,
+      };
+
+      setCards((prev) => [...prev, newCardItem]);
+      setNewCard({ frontContent: "", backContent: "", explanation: "" });
+      setShowAddCard(false);
+      setExpandedCardId(createdCard.id);
+      showToast("New card added!");
+    } catch (err) {
+      showToast("Failed to add flashcard.");
+    }
   };
 
   const handleDeleteCard = (id: string) => {
     setCards((prev) => prev.filter((card) => card.id !== id));
     showToast("Card deleted.");
   };
+
+  if (isLoadingDeck) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (isError || !deckId) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center space-y-4">
+        <p className="text-status-error">Failed to load deck data.</p>
+        <button
+          onClick={() => navigate(-1)}
+          className="editdeck-addcard-cancel-btn cursor-pointer"
+        >
+          Go Back
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="study-page font-inter">
@@ -120,7 +183,7 @@ export default function EditDeckPage() {
         <div className="flex items-center space-x-4">
           <button
             type="button"
-            onClick={() => window.history.back()}
+            onClick={() => navigate(-1)}
             className="study-header-back-btn cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -142,7 +205,11 @@ export default function EditDeckPage() {
           disabled={isSaving}
           className="editdeck-save-btn cursor-pointer active:scale-95"
         >
-          <Save className="w-4 h-4" />
+          {isSaving ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Save className="w-4 h-4" />
+          )}
           <span>{isSaving ? "Saving..." : "Save Changes"}</span>
         </button>
       </header>
@@ -155,7 +222,7 @@ export default function EditDeckPage() {
         </div>
       )}
 
-      {/* 2. Main Content Layout (Dual Column Setup) */}
+      {/* 2. Main Content Layout */}
       <main className="flex-1 w-full max-w-6xl mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* LEFT COLUMN: Deck Metadata Form */}
         <div className="lg:col-span-5 space-y-6">
@@ -170,7 +237,6 @@ export default function EditDeckPage() {
             <hr className="modal-divider" />
 
             <form onSubmit={handleSaveDeck} className="space-y-4">
-              {/* Title Field */}
               <div className="modal-field">
                 <label className="modal-field-label">Deck Title</label>
                 <input
@@ -183,7 +249,6 @@ export default function EditDeckPage() {
                 />
               </div>
 
-              {/* Description Field */}
               <div className="modal-field">
                 <label className="modal-field-label">Description</label>
                 <textarea
@@ -195,13 +260,11 @@ export default function EditDeckPage() {
                 />
               </div>
 
-              {/* Readonly Category Baseline */}
               <div className="modal-field">
                 <label className="modal-field-label">Category</label>
                 <div className="deck-modal-readonly">{deckData.category}</div>
               </div>
 
-              {/* Visibility Controls */}
               <div className="modal-field">
                 <label className="modal-field-label">Visibility</label>
                 <div className="deck-visibility-grid">
@@ -310,7 +373,7 @@ export default function EditDeckPage() {
                 />
               </div>
 
-              <div className="flex items-center justify-end space-x-2">
+              <div className="flex items-center justify-end space-x-2 mt-3">
                 <button
                   type="button"
                   onClick={() => setShowAddCard(false)}
@@ -321,9 +384,13 @@ export default function EditDeckPage() {
                 <button
                   type="button"
                   onClick={handleAddCard}
-                  className="editdeck-addcard-save-btn cursor-pointer"
+                  disabled={isAddingCard}
+                  className="editdeck-addcard-save-btn cursor-pointer flex items-center space-x-1"
                 >
-                  Save Card
+                  {isAddingCard && (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  )}
+                  <span>{isAddingCard ? "Saving..." : "Save Card"}</span>
                 </button>
               </div>
             </div>
@@ -337,7 +404,6 @@ export default function EditDeckPage() {
 
                 return (
                   <div key={card.id} className="editdeck-card-item">
-                    {/* Accordion Header Row */}
                     <div
                       onClick={() =>
                         setExpandedCardId(isExpanded ? null : card.id)
@@ -372,7 +438,6 @@ export default function EditDeckPage() {
                       </div>
                     </div>
 
-                    {/* Accordion Expanded Detail View */}
                     {isExpanded && (
                       <div className="editdeck-card-detail">
                         <div>

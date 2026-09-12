@@ -3,6 +3,7 @@ import { baseApiSlice } from "../apiSlice";
 export type ExamCategory = "TOEIC";
 export type DeckStatus = "ACTIVE" | "INACTIVE";
 export type DeckVisibility = "PUBLIC" | "PRIVATE";
+
 export type BoxLevel =
   | "BOX_1"
   | "BOX_2"
@@ -12,18 +13,37 @@ export type BoxLevel =
   | "BOX_6"
   | "BOX_7";
 
+export enum FSRSRating {
+  AGAIN = 1,
+  HARD = 2,
+  GOOD = 3,
+  EASY = 4,
+}
+
+export interface FlashcardProgress {
+  id: string;
+  userId: string;
+  flashcardId: string;
+  box: BoxLevel;
+  intervalDays: number;
+  easeFactor: number;
+  repetitions: number;
+  nextReviewAt: string;
+  lastReviewedAt: string;
+}
+
 export interface Flashcard {
   id: string;
   deckId: string;
   frontContent: string;
   backContent: string;
   explanation: string | null;
-  imagePath: string | null;
-  audioPath: string | null;
-  partNumber: number | null;
-  status: string;
+  imagePath?: string | null;
+  audioPath?: string | null;
+  partNumber?: number | null;
   createdAt: string;
   updatedAt: string;
+  userProgresses?: FlashcardProgress[];
 }
 
 export interface DeckCreator {
@@ -49,9 +69,26 @@ export interface Deck {
   updatedAt: string;
 }
 
+export interface DeckStudyStats {
+  newCardsCount: number;
+  learningCount: number;
+  reviewCount: number;
+  totalDue: number;
+  totalCards: number;
+}
+
+export interface DueCardsResponse {
+  cards: Flashcard[];
+  counts: {
+    new: number;
+    learning: number;
+    review: number;
+  };
+}
+
 export interface CreateDeckPayload {
   name: string;
-  description?: string;
+  description?: string | null;
   category: ExamCategory;
   visibility?: DeckVisibility;
 }
@@ -60,15 +97,21 @@ export interface CreateFlashcardPayload {
   deckId: string;
   frontContent: string;
   backContent: string;
-  explanation?: string;
-  imagePath?: string;
-  audioPath?: string;
-  partNumber?: number;
+  explanation?: string | null;
+  imagePath?: string | null;
+  audioPath?: string | null;
+  partNumber?: number | null;
 }
 
 export interface ReviewCardPayload {
   cardId: string;
-  quality: number; // SM-2 score (0 to 5)
+  deckId: string; // Included for tag invalidation
+  rating: FSRSRating;
+}
+
+export interface GetDueCardsArgs {
+  deckId: string;
+  limit?: number;
 }
 
 export interface ApiResponse<T> {
@@ -95,11 +138,36 @@ export const flashcardApiSlice = baseApiSlice.injectEndpoints({
 
     getDeckById: builder.query<Deck, string>({
       query: (id) => ({
-        url: `/decks/${id}`,
+        url: `/flashcards/decks/${id}`,
         method: "GET",
       }),
       transformResponse: (response: ApiResponse<Deck>) => response.data,
-      providesTags: (result, error, id) => [{ type: "Deck", id }],
+      providesTags: (_result, _error, id) => [{ type: "Deck", id }],
+    }),
+
+    getDeckStudyStats: builder.query<DeckStudyStats, string>({
+      query: (deckId) => ({
+        url: `/flashcards/decks/${deckId}/stats`,
+        method: "GET",
+      }),
+      transformResponse: (response: ApiResponse<DeckStudyStats>) =>
+        response.data,
+      providesTags: (_result, _error, deckId) => [
+        { type: "DueCards" as const, id: deckId },
+      ],
+    }),
+
+    getDueCards: builder.query<DueCardsResponse, GetDueCardsArgs>({
+      query: ({ deckId, limit = 20 }) => ({
+        url: `/flashcards/decks/${deckId}/due`,
+        method: "GET",
+        params: { limit },
+      }),
+      transformResponse: (response: ApiResponse<DueCardsResponse>) =>
+        response.data,
+      providesTags: (_result, _error, { deckId }) => [
+        { type: "DueCards" as const, id: deckId },
+      ],
     }),
 
     createDeck: builder.mutation<Deck, CreateDeckPayload>({
@@ -114,24 +182,31 @@ export const flashcardApiSlice = baseApiSlice.injectEndpoints({
 
     addFlashcard: builder.mutation<Flashcard, CreateFlashcardPayload>({
       query: ({ deckId, ...body }) => ({
-        url: `/decks/${deckId}/cards`,
+        url: `/flashcards/decks/${deckId}/cards`,
         method: "POST",
         body,
       }),
       transformResponse: (response: ApiResponse<Flashcard>) => response.data,
-      invalidatesTags: (result, error, { deckId }) => [
+      invalidatesTags: (_result, _error, { deckId }) => [
         { type: "Deck", id: deckId },
         { type: "Deck", id: "LIST" },
+        { type: "DueCards", id: deckId },
       ],
     }),
 
-    submitCardReview: builder.mutation<any, ReviewCardPayload>({
-      query: ({ cardId, quality }) => ({
-        url: `/flashcards/${cardId}/review`,
+    submitCardReview: builder.mutation<FlashcardProgress, ReviewCardPayload>({
+      query: ({ cardId, rating }) => ({
+        url: `/flashcards/cards/${cardId}/review`,
         method: "POST",
-        body: { quality },
+        body: { rating },
       }),
-      invalidatesTags: [{ type: "Deck", id: "LIST" }],
+      transformResponse: (response: ApiResponse<FlashcardProgress>) =>
+        response.data,
+      invalidatesTags: (_result, _error, { deckId }) => [
+        { type: "DueCards", id: deckId },
+        { type: "Deck", id: deckId },
+        { type: "Deck", id: "LIST" },
+      ],
     }),
   }),
 });
@@ -139,6 +214,8 @@ export const flashcardApiSlice = baseApiSlice.injectEndpoints({
 export const {
   useGetDecksQuery,
   useGetDeckByIdQuery,
+  useGetDeckStudyStatsQuery,
+  useGetDueCardsQuery,
   useCreateDeckMutation,
   useAddFlashcardMutation,
   useSubmitCardReviewMutation,

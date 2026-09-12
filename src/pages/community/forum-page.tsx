@@ -57,6 +57,8 @@ export default function ForumPage() {
     search: debouncedSearch.trim() || undefined,
   });
 
+  console.log(postsData);
+
   // 3. Mutations
   const [votePost] = useVotePostMutation();
   const [createPost, { isLoading: isCreating }] = useCreatePostMutation();

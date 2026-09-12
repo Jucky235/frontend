@@ -7,6 +7,9 @@
 @import "@/css/edit-deck.css";
 @import "@/css/exam-list.css";
 @import "@/css/create-exam-modal.css";
+@import "@/css/exam-manage.css";
+@import "@/css/study-flashcard.css";
+@import "@/css/deckcard.css";
 
 @variant dark (&:where(.dark, .dark *));
 /* 2. Cấu hình Theme Tokens cho Tailwind v4 */
