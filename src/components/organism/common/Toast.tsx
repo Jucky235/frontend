@@ -47,7 +47,7 @@ export function ToastItem({ toast, onDismiss }: ToastProps) {
 
   return (
     <div
-      className={`flex items-start space-x-3 w-80 p-4 bg-background-card/95 backdrop-blur-md rounded-2xl border shadow-lg transition-all duration-300 animate-in slide-in-from-bottom-5 fade-in ${
+      className={`flex items-start space-x-3 w-80 p-4 bg-background-card/95 backdrop-blur-md rounded-2xl border shadow-lg transition-all duration-300 animate-in slide-in-from-top-5 fade-in ${
         borders[toast.type]
       }`}
     >
@@ -82,7 +82,7 @@ export function ToastContainer({
   onDismiss: (id: string) => void;
 }) {
   return (
-    <div className="fixed bottom-5 right-5 z-50 flex flex-col space-y-3 pointer-events-auto">
+    <div className="fixed top-5 right-5 z-50 flex flex-col space-y-3 pointer-events-auto">
       {toasts.map((toast) => (
         <ToastItem key={toast.id} toast={toast} onDismiss={onDismiss} />
       ))}

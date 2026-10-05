@@ -1,7 +1,5 @@
 import * as React from "react";
 import { Plus, HelpCircle, FileSpreadsheet } from "lucide-react";
-import Header from "@/components/organism/common/Header";
-import Footer from "@/components/organism/common/Footer";
 import ExamsStatGrid from "@/components/organism/dashboard/exam/ExamsStatGrid";
 import ExamsFilterBar, {
   type FilterStatus,
@@ -149,72 +147,68 @@ export default function ExamsManagementPage() {
   };
 
   return (
-    <div className="deck-page font-inter">
-      <Header />
-
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <h1 className="deck-header-title">Exams Management</h1>
-            <p className="deck-header-subtitle">
-              Create, organize, and monitor performance analytics across all
-              examination suites.
-            </p>
-          </div>
-
-          <div className="flex items-center flex-wrap gap-2.5">
-            <button
-              type="button"
-              onClick={() => setIsCsvModalOpen(true)}
-              className="examsmgmt-btn-outline cursor-pointer active:scale-95"
-            >
-              <FileSpreadsheet className="examsmgmt-btn-icon-success w-4 h-4" />
-              <span>Import CSV</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setIsQuestionModalOpen(true)}
-              className="examsmgmt-btn-outline cursor-pointer active:scale-95"
-            >
-              <HelpCircle className="examsmgmt-btn-icon-brand w-4 h-4" />
-              <span>Add Question</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setIsExamModalOpen(true)}
-              className="deck-header-create-btn cursor-pointer active:scale-95"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Create New Exam</span>
-            </button>
-          </div>
+    <div className="w-full space-y-6">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 className="deck-header-title">Exams Management</h1>
+          <p className="deck-header-subtitle">
+            Create, organize, and monitor performance analytics across all
+            examination suites.
+          </p>
         </div>
 
-        <ExamsStatGrid stats={stats} />
+        <div className="flex items-center flex-wrap gap-2.5">
+          <button
+            type="button"
+            onClick={() => setIsCsvModalOpen(true)}
+            className="examsmgmt-btn-outline cursor-pointer active:scale-95"
+          >
+            <FileSpreadsheet className="examsmgmt-btn-icon-success w-4 h-4" />
+            <span>Import CSV</span>
+          </button>
 
-        <ExamsFilterBar
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          statusFilter={statusFilter}
-          onStatusFilterChange={setStatusFilter}
-          categoryFilter={categoryFilter}
-          onCategoryFilterChange={setCategoryFilter}
-          categories={categories}
-        />
+          <button
+            type="button"
+            onClick={() => setIsQuestionModalOpen(true)}
+            className="examsmgmt-btn-outline cursor-pointer active:scale-95"
+          >
+            <HelpCircle className="examsmgmt-btn-icon-brand w-4 h-4" />
+            <span>Add Question</span>
+          </button>
 
-        <ExamsTable
-          exams={filteredExams}
-          isLoading={isLoading}
-          isError={isError}
-          onRefetch={refetch}
-          onDelete={handleDelete}
-          onEdit={(exam: Exam) => alert(`Edit ${exam.name}`)}
-          onView={(exam: Exam) => alert(`View ${exam.name}`)}
-          onAddQuestionsToExam={handleAddQuestionsToExam}
-        />
-      </main>
+          <button
+            type="button"
+            onClick={() => setIsExamModalOpen(true)}
+            className="deck-header-create-btn cursor-pointer active:scale-95"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Create New Exam</span>
+          </button>
+        </div>
+      </div>
+
+      <ExamsStatGrid stats={stats} />
+
+      <ExamsFilterBar
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        statusFilter={statusFilter}
+        onStatusFilterChange={setStatusFilter}
+        categoryFilter={categoryFilter}
+        onCategoryFilterChange={setCategoryFilter}
+        categories={categories}
+      />
+
+      <ExamsTable
+        exams={filteredExams}
+        isLoading={isLoading}
+        isError={isError}
+        onRefetch={refetch}
+        onDelete={handleDelete}
+        onEdit={(exam: Exam) => alert(`Edit ${exam.name}`)}
+        onView={(exam: Exam) => alert(`View ${exam.name}`)}
+        onAddQuestionsToExam={handleAddQuestionsToExam}
+      />
 
       <CreateSingleQuestionModal
         isOpen={isQuestionModalOpen}
@@ -236,8 +230,6 @@ export default function ExamsManagementPage() {
         onImport={handleImportCsv}
         isSubmitting={isSubmitting}
       />
-
-      <Footer />
     </div>
   );
 }

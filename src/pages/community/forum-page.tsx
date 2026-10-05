@@ -114,7 +114,7 @@ export default function ForumPage() {
   const pagination = postsData?.pagination;
 
   return (
-    <div className="min-h-screen w-full bg-neutral-50 font-inter flex flex-col justify-between">
+    <div className="min-h-screen w-full bg-background font-inter flex flex-col justify-between transition-colors">
       <Header />
 
       <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
@@ -143,9 +143,9 @@ export default function ForumPage() {
 
             {/* State: Loading */}
             {isLoading && (
-              <div className="flex flex-col items-center justify-center py-16 space-y-3 bg-white rounded-2xl border border-neutral-200/80 shadow-xs">
-                <Loader2 className="w-8 h-8 text-[#5A67FF] animate-spin" />
-                <p className="text-xs font-semibold text-neutral-500">
+              <div className="flex flex-col items-center justify-center py-16 space-y-3 bg-background-card rounded-2xl border border-border shadow-xs">
+                <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                <p className="text-xs font-semibold text-foreground-subtle">
                   Loading discussions...
                 </p>
               </div>
@@ -153,12 +153,12 @@ export default function ForumPage() {
 
             {/* State: Error */}
             {isError && (
-              <div className="flex flex-col items-center justify-center py-12 space-y-3 bg-red-50/50 rounded-2xl border border-red-200 text-center p-6">
+              <div className="flex flex-col items-center justify-center py-12 space-y-3 bg-red-500/10 rounded-2xl border border-red-500/20 text-center p-6">
                 <AlertCircle className="w-8 h-8 text-red-500" />
-                <p className="text-sm font-bold text-neutral-800">
+                <p className="text-sm font-bold text-foreground">
                   Failed to load discussions
                 </p>
-                <p className="text-xs text-neutral-500 max-w-xs">
+                <p className="text-xs text-foreground-subtle max-w-xs">
                   There was a problem fetching the forum posts. Please check
                   your connection and try again.
                 </p>
@@ -173,12 +173,12 @@ export default function ForumPage() {
 
             {/* State: Empty */}
             {!isLoading && !isError && posts.length === 0 && (
-              <div className="flex flex-col items-center justify-center py-16 space-y-3 bg-white rounded-2xl border border-neutral-200/80 text-center p-6 shadow-xs">
-                <MessageSquareX className="w-8 h-8 text-neutral-400" />
-                <p className="text-sm font-bold text-neutral-700">
+              <div className="flex flex-col items-center justify-center py-16 space-y-3 bg-background-card rounded-2xl border border-border text-center p-6 shadow-xs">
+                <MessageSquareX className="w-8 h-8 text-foreground-subtle" />
+                <p className="text-sm font-bold text-foreground">
                   No discussions found
                 </p>
-                <p className="text-xs text-neutral-400">
+                <p className="text-xs text-foreground-subtle">
                   Try adjusting your search query or switching categories.
                 </p>
               </div>
@@ -203,21 +203,21 @@ export default function ForumPage() {
 
                 {/* Pagination Controls */}
                 {pagination && pagination.totalPages > 1 && (
-                  <div className="flex items-center justify-between pt-4 border-t border-neutral-200 text-xs font-bold">
+                  <div className="flex items-center justify-between pt-4 border-t border-border text-xs font-bold">
                     <button
                       disabled={page <= 1}
                       onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                      className="px-4 py-2 rounded-xl bg-white border border-neutral-200 text-neutral-700 hover:bg-neutral-100 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
+                      className="px-4 py-2 rounded-xl bg-background-card border border-border text-foreground hover:bg-background-hover disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
                     >
                       Previous
                     </button>
-                    <span className="text-neutral-500">
+                    <span className="text-foreground-subtle">
                       Page {pagination.page} of {pagination.totalPages}
                     </span>
                     <button
                       disabled={page >= pagination.totalPages}
                       onClick={() => setPage((prev) => prev + 1)}
-                      className="px-4 py-2 rounded-xl bg-white border border-neutral-200 text-neutral-700 hover:bg-neutral-100 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
+                      className="px-4 py-2 rounded-xl bg-background-card border border-border text-foreground hover:bg-background-hover disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
                     >
                       Next
                     </button>

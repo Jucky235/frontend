@@ -38,14 +38,14 @@ export interface UserExamHistory {
   submittedAt: string;
 }
 
-// 🟢 Params cho query getAllUsers
+// Params for query getAllUsers
 export interface GetUsersQueryParams {
   page?: number;
   limit?: number;
   search?: string;
 }
 
-// 🟢 Trả về danh sách user có phân trang
+// User list response with pagination
 export interface GetUsersResponse {
   data: UserProfile[];
   pagination: {
@@ -56,7 +56,7 @@ export interface GetUsersResponse {
   };
 }
 
-// 💬 Payload và Response cho SendMessage
+// Payload & Response for SendMessage
 export interface SendMessagePayload {
   channelId: string;
   content: string;
@@ -84,7 +84,7 @@ export interface SendMessageResponse {
 
 export const userApiSlice = baseApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // 🟢 Fetch list of all users (Admin)
+    // Fetch list of all users (Admin)
     getUsers: builder.query<GetUsersResponse, GetUsersQueryParams | void>({
       query: (params) => ({
         url: "/users",
@@ -123,7 +123,6 @@ export const userApiSlice = baseApiSlice.injectEndpoints({
         method: "PUT",
         body,
       }),
-      // Invalidates both profile and user list cache
       invalidatesTags: (result) =>
         result
           ? [
@@ -154,26 +153,27 @@ export const userApiSlice = baseApiSlice.injectEndpoints({
       }),
     }),
 
-    // 💬 Send message to a channel (POST /users/messages)
+    // Send message to a channel (POST /users/messages)
     sendMessage: builder.mutation<SendMessageResponse, SendMessagePayload>({
       query: (body) => ({
         url: "/users/messages",
         method: "POST",
         body,
       }),
-      // Refetches messages in the relevant channel if you are using { type: "Message", id: channelId } tags
+      // Invalidates both "Message" and "ChannelMessages" tags to ensure getMessagesByChannelId re-fetches
       invalidatesTags: (_result, _error, { channelId }) => [
         { type: "Message", id: channelId },
+        { type: "ChannelMessages", id: channelId },
+        { type: "Channel", id: channelId },
       ],
     }),
 
-    // 🔴 Delete user by ID (Admin)
+    // Delete user by ID (Admin)
     deleteUser: builder.mutation<{ message: string }, string>({
       query: (id) => ({
         url: `/users/${id}`,
         method: "DELETE",
       }),
-      // Tự động xóa cache của user bị xóa và làm mới danh sách (LIST)
       invalidatesTags: (_result, _error, id) => [
         { type: "User", id },
         { type: "User", id: "LIST" },

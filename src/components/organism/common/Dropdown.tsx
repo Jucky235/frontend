@@ -9,7 +9,38 @@ export interface DropdownItem {
   divider?: boolean;
 }
 
+interface DropdownContextType {
+  activeId: string | null;
+  setActiveId: (id: string | null) => void;
+}
+
+const DropdownContext = React.createContext<DropdownContextType>({
+  activeId: null,
+  setActiveId: () => {},
+});
+
+export function DropdownProvider({ children }: { children: React.ReactNode }) {
+  const [activeId, setActiveId] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    const handleOutsideClick = () => setActiveId(null);
+    window.addEventListener("click", handleOutsideClick);
+    window.addEventListener("scroll", handleOutsideClick, true);
+    return () => {
+      window.removeEventListener("click", handleOutsideClick);
+      window.removeEventListener("scroll", handleOutsideClick, true);
+    };
+  }, []);
+
+  return (
+    <DropdownContext.Provider value={{ activeId, setActiveId }}>
+      {children}
+    </DropdownContext.Provider>
+  );
+}
+
 interface DropdownProps {
+  id?: string;
   trigger: React.ReactNode;
   items: DropdownItem[];
   align?: "left" | "right";
@@ -17,12 +48,18 @@ interface DropdownProps {
 }
 
 export default function Dropdown({
+  id,
   trigger,
   items,
   align = "right",
   width = "w-44",
 }: DropdownProps) {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const dropdownId = React.useId();
+  const uniqueId = id || dropdownId;
+
+  const { activeId, setActiveId } = React.useContext(DropdownContext);
+  const isOpen = activeId === uniqueId;
+
   const [coords, setCoords] = React.useState<{ top: number; left: number }>({
     top: 0,
     left: 0,
@@ -42,21 +79,11 @@ export default function Dropdown({
             ? rect.right + window.scrollX - menuWidth
             : rect.left + window.scrollX,
       });
+      setActiveId(uniqueId);
+    } else {
+      setActiveId(null);
     }
-    setIsOpen((prev) => !prev);
   };
-
-  React.useEffect(() => {
-    const handleOutsideClick = () => setIsOpen(false);
-    if (isOpen) {
-      window.addEventListener("click", handleOutsideClick);
-      window.addEventListener("scroll", handleOutsideClick, true);
-    }
-    return () => {
-      window.removeEventListener("click", handleOutsideClick);
-      window.removeEventListener("scroll", handleOutsideClick, true);
-    };
-  }, [isOpen]);
 
   return (
     <div className="inline-block" ref={triggerRef}>
@@ -82,7 +109,7 @@ export default function Dropdown({
                   type="button"
                   onClick={() => {
                     item.onClick();
-                    setIsOpen(false);
+                    setActiveId(null);
                   }}
                   className={`w-full px-3 py-2 text-left flex items-center space-x-2 transition-colors cursor-pointer ${
                     item.danger

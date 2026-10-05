@@ -8,6 +8,7 @@ export interface BannerSlide {
   description: string;
   buttonText?: string;
   onButtonClick?: () => void;
+  imageUrl?: string; // Optional image or illustration URL per slide
 }
 
 interface HeroBannerProps {
@@ -23,6 +24,8 @@ const DEFAULT_SLIDES: BannerSlide[] = [
     description:
       "Practice with thousands of verified questions and real-time performance tracking.",
     buttonText: "Start Practice",
+    imageUrl:
+      "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: 2,
@@ -31,6 +34,8 @@ const DEFAULT_SLIDES: BannerSlide[] = [
     description:
       "Connect with peers worldwide, share resources, and climb the leaderboard together.",
     buttonText: "Explore Groups",
+    imageUrl:
+      "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: 3,
@@ -39,6 +44,8 @@ const DEFAULT_SLIDES: BannerSlide[] = [
     description:
       "Get complete access to all exam categories with detailed analytical reports.",
     buttonText: "Upgrade Now",
+    imageUrl:
+      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80",
   },
 ];
 
@@ -75,38 +82,52 @@ export default function HeroBanner({
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       /* Gradient banner linh hoạt theo màu --banner-from và --banner-to */
-      className="w-full h-80 md:h-96 bg-gradient-to-br from-banner-from to-banner-to rounded-3xl text-white relative overflow-hidden shadow-lg select-none border border-banner-border"
+      className="w-full h-auto min-h-[320px] md:h-96 bg-gradient-to-br from-banner-from to-banner-to rounded-3xl text-white relative overflow-hidden shadow-lg select-none border border-banner-border flex flex-col justify-between"
     >
       {/* Slide Container */}
-      <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-between z-10">
-        {/* Dynamic Slide Content */}
-        <div
-          key={currentIndex}
-          className="max-w-md space-y-3.5 my-auto transition-all duration-300 animate-in fade-in"
-        >
-          {currentSlide.badgeText && (
-            <span className="inline-block bg-white/20 text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full backdrop-blur-md">
-              {currentSlide.badgeText}
-            </span>
-          )}
+      <div className="absolute inset-0 p-6 md:p-12 flex flex-col justify-between z-10">
+        {/* Main Content Area (Text + Optional Image Layout) */}
+        <div className="flex-1 flex items-center justify-between gap-6 my-auto">
+          {/* Dynamic Slide Text Content */}
+          <div
+            key={currentIndex}
+            className="max-w-md space-y-3.5 transition-all duration-300 animate-in fade-in"
+          >
+            {currentSlide.badgeText && (
+              <span className="inline-block bg-white/20 text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full backdrop-blur-md">
+                {currentSlide.badgeText}
+              </span>
+            )}
 
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight leading-tight line-clamp-2">
-            {currentSlide.title}
-          </h1>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight leading-tight line-clamp-2">
+              {currentSlide.title}
+            </h1>
 
-          <p className="text-xs sm:text-sm opacity-90 leading-relaxed font-medium line-clamp-3">
-            {currentSlide.description}
-          </p>
+            <p className="text-xs sm:text-sm opacity-90 leading-relaxed font-medium line-clamp-3">
+              {currentSlide.description}
+            </p>
 
-          <div className="pt-2">
-            <button
-              onClick={currentSlide.onButtonClick}
-              className="bg-white text-brand hover:bg-neutral-100 font-bold text-sm px-5 py-2.5 rounded-xl tracking-wide shadow-md transition-all flex items-center space-x-2 cursor-pointer active:scale-95"
-            >
-              <span>{currentSlide.buttonText || "Get Started"}</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+            <div className="pt-2">
+              <button
+                onClick={currentSlide.onButtonClick}
+                className="bg-white text-brand hover:bg-neutral-100 font-bold text-sm px-5 py-2.5 rounded-xl tracking-wide shadow-md transition-all flex items-center space-x-2 cursor-pointer active:scale-95"
+              >
+                <span>{currentSlide.buttonText || "Get Started"}</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
+
+          {/* Optional Slide Image / Illustration */}
+          {currentSlide.imageUrl && (
+            <div className="hidden lg:block w-72 xl:w-80 shrink-0">
+              <img
+                src={currentSlide.imageUrl}
+                alt={currentSlide.title}
+                className="w-full h-44 object-cover rounded-2xl shadow-xl border border-white/20 opacity-95 transition-all duration-500 hover:scale-[1.02]"
+              />
+            </div>
+          )}
         </div>
 
         {/* Fixed Navigation Controls & Pagination Dots */}

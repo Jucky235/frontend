@@ -15,7 +15,16 @@ import {
 
 interface CreatePostModalProps {
   isOpen: boolean;
+  isSubmitting?: boolean;
+  categories?: { id: string; name: string }[];
   onClose: () => void;
+  onSubmit?: (payload: {
+    title: string;
+    slug: string;
+    content: string;
+    categoryId: string;
+    attachments?: string[];
+  }) => Promise<void> | void;
   onSuccess?: () => void;
 }
 
@@ -34,7 +43,10 @@ const generateSlug = (text: string) => {
 
 export const CreatePostModal: React.FC<CreatePostModalProps> = ({
   isOpen,
+  isSubmitting = false,
+  categories = [],
   onClose,
+  onSubmit,
   onSuccess,
 }) => {
   const [title, setTitle] = React.useState("");
@@ -45,9 +57,8 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
   const [attachmentInput, setAttachmentInput] = React.useState("");
   const [errorMsg, setErrorMsg] = React.useState("");
 
-  // RTK Query Hooks
-  const { data: categories = [] } = useGetAllCategoriesQuery();
-  const [createPost, { isLoading }] = useCreatePostMutation();
+  const { data: fetchedCategories = [] } = useGetAllCategoriesQuery();
+  const categoryOptions = categories.length > 0 ? categories : fetchedCategories;
 
   // Auto-generate slug when title changes (if user hasn't manually edited slug)
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,13 +99,13 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
     }
 
     try {
-      await createPost({
+      await onSubmit?.({
         title: title.trim(),
         slug: slug.trim() || generateSlug(title),
         content: content.trim(),
         categoryId,
         attachments: attachments.length > 0 ? attachments : undefined,
-      }).unwrap();
+      });
 
       // Reset Form State
       setTitle("");
@@ -117,17 +128,17 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200">
       <div
-        className="bg-white rounded-3xl border border-neutral-200/80 shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]"
+        className="bg-background-card rounded-3xl border border-border/80 shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="px-6 py-4 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/50">
-          <h2 className="text-base font-extrabold text-neutral-800">
+        <div className="px-6 py-4 border-b border-border-subtle flex items-center justify-between bg-background-hover/70">
+          <h2 className="text-base font-extrabold text-foreground">
             Create New Discussion
           </h2>
           <button
             onClick={onClose}
-            className="text-neutral-400 hover:text-neutral-700 p-1.5 rounded-xl hover:bg-neutral-100 transition-colors cursor-pointer"
+            className="text-foreground-subtle hover:text-foreground p-1.5 rounded-xl hover:bg-background-hover transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -139,7 +150,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
           className="p-6 space-y-4 overflow-y-auto flex-1"
         >
           {errorMsg && (
-            <div className="flex items-center space-x-2 text-xs font-bold text-red-600 bg-red-50 border border-red-200 p-3 rounded-xl">
+            <div className="flex items-center space-x-2 text-xs font-bold text-red-600 bg-red-500/10 border border-red-500/20 p-3 rounded-xl">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{errorMsg}</span>
             </div>
@@ -148,7 +159,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
           {/* Title & Category Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="sm:col-span-2 space-y-1">
-              <label className="text-xs font-extrabold text-neutral-700 uppercase tracking-wider">
+              <label className="text-xs font-extrabold text-foreground uppercase tracking-wider">
                 Title <span className="text-red-500">*</span>
               </label>
               <input
@@ -156,23 +167,23 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
                 placeholder="What's on your mind?"
                 value={title}
                 onChange={handleTitleChange}
-                className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-medium text-neutral-800 focus:bg-white focus:border-[#5A67FF] focus:outline-none transition-all"
+                className="w-full px-3.5 py-2.5 bg-background-hover border border-border rounded-xl text-xs font-medium text-foreground placeholder:text-foreground-subtle focus:bg-background-card focus:border-primary focus:outline-none transition-all"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-extrabold text-neutral-700 uppercase tracking-wider">
+              <label className="text-xs font-extrabold text-foreground uppercase tracking-wider">
                 Category <span className="text-red-500">*</span>
               </label>
               <select
                 value={categoryId}
                 onChange={(e) => setCategoryId(e.target.value)}
-                className="w-full px-3 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-medium text-neutral-800 focus:bg-white focus:border-[#5A67FF] focus:outline-none transition-all cursor-pointer"
+                className="w-full px-3 py-2.5 bg-background-hover border border-border rounded-xl text-xs font-medium text-foreground focus:bg-background-card focus:border-primary focus:outline-none transition-all cursor-pointer"
               >
                 <option value="" disabled>
                   Select Category
                 </option>
-                {categories.map((cat) => (
+                {categoryOptions.map((cat) => (
                   <option key={cat.id} value={cat.id}>
                     {cat.name}
                   </option>
@@ -183,7 +194,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
 
           {/* Slug */}
           <div className="space-y-1">
-            <label className="text-xs font-bold text-neutral-400">
+            <label className="text-xs font-bold text-foreground-subtle">
               Post Slug
             </label>
             <input
@@ -191,13 +202,13 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
               placeholder="post-url-slug"
               value={slug}
               onChange={(e) => setSlug(e.target.value)}
-              className="w-full px-3.5 py-2 bg-neutral-100/70 border border-neutral-200 rounded-xl text-xs font-mono text-neutral-600 focus:bg-white focus:border-[#5A67FF] focus:outline-none transition-all"
+              className="w-full px-3.5 py-2 bg-background-hover border border-border rounded-xl text-xs font-mono text-foreground-muted focus:bg-background-card focus:border-primary focus:outline-none transition-all"
             />
           </div>
 
           {/* Content */}
           <div className="space-y-1">
-            <label className="text-xs font-extrabold text-neutral-700 uppercase tracking-wider">
+            <label className="text-xs font-extrabold text-foreground uppercase tracking-wider">
               Content <span className="text-red-500">*</span>
             </label>
             <textarea
@@ -205,14 +216,14 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
               placeholder="Write your discussion details, questions, or notes here..."
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="w-full p-3.5 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-medium text-neutral-800 focus:bg-white focus:border-[#5A67FF] focus:outline-none transition-all resize-none"
+              className="w-full p-3.5 bg-background-hover border border-border rounded-xl text-xs font-medium text-foreground placeholder:text-foreground-subtle focus:bg-background-card focus:border-primary focus:outline-none transition-all resize-none"
             />
           </div>
 
           {/* Attachments Section */}
           <div className="space-y-2">
-            <label className="text-xs font-extrabold text-neutral-700 uppercase tracking-wider flex items-center space-x-1.5">
-              <Paperclip className="w-3.5 h-3.5 text-neutral-500" />
+            <label className="text-xs font-extrabold text-foreground uppercase tracking-wider flex items-center space-x-1.5">
+              <Paperclip className="w-3.5 h-3.5 text-foreground-subtle" />
               <span>Attachments (URL Links)</span>
             </label>
 
@@ -228,12 +239,12 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
                     handleAddAttachment();
                   }
                 }}
-                className="flex-1 px-3.5 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs text-neutral-800 focus:bg-white focus:border-[#5A67FF] focus:outline-none transition-all"
+                className="flex-1 px-3.5 py-2 bg-background-hover border border-border rounded-xl text-xs text-foreground placeholder:text-foreground-subtle focus:bg-background-card focus:border-primary focus:outline-none transition-all"
               />
               <button
                 type="button"
                 onClick={handleAddAttachment}
-                className="px-3 py-2 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-xl text-xs font-bold transition-all flex items-center space-x-1 cursor-pointer"
+                className="px-3 py-2 bg-background-hover hover:bg-background-subtle-hover text-foreground rounded-xl text-xs font-bold transition-all flex items-center space-x-1 cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Add</span>
@@ -245,15 +256,15 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
                 {attachments.map((url, idx) => (
                   <li
                     key={idx}
-                    className="flex items-center justify-between text-xs bg-neutral-100/80 px-3 py-1.5 rounded-lg border border-neutral-200/60"
+                    className="flex items-center justify-between text-xs bg-background-hover px-3 py-1.5 rounded-lg border border-border-subtle"
                   >
-                    <span className="truncate max-w-md font-mono text-neutral-600">
+                    <span className="truncate max-w-md font-mono text-foreground-muted">
                       {url}
                     </span>
                     <button
                       type="button"
                       onClick={() => handleRemoveAttachment(idx)}
-                      className="text-neutral-400 hover:text-red-500 transition-colors p-1"
+                      className="text-foreground-subtle hover:text-red-500 transition-colors p-1"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -265,22 +276,22 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
         </form>
 
         {/* Footer Actions */}
-        <div className="px-6 py-4 border-t border-neutral-100 bg-neutral-50/50 flex items-center justify-end space-x-3">
+        <div className="px-6 py-4 border-t border-border-subtle bg-background-hover/70 flex items-center justify-end space-x-3">
           <button
             type="button"
             onClick={onClose}
-            disabled={isLoading}
-            className="px-4 py-2.5 rounded-xl border border-neutral-200 text-xs font-bold text-neutral-600 hover:bg-neutral-100 transition-all cursor-pointer"
+            disabled={isSubmitting}
+            className="px-4 py-2.5 rounded-xl border border-border text-xs font-bold text-foreground-muted hover:bg-background-hover transition-all cursor-pointer"
           >
             Cancel
           </button>
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={isLoading}
-            className="px-5 py-2.5 rounded-xl bg-[#5A67FF] hover:bg-indigo-600 text-xs font-bold text-white transition-all flex items-center space-x-2 shadow-xs cursor-pointer disabled:opacity-50"
+            disabled={isSubmitting}
+            className="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-hover text-xs font-bold text-primary-foreground transition-all flex items-center space-x-2 shadow-xs cursor-pointer disabled:opacity-50"
           >
-            {isLoading ? (
+            {isSubmitting ? (
               <>
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
                 <span>Posting...</span>

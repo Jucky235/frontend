@@ -1,5 +1,4 @@
 import * as React from "react";
-import Header from "@/components/organism/common/Header";
 import { useAppSelector } from "@/redux/hook";
 import {
   useGetNewsQuery,
@@ -102,27 +101,23 @@ export default function NewsManagementPage() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-neutral-50 font-inter flex flex-col justify-between select-none">
-      <Header />
+    <div className="w-full space-y-8">
+      <NewsHeaderBanner onOpenCreateModal={handleOpenCreateModal} />
 
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
-        <NewsHeaderBanner onOpenCreateModal={handleOpenCreateModal} />
+      <NewsAnalyticsOverview
+        totalCount={pagination?.total ?? newsList.length}
+        newsList={newsList}
+      />
 
-        <NewsAnalyticsOverview
-          totalCount={pagination?.total ?? newsList.length}
-          newsList={newsList}
-        />
+      <NewsFilterBar isFetching={isFetching} />
 
-        <NewsFilterBar isFetching={isFetching} />
-
-        <NewsTable
-          newsList={newsList}
-          isLoading={isLoading}
-          pagination={pagination}
-          onEdit={handleOpenEditModal}
-          onDelete={handleDelete}
-        />
-      </main>
+      <NewsTable
+        newsList={newsList}
+        isLoading={isLoading}
+        pagination={pagination}
+        onEdit={handleOpenEditModal}
+        onDelete={handleDelete}
+      />
 
       <NewsFormModal
         isOpen={isModalOpen}

@@ -23,6 +23,11 @@ import QuestionManagementPage from "@/pages/dashboard/question-management-page";
 import ForumPostDetailPage from "@/pages/community/post-page";
 import RankingPage from "@/pages/community/ranking-page";
 import RoadmapPage from "@/pages/community/roadmap-page";
+import ForgotPasswordPage from "@/pages/auth/forgot-password-page";
+import NotFoundPage from "@/pages/not-found/not-found-page";
+
+// Import the new Dashboard Layout wrapper
+import DashboardLayout from "@/components/layout/DashboardLayout";
 
 export const router = createBrowserRouter([
   // Auth Routes
@@ -33,6 +38,10 @@ export const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPasswordPage />,
   },
 
   // Main App Routes
@@ -107,45 +116,39 @@ export const router = createBrowserRouter([
     element: <RoadmapPage />,
   },
 
-  // Protected Admin Routes
+  // Protected Admin Routes with Sidebar Layout
   {
-    path: "/dashboard/user",
+    path: "/dashboard",
     element: (
       <AdminRoute>
-        <UserManagementPage />
+        <DashboardLayout />
       </AdminRoute>
     ),
+    children: [
+      {
+        path: "user",
+        element: <UserManagementPage />,
+      },
+      {
+        path: "course",
+        element: <CourseManagementPage />,
+      },
+      {
+        path: "exam",
+        element: <ExamsManagementPage />,
+      },
+      {
+        path: "question",
+        element: <QuestionManagementPage />,
+      },
+      {
+        path: "news",
+        element: <NewsManagementPage />,
+      },
+    ],
   },
   {
-    path: "/dashboard/course",
-    element: (
-      <AdminRoute>
-        <CourseManagementPage />
-      </AdminRoute>
-    ),
-  },
-  {
-    path: "/dashboard/exam",
-    element: (
-      <AdminRoute>
-        <ExamsManagementPage />
-      </AdminRoute>
-    ),
-  },
-  {
-    path: "/dashboard/question",
-    element: (
-      <AdminRoute>
-        <QuestionManagementPage />
-      </AdminRoute>
-    ),
-  },
-  {
-    path: "/dashboard/news",
-    element: (
-      <AdminRoute>
-        <NewsManagementPage />
-      </AdminRoute>
-    ),
+    path: "*",
+    element: <NotFoundPage />,
   },
 ]);

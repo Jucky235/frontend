@@ -38,6 +38,7 @@ interface ForumSidebarProps {
   onSelectCategory: (categoryId: string) => void;
   discussionsCount?: number;
   membersCount?: number;
+  categories?: { id: string; name: string; icon?: React.ReactNode }[];
 }
 
 export const ForumSidebar: React.FC<ForumSidebarProps> = ({
@@ -45,16 +46,17 @@ export const ForumSidebar: React.FC<ForumSidebarProps> = ({
   onSelectCategory,
   discussionsCount = 1280,
   membersCount = 4520,
+  categories = CATEGORIES,
 }) => {
   return (
     <aside className="space-y-6">
       {/* Category List */}
-      <div className="bg-white border border-neutral-200/80 rounded-2xl p-4 shadow-xs space-y-3">
-        <h2 className="text-xs font-bold text-neutral-400 uppercase tracking-wider px-2">
+      <div className="bg-background-card border border-border/80 rounded-2xl p-4 shadow-xs space-y-3">
+        <h2 className="text-xs font-bold text-foreground-subtle uppercase tracking-wider px-2">
           Categories
         </h2>
         <nav className="space-y-1">
-          {CATEGORIES.map((cat) => {
+          {categories.map((cat) => {
             const isActive = selectedCategory === cat.id;
             return (
               <button
@@ -62,13 +64,11 @@ export const ForumSidebar: React.FC<ForumSidebarProps> = ({
                 onClick={() => onSelectCategory(cat.id)}
                 className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   isActive
-                    ? "bg-indigo-50 text-[#5A67FF]"
-                    : "text-neutral-600 hover:bg-neutral-100"
+                    ? "bg-primary-bg text-primary"
+                    : "text-foreground-muted hover:bg-background-hover"
                 }`}
               >
-                <span
-                  className={isActive ? "text-[#5A67FF]" : "text-neutral-400"}
-                >
+                <span className={isActive ? "text-primary" : "text-foreground-subtle"}>
                   {cat.icon}
                 </span>
                 <span>{cat.name}</span>
@@ -79,24 +79,24 @@ export const ForumSidebar: React.FC<ForumSidebarProps> = ({
       </div>
 
       {/* Community Stats Widget */}
-      <div className="bg-white border border-neutral-200/80 rounded-2xl p-5 shadow-xs space-y-4">
-        <h3 className="text-xs font-extrabold text-neutral-800 uppercase tracking-wider">
+      <div className="bg-background-card border border-border/80 rounded-2xl p-5 shadow-xs space-y-4">
+        <h3 className="text-xs font-extrabold text-foreground uppercase tracking-wider">
           Community Stats
         </h3>
         <div className="grid grid-cols-2 gap-3 text-center">
-          <div className="bg-neutral-50 p-3 rounded-xl border border-neutral-100">
-            <div className="text-base font-black text-[#5A67FF]">
+          <div className="bg-background-hover p-3 rounded-xl border border-border-subtle">
+            <div className="text-base font-black text-primary">
               {discussionsCount.toLocaleString()}
             </div>
-            <div className="text-[10px] font-bold text-neutral-400">
+            <div className="text-[10px] font-bold text-foreground-subtle">
               Discussions
             </div>
           </div>
-          <div className="bg-neutral-50 p-3 rounded-xl border border-neutral-100">
-            <div className="text-base font-black text-indigo-500">
+          <div className="bg-background-hover p-3 rounded-xl border border-border-subtle">
+            <div className="text-base font-black text-brand">
               {membersCount.toLocaleString()}
             </div>
-            <div className="text-[10px] font-bold text-neutral-400">
+            <div className="text-[10px] font-bold text-foreground-subtle">
               Members
             </div>
           </div>

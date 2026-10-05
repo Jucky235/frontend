@@ -38,7 +38,6 @@ import {
   resetFlashcardState,
 } from "@/redux/flashcard/flashcardSlice";
 
-// Selectors helper (adjust path to RootState if typed elsewhere)
 import type { RootState } from "@/redux/store";
 
 export default function FlashcardsPage() {
@@ -54,6 +53,9 @@ export default function FlashcardsPage() {
   // 2. Local Session UI State
   const [isFinished, setIsFinished] = React.useState(false);
   const [elapsedSeconds, setElapsedSeconds] = React.useState(0);
+
+  // Guard ref to ensure session initializes only once per deck
+  const initializedDeckRef = React.useRef<string | null>(null);
 
   // 3. API Queries & Mutations
   const {
@@ -74,26 +76,31 @@ export default function FlashcardsPage() {
 
   const [submitCardReview] = useSubmitCardReviewMutation();
 
-  // 4. Initialize Redux Flashcard Session
+  // 4. Initialize Redux Flashcard Session (Prevent re-initialization on query refetches)
   React.useEffect(() => {
     if (!deckId) return;
 
-    // Prioritize due cards for spaced repetition; fallback to deck's total cards list
-    const activeCardsList: Flashcard[] =
-      dueCards && dueCards.length > 0
-        ? dueCards
-        : deck?.cards && deck.cards.length > 0
-          ? deck.cards
-          : [];
+    if (initializedDeckRef.current !== deckId) {
+      const activeCardsList: Flashcard[] =
+        dueCards && dueCards.length > 0
+          ? dueCards
+          : deck?.cards && deck.cards.length > 0
+            ? deck.cards
+            : [];
 
-    if (activeCardsList.length > 0) {
-      dispatch(startSession({ deckId, cards: activeCardsList }));
-      setIsFinished(false);
-      setElapsedSeconds(0);
+      if (activeCardsList.length > 0) {
+        dispatch(startSession({ deckId, cards: activeCardsList }));
+        setIsFinished(false);
+        setElapsedSeconds(0);
+        initializedDeckRef.current = deckId;
+      }
     }
 
     return () => {
-      dispatch(resetFlashcardState());
+      // Cleanup on unmount or deckId change
+      if (initializedDeckRef.current !== deckId) {
+        dispatch(resetFlashcardState());
+      }
     };
   }, [deckId, deck, dueCards, dispatch]);
 
@@ -156,9 +163,10 @@ export default function FlashcardsPage() {
   };
 
   const handleRestartSession = () => {
+    initializedDeckRef.current = null;
+    dispatch(resetFlashcardState());
     refetchDueCards();
     refetchDeck();
-    dispatch(resetFlashcardState());
   };
 
   const isLoading = isDeckLoading || isDueLoading;
@@ -327,7 +335,7 @@ export default function FlashcardsPage() {
                 </div>
               </div>
 
-              {/* FSRS Rating Buttons (1: Again, 2: Hard, 3: Good, 4: Easy) */}
+              {/* FSRS Rating Buttons */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <button
                   type="button"

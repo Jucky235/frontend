@@ -12,22 +12,48 @@ import {
   HelpCircle,
   Loader2,
   AlertCircle,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { useGetExamsQuery } from "@/redux/exam/examApiSlice";
 
-export default function ExamListPage() {
+interface ExamListPageProps {
+  pageSize?: number; // Optional custom page size, defaults to 6 items per page
+}
+
+export default function ExamListPage({ pageSize = 6 }: ExamListPageProps) {
   const { data: exams = [], isLoading, isError, error } = useGetExamsQuery();
   const [searchQuery, setSearchQuery] = React.useState("");
+  const [currentPage, setCurrentPage] = React.useState(1);
 
   // Map API fields ('name' and 'time') to match the UI layout safely
-  const filteredExams = exams.filter(
-    (exam) =>
-      exam.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      exam.category?.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  const filteredExams = React.useMemo(() => {
+    return exams.filter(
+      (exam) =>
+        exam.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        exam.category?.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+  }, [exams, searchQuery]);
+
+  // Reset to page 1 whenever search query changes
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
+  // Calculate total pages & guard against out-of-bounds page indices
+  const totalPages = Math.ceil(filteredExams.length / pageSize) || 1;
+  if (currentPage > totalPages && totalPages > 0) {
+    setCurrentPage(totalPages);
+  }
+
+  // Get current slice of exams for pagination
+  const paginatedExams = React.useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredExams.slice(start, start + pageSize);
+  }, [filteredExams, currentPage, pageSize]);
 
   return (
-    <div className="study-page font-inter">
+    <div className="study-page font-inter examlist-page">
       {/* 1. Dynamic Top Navigation Hub Bar */}
       <header className="study-header">
         <div className="flex items-center space-x-4">
@@ -54,7 +80,7 @@ export default function ExamListPage() {
       </header>
 
       {/* 2. Main Layout Container Area */}
-      <main className="flex-1 w-full max-w-5xl mx-auto px-6 py-10 flex flex-col space-y-8">
+      <main className="examlist-main">
         <div>
           <h1 className="examlist-page-title">Certifications & Exams</h1>
           <p className="examlist-page-subtitle">
@@ -79,7 +105,7 @@ export default function ExamListPage() {
         </div>
 
         {/* 4. Dynamic Async Conditional Rendering Layout */}
-        <div className="space-y-4">
+        <div className="examlist-list">
           {isLoading && (
             <div className="examlist-loading-panel">
               <Loader2 className="examlist-loading-spinner w-8 h-8 animate-spin" />
@@ -105,8 +131,8 @@ export default function ExamListPage() {
 
           {!isLoading &&
             !isError &&
-            filteredExams.length > 0 &&
-            filteredExams.map((exam) => {
+            paginatedExams.length > 0 &&
+            paginatedExams.map((exam) => {
               const isActive = exam.status === "ACTIVE";
               return (
                 <div
@@ -115,7 +141,7 @@ export default function ExamListPage() {
                     isActive ? "is-active" : "is-inactive"
                   }`}
                 >
-                  <div className="flex flex-start space-x-4 flex-1">
+                  <div className="examlist-card-main">
                     <div
                       className={`examlist-card-icon-wrapper ${
                         isActive ? "is-active" : "is-inactive"
@@ -124,8 +150,8 @@ export default function ExamListPage() {
                       <FileText className="w-5 h-5" />
                     </div>
 
-                    <div className="space-y-1.5">
-                      <div className="flex flex-wrap items-center gap-2">
+                    <div className="examlist-card-info">
+                      <div className="examlist-card-header">
                         <h3
                           className={`examlist-card-title ${
                             isActive ? "is-active" : "is-inactive"
@@ -192,6 +218,73 @@ export default function ExamListPage() {
           {!isLoading && !isError && filteredExams.length === 0 && (
             <div className="deck-feed-empty-panel">
               No evaluation tests matched your parameters.
+            </div>
+          )}
+
+          {/* 5. Pagination Footer Controls */}
+          {!isLoading && !isError && filteredExams.length > 0 && (
+            <div className="flex flex-col items-center justify-center gap-4 pt-6 pb-2">
+              <div className="text-sm text-foreground-subtle text-center">
+                Showing{" "}
+                <span className="font-bold">
+                  {(currentPage - 1) * pageSize + 1}
+                </span>{" "}
+                to{" "}
+                <span className="font-bold">
+                  {Math.min(currentPage * pageSize, filteredExams.length)}
+                </span>{" "}
+                of <span className="font-bold">{filteredExams.length}</span>{" "}
+                exams
+              </div>
+
+              <div className="flex items-center space-x-1.5 flex-wrap justify-center">
+                {/* Previous Page Arrow */}
+                <button
+                  type="button"
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(prev - 1, 1))
+                  }
+                  disabled={currentPage === 1}
+                  className="px-3 py-2.5 rounded-xl border border-border bg-background-card text-foreground hover:bg-background-hover disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer flex items-center justify-center font-medium text-sm"
+                  aria-label="Previous page"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+
+                {/* Numbered Page Buttons */}
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => {
+                    const isActive = page === currentPage;
+                    return (
+                      <button
+                        key={page}
+                        type="button"
+                        onClick={() => setCurrentPage(page)}
+                        className={`min-w-[42px] px-3.5 py-2.5 rounded-xl border text-sm font-semibold transition-colors cursor-pointer ${
+                          isActive
+                            ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                            : "bg-background-card border-border text-foreground hover:bg-background-hover"
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    );
+                  },
+                )}
+
+                {/* Next Page Arrow */}
+                <button
+                  type="button"
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                  }
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-2.5 rounded-xl border border-border bg-background-card text-foreground hover:bg-background-hover disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer flex items-center justify-center font-medium text-sm"
+                  aria-label="Next page"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
             </div>
           )}
         </div>

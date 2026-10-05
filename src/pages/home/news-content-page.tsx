@@ -108,15 +108,14 @@ export default function NewsContentPage({
   };
 
   return (
-    <div className="min-h-screen w-full bg-background font-inter flex flex-col justify-between select-none text-foreground">
+    <div className="min-h-screen w-full bg-background font-inter flex flex-col justify-between text-foreground">
       <Header />
 
-      <main className="flex-1 w-full max-w-4xl mx-auto px-4 sm:px-6 py-10 space-y-8">
-        {/* Navigation Bar */}
+      <main className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-8">
         <div className="flex items-center justify-between">
           <button
             onClick={handleBack}
-            className="inline-flex items-center space-x-2 text-muted-foreground hover:text-primary text-xs font-bold transition-colors cursor-pointer group"
+            className="inline-flex items-center space-x-2 text-muted-foreground hover:text-foreground text-xs font-bold transition-colors cursor-pointer group"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             <span>Back to News Center</span>
@@ -125,10 +124,10 @@ export default function NewsContentPage({
           <div className="flex items-center space-x-2">
             <button
               onClick={() => setIsBookmarked(!isBookmarked)}
-              className={`p-2 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
+              className={`p-2.5 rounded-xl border transition-all cursor-pointer ${
                 isBookmarked
-                  ? "bg-accent border-accent text-primary"
-                  : "bg-card border-border text-muted-foreground hover:bg-muted"
+                  ? "bg-brand/10 border-brand/20 text-brand"
+                  : "bg-background-card border-border text-muted-foreground hover:bg-background-hover"
               }`}
               title={isBookmarked ? "Remove bookmark" : "Save article"}
             >
@@ -136,11 +135,11 @@ export default function NewsContentPage({
             </button>
             <button
               onClick={handleShare}
-              className="p-2 rounded-xl bg-card border border-border text-muted-foreground hover:bg-muted text-xs font-bold transition-all cursor-pointer"
+              className="p-2.5 rounded-xl bg-background-card border border-border text-muted-foreground hover:bg-background-hover transition-all cursor-pointer"
               title="Share article"
             >
               {copied ? (
-                <Check className="w-4 h-4 text-emerald-600" />
+                <Check className="w-4 h-4 text-status-success" />
               ) : (
                 <Share2 className="w-4 h-4" />
               )}
@@ -148,24 +147,22 @@ export default function NewsContentPage({
           </div>
         </div>
 
-        {/* Loading State */}
         {isLoading && (
           <div className="py-24 flex flex-col items-center justify-center space-y-3 text-muted-foreground">
-            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <Loader2 className="w-8 h-8 animate-spin text-brand" />
             <p className="text-xs font-bold">Loading article content...</p>
           </div>
         )}
 
-        {/* Error State */}
         {(isError || (!isLoading && resolvedArticleId && !article)) && (
-          <div className="bg-destructive/10 border border-destructive/20 rounded-2xl p-8 text-center space-y-3 text-destructive">
+          <div className="bg-status-danger-bg border border-status-danger/20 rounded-2xl p-8 text-center space-y-3 text-status-danger">
             <h3 className="text-sm font-extrabold">Article Not Found</h3>
             <p className="text-xs font-medium">
               We couldn't load this news article or it may have been removed.
             </p>
             <button
               onClick={handleBack}
-              className="inline-flex items-center space-x-2 bg-destructive text-destructive-foreground text-xs font-bold px-4 py-2 rounded-xl hover:bg-destructive/90 transition-colors cursor-pointer"
+              className="inline-flex items-center space-x-2 bg-status-danger text-white text-xs font-bold px-4 py-2 rounded-xl hover:opacity-90 transition-colors cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Return to News</span>
@@ -173,17 +170,15 @@ export default function NewsContentPage({
           </div>
         )}
 
-        {/* Main Article Content */}
         {!isLoading && article && (
           <article className="space-y-8">
-            {/* Header Section */}
-            <div className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <span className="bg-primary/10 text-primary text-xs font-extrabold px-3 py-1 rounded-full">
+            <div className="space-y-5">
+              <div className="flex items-center flex-wrap gap-2">
+                <span className="bg-brand/10 text-brand text-[11px] font-extrabold px-3 py-1 rounded-full border border-brand/20">
                   {article.category}
                 </span>
                 {article.category === "FEATURED" && (
-                  <span className="text-amber-600 bg-amber-50 dark:bg-amber-950/30 dark:text-amber-400 text-xs font-bold px-2.5 py-1 rounded-full flex items-center space-x-1">
+                  <span className="text-amber-600 bg-amber-50 dark:bg-amber-950/30 dark:text-amber-400 text-[11px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1.5 border border-amber-200 dark:border-amber-900/50">
                     <Sparkles className="w-3 h-3" />
                     <span>Featured</span>
                   </span>
@@ -194,50 +189,41 @@ export default function NewsContentPage({
                 {article.title}
               </h1>
 
-              {/* Metadata */}
               <div className="flex flex-wrap items-center justify-between gap-4 py-3 border-y border-border text-xs text-muted-foreground font-semibold">
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-7 h-7 rounded-full bg-accent flex items-center justify-center text-primary font-bold text-xs">
+                <div className="flex flex-wrap items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-full bg-brand/10 text-brand flex items-center justify-center font-bold text-xs">
                       <User className="w-4 h-4" />
                     </div>
-                    <span className="text-foreground font-bold">
-                      Admin Desk
-                    </span>
+                    <span className="text-foreground font-bold">Admin Desk</span>
                   </div>
-                  <span className="flex items-center space-x-1">
+                  <span className="flex items-center gap-1.5">
                     <Calendar className="w-3.5 h-3.5" />
                     <span>
                       {article.publishedAt
-                        ? new Date(article.publishedAt).toLocaleDateString(
-                            undefined,
-                            {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            },
-                          )
+                        ? new Date(article.publishedAt).toLocaleDateString(undefined, {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })
                         : "Recently"}
                     </span>
                   </span>
-                  <span className="flex items-center space-x-1">
+                  <span className="flex items-center gap-1.5">
                     <Clock className="w-3.5 h-3.5" />
                     <span>{readingTime} min read</span>
                   </span>
                 </div>
 
-                <div className="flex items-center space-x-3 text-muted-foreground">
-                  <span className="flex items-center space-x-1">
-                    <Eye className="w-3.5 h-3.5" />
-                    <span>{article.viewsCount} views</span>
-                  </span>
-                </div>
+                <span className="flex items-center gap-1.5">
+                  <Eye className="w-3.5 h-3.5" />
+                  <span>{article.viewsCount} views</span>
+                </span>
               </div>
             </div>
 
-            {/* Featured Image Banner */}
             {article.thumbnail && (
-              <div className="w-full h-64 sm:h-96 rounded-3xl overflow-hidden bg-muted border border-border shadow-xs">
+              <div className="w-full h-64 sm:h-[420px] rounded-[28px] overflow-hidden bg-background-hover border border-border shadow-sm">
                 <img
                   src={article.thumbnail}
                   alt={article.title}
@@ -246,14 +232,12 @@ export default function NewsContentPage({
               </div>
             )}
 
-            {/* Summary Highlight Box */}
             {article.summary && (
-              <div className="bg-accent/50 border-l-4 border-primary p-4 sm:p-5 rounded-r-2xl text-xs sm:text-sm text-foreground/90 font-medium leading-relaxed italic">
-                "{article.summary}"
+              <div className="bg-brand/5 border-l-4 border-brand p-4 sm:p-5 rounded-r-2xl text-xs sm:text-sm text-foreground/90 font-medium leading-relaxed italic">
+                “{article.summary}”
               </div>
             )}
 
-            {/* Article Body */}
             <div className="prose prose-neutral dark:prose-invert max-w-none text-foreground/90 text-sm sm:text-base leading-relaxed space-y-4 font-normal">
               {article.content?.split("\n\n").map((paragraph, idx) => (
                 <p key={idx} className="whitespace-pre-line">
@@ -262,17 +246,14 @@ export default function NewsContentPage({
               ))}
             </div>
 
-            {/* Tags Section */}
             {article.tags && article.tags.length > 0 && (
-              <div className="pt-4 border-t border-border flex items-center space-x-2">
-                <span className="text-xs font-bold text-muted-foreground">
-                  Tags:
-                </span>
-                <div className="flex flex-wrap gap-1.5">
+              <div className="pt-4 border-t border-border flex flex-wrap items-center gap-2">
+                <span className="text-xs font-bold text-muted-foreground">Tags:</span>
+                <div className="flex flex-wrap gap-2">
                   {article.tags.map((tag) => (
                     <span
                       key={tag.id}
-                      className="bg-muted text-muted-foreground text-[11px] font-bold px-2.5 py-1 rounded-lg"
+                      className="bg-background-hover border border-border text-muted-foreground text-[11px] font-bold px-3 py-1.5 rounded-full"
                     >
                       #{tag.name}
                     </span>
@@ -281,30 +262,30 @@ export default function NewsContentPage({
               </div>
             )}
 
-            {/* Feedback & Interaction Bar */}
-            <div className="bg-card border border-border rounded-2xl p-5 flex items-center justify-between shadow-xs">
-              <div className="flex items-center space-x-3">
-                <button
-                  onClick={handleLike}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    hasLiked
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground hover:bg-accent"
-                  }`}
-                >
-                  <ThumbsUp className="w-3.5 h-3.5" />
-                  <span>{likes} Helpful</span>
-                </button>
-              </div>
+            <div className="bg-background-card border border-border rounded-[22px] p-4 sm:p-5 shadow-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleLike}
+                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                      hasLiked
+                        ? "bg-brand text-white"
+                        : "bg-background-hover text-muted-foreground hover:bg-brand/10 hover:text-brand"
+                    }`}
+                  >
+                    <ThumbsUp className="w-3.5 h-3.5" />
+                    <span>{likes} Helpful</span>
+                  </button>
+                </div>
 
-              <p className="text-xs text-muted-foreground font-medium hidden sm:block">
-                Found this update useful? Share it with your study group!
-              </p>
+                <p className="text-xs text-muted-foreground font-medium text-center sm:text-right">
+                  Found this update useful? Share it with your study group!
+                </p>
+              </div>
             </div>
           </article>
         )}
 
-        {/* Related Articles Grid */}
         {relatedArticles.length > 0 && (
           <section className="pt-10 space-y-5 border-t border-border">
             <div className="flex items-center justify-between">
@@ -313,7 +294,7 @@ export default function NewsContentPage({
               </h3>
               <button
                 onClick={handleBack}
-                className="text-primary text-xs font-bold hover:underline cursor-pointer"
+                className="text-brand text-xs font-bold hover:underline cursor-pointer"
               >
                 View all
               </button>
@@ -324,10 +305,10 @@ export default function NewsContentPage({
                 <article
                   key={relItem.id}
                   onClick={() => navigate(`/news/${relItem.id}`)}
-                  className="bg-card border border-border rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer"
+                  className="bg-background-card border border-border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer"
                 >
                   <div>
-                    <div className="h-32 w-full overflow-hidden bg-muted relative">
+                    <div className="h-32 w-full overflow-hidden bg-background-hover relative">
                       {relItem.thumbnail ? (
                         <img
                           src={relItem.thumbnail}
@@ -339,13 +320,13 @@ export default function NewsContentPage({
                           <BookOpen className="w-6 h-6" />
                         </div>
                       )}
-                      <span className="absolute top-2 left-2 bg-background/90 backdrop-blur-md text-primary text-[9px] font-extrabold px-2 py-0.5 rounded-md">
+                      <span className="absolute top-2 left-2 bg-background/80 backdrop-blur-md text-brand text-[9px] font-extrabold px-2 py-0.5 rounded-md">
                         {relItem.category}
                       </span>
                     </div>
 
                     <div className="p-4 space-y-1.5">
-                      <h4 className="text-xs font-extrabold text-foreground line-clamp-2 group-hover:text-primary transition-colors leading-snug">
+                      <h4 className="text-xs font-extrabold text-foreground line-clamp-2 group-hover:text-brand transition-colors leading-snug">
                         {relItem.title}
                       </h4>
                     </div>

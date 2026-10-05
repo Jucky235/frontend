@@ -53,6 +53,22 @@ export interface GetMessagesQueryParams {
   limit?: number;
 }
 
+// 🟢 AI Summary Interfaces
+export interface ChannelSummaryData {
+  channelId: string;
+  channelName: string;
+  summary: string;
+}
+
+export interface GetChannelSummaryResponse {
+  data: ChannelSummaryData;
+}
+
+export interface GetChannelSummaryQueryParams {
+  channelId: string;
+  limit?: number;
+}
+
 export const channelApiSlice = baseApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // 🟢 1. Lấy danh sách tất cả Channels
@@ -100,6 +116,21 @@ export const channelApiSlice = baseApiSlice.injectEndpoints({
         { type: "Message", id: channelId },
       ],
     }),
+
+    // 🟢 4. Lấy tóm tắt cuộc trò chuyện bằng AI (Lazy or On-demand query)
+    getChannelSummary: builder.query<
+      GetChannelSummaryResponse,
+      GetChannelSummaryQueryParams
+    >({
+      query: ({ channelId, limit = 50 }) => ({
+        url: `/channels/${channelId}/summary`,
+        method: "GET",
+        params: { limit },
+      }),
+      providesTags: (_result, _error, { channelId }) => [
+        { type: "ChannelSummary" as const, id: channelId },
+      ],
+    }),
   }),
 });
 
@@ -107,4 +138,6 @@ export const {
   useGetAllChannelsQuery,
   useGetChannelByIdQuery,
   useGetMessagesByChannelIdQuery,
+  useGetChannelSummaryQuery,
+  useLazyGetChannelSummaryQuery, // Recommended: call manually on button click
 } = channelApiSlice;

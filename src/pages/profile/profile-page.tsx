@@ -18,6 +18,7 @@ import {
   Mic,
   PenTool,
   Target,
+  Map,
 } from "lucide-react";
 
 import { logOut } from "@/redux/auth/authSlice";
@@ -377,9 +378,19 @@ export default function ProfilePage() {
               <Target className="w-4 h-4 text-brand" />
               <span>Skill Accuracy Gauge</span>
             </h2>
-            <span className="text-xs font-semibold text-foreground-subtle">
-              Real-time Precision Analysis
-            </span>
+            <div className="flex items-center space-x-3">
+              <button
+                type="button"
+                onClick={() => navigate("/roadmap")}
+                className="px-3.5 py-1.5 rounded-xl bg-brand/10 border border-brand/20 text-brand font-bold hover:bg-brand/20 transition-all flex items-center space-x-2 text-xs"
+              >
+                <Map className="w-3.5 h-3.5" />
+                <span>View Roadmap</span>
+              </button>
+              <span className="hidden sm:inline text-xs font-semibold text-foreground-subtle">
+                Real-time Precision Analysis
+              </span>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -418,7 +429,7 @@ export default function ProfilePage() {
             <h2 className="profile-section-title">Account Settings</h2>
 
             <form onSubmit={handleSave} className="profile-card">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="profile-form-grid">
                 <div className="space-y-2">
                   <label htmlFor="fullName" className="profile-form-label">
                     Full Name
@@ -450,66 +461,65 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              <hr className="border-border" />
+              <hr className="border-border my-5" />
 
-              {/* Toggle Switch Preference Card */}
-              <div className="profile-setting-row">
-                <div className="flex items-center space-x-3">
-                  <div className="profile-setting-icon">
-                    <Shield className="w-5 h-5 text-brand" />
+              <div className="space-y-0">
+                <div className="profile-setting-row">
+                  <div className="flex items-center space-x-3 flex-1 min-w-0">
+                    <div className="profile-setting-icon">
+                      <Shield className="w-5 h-5 text-brand" />
+                    </div>
+                    <div className="profile-setting-text">
+                      <h4 className="text-sm font-bold text-foreground">
+                        Email Notifications
+                      </h4>
+                      <p className="text-xs text-foreground-subtle">
+                        Receive system performance metrics directly.
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-foreground">
-                      Email Notifications
-                    </h4>
-                    <p className="text-xs text-foreground-subtle">
-                      Receive system performance metrics directly.
-                    </p>
-                  </div>
-                </div>
 
-                <button
-                  type="button"
-                  onClick={handleToggle}
-                  className={`profile-toggle-btn ${
-                    formData.notifications ? "bg-brand" : "bg-background-hover"
-                  }`}
-                >
-                  <div
-                    className={`profile-toggle-knob ${
-                      formData.notifications ? "translate-x-5" : "translate-x-0"
+                  <button
+                    type="button"
+                    onClick={handleToggle}
+                    className={`profile-toggle-btn ${
+                      formData.notifications ? "bg-brand" : "bg-background-hover"
                     }`}
-                  />
-                </button>
-              </div>
-
-              {/* Security Credentials Row */}
-              <div className="profile-setting-row">
-                <div className="flex items-center space-x-3">
-                  <div className="profile-setting-icon">
-                    <KeyRound className="w-5 h-5 text-brand" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-foreground">
-                      Account Password
-                    </h4>
-                    <p className="text-xs text-foreground-subtle">
-                      Update your account authentication token configuration.
-                    </p>
-                  </div>
+                  >
+                    <div
+                      className={`profile-toggle-knob ${
+                        formData.notifications ? "translate-x-5" : "translate-x-0"
+                      }`}
+                    />
+                  </button>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => setIsPasswordModalOpen(true)}
-                  className="profile-btn-secondary"
-                >
-                  Change Password
-                </button>
+                <div className="profile-setting-row">
+                  <div className="flex items-center space-x-3 flex-1 min-w-0">
+                    <div className="profile-setting-icon">
+                      <KeyRound className="w-5 h-5 text-brand" />
+                    </div>
+                    <div className="profile-setting-text">
+                      <h4 className="text-sm font-bold text-foreground">
+                        Account Password
+                      </h4>
+                      <p className="text-xs text-foreground-subtle">
+                        Update your account authentication token configuration.
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsPasswordModalOpen(true)}
+                    className="profile-btn-secondary profile-setting-action"
+                  >
+                    Change Password
+                  </button>
+                </div>
               </div>
 
-              {/* Form Submission Actions */}
-              <div className="flex justify-end pt-2">
+              <div className="profile-submit-row">
                 <button
                   type="submit"
                   disabled={isSaving || isUnchanged}

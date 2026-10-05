@@ -114,6 +114,21 @@ export const examApiSlice = baseApiSlice.injectEndpoints({
             ]
           : [{ type: "Exam", id: "LIST" }],
     }),
+
+    getDailyExam: builder.query<Exam, void>({
+      query: () => ({
+        url: "/exams/daily",
+        method: "GET",
+      }),
+      providesTags: (result) =>
+        result
+          ? [
+              { type: "Exam", id: result.id },
+              { type: "Exam", id: "DAILY" },
+            ]
+          : [{ type: "Exam", id: "DAILY" }],
+    }),
+
     getExamById: builder.query<Exam, number | string>({
       query: (id) => ({
         url: `/exams/${id}`,
@@ -121,14 +136,19 @@ export const examApiSlice = baseApiSlice.injectEndpoints({
       }),
       providesTags: (_result, _error, id) => [{ type: "Exam", id }],
     }),
+
     createExam: builder.mutation<Exam, CreateExamPayload>({
       query: (body) => ({
         url: "/exams",
         method: "POST",
         body,
       }),
-      invalidatesTags: [{ type: "Exam", id: "LIST" }],
+      invalidatesTags: [
+        { type: "Exam", id: "LIST" },
+        { type: "Exam", id: "DAILY" },
+      ],
     }),
+
     addQuestionsToExam: builder.mutation<Exam, AddQuestionsToExamPayload>({
       query: ({ examId, questions }) => ({
         url: `/exams/${examId}/questions`,
@@ -138,21 +158,27 @@ export const examApiSlice = baseApiSlice.injectEndpoints({
       invalidatesTags: (_result, _error, { examId }) => [
         { type: "Exam", id: examId },
         { type: "Exam", id: "LIST" },
+        { type: "Exam", id: "DAILY" },
       ],
     }),
+
     submitExam: builder.mutation<any, SubmitExamPayload>({
       query: (body) => ({
         url: "/exams/submit",
         method: "POST",
         body,
       }),
-      invalidatesTags: [{ type: "Exam", id: "LIST" }],
+      invalidatesTags: (_result, _error, { examId }) => [
+        { type: "Exam", id: examId },
+        { type: "Exam", id: "LIST" },
+      ],
     }),
   }),
 });
 
 export const {
   useGetExamsQuery,
+  useGetDailyExamQuery,
   useGetExamByIdQuery,
   useCreateExamMutation,
   useAddQuestionsToExamMutation,
