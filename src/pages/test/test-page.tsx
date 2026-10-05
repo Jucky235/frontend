@@ -83,22 +83,22 @@ export default function TestPage() {
     return () => clearInterval(timer);
   }, [timeLeft, isSubmitted]);
 
-  const handleToggleAudio = (questionId: string, url: string) => {
-    if (playingAudioId === questionId) {
+  const handleToggleAudio = (questionId: string | number, url: string) => {
+    if (playingAudioId === String(questionId)) {
       audioRef.current?.pause();
       setPlayingAudioId(null);
     } else {
       audioRef.current?.pause();
       audioRef.current = new Audio(url);
       audioRef.current.play();
-      setPlayingAudioId(questionId);
+      setPlayingAudioId(String(questionId));
       audioRef.current!.onended = () => setPlayingAudioId(null);
     }
   };
 
-  const handleSelectOption = (questionId: string, optionKey: string) => {
+  const handleSelectOption = (questionId: string | number, optionKey: string) => {
     if (isSubmitted) return;
-    dispatch(selectAnswer({ questionId, answer: optionKey }));
+    dispatch(selectAnswer({ questionId: String(questionId), answer: optionKey }));
   };
 
   // Format seconds to HH:MM:SS or MM:SS
@@ -121,32 +121,36 @@ export default function TestPage() {
   const partsList: ExamPart[] = React.useMemo(() => {
     if (!exam) return [];
 
-    // Normalizer to extract clean question objects whether nested or flat
     const normalizeQuestion = (qItem: any): Question => {
       const target = qItem.question ? qItem.question : qItem;
       return {
-        ...target,
-        id: target.id || qItem.questionId || qItem.id,
+        id: target.id ?? qItem.questionId ?? qItem.id ?? 0,
         content: target.content || "",
         options: target.options || {},
-        right_answer: target.right_answer || target.rightAnswer || "",
-        audioPath: target.audioPath || qItem.audioPath,
-        imagePath: target.imagePath || qItem.imagePath,
-        explanation: target.explanation || qItem.explanation,
+        right_answer: target.right_answer || target.rightAnswer || "A",
+        category: target.category || "TOEIC",
+        partNumber: target.partNumber ?? qItem.partNumber ?? 1,
+        explanation: target.explanation ?? qItem.explanation ?? null,
+        imagePath: target.imagePath ?? qItem.imagePath ?? null,
+        audioPath: target.audioPath ?? qItem.audioPath ?? null,
+        topicNumber: target.topicNumber ?? null,
+        createdAt: target.createdAt || new Date().toISOString(),
+        updatedAt: target.updatedAt || new Date().toISOString(),
       };
     };
 
-    // Case 1: Structured exam parts array
-    if (exam.parts && exam.parts.length > 0) {
-      return exam.parts.map((part) => ({
+    const parts = exam.parts || [];
+    const questions = exam.questions || [];
+
+    if (parts && parts.length > 0) {
+      return parts.map((part) => ({
         ...part,
-        questions: (part.questions || []).map(normalizeQuestion),
+        questions: (part.questions || []).map((q) => normalizeQuestion(q)),
       }));
     }
 
-    // Case 2: Flattened top-level questions array
-    if (exam.questions && exam.questions.length > 0) {
-      const grouped = exam.questions.reduce<Record<number, Question[]>>(
+    if (questions && questions.length > 0) {
+      const grouped = questions.reduce<Record<number, Question[]>>(
         (acc, qItem) => {
           const normalized = normalizeQuestion(qItem);
           const pNum = qItem.partNumber || 1;
@@ -213,8 +217,8 @@ export default function TestPage() {
     setPlayingAudioId(null);
   };
 
-  const scrollToQuestion = (questionId: string) => {
-    const el = document.getElementById(`question-${questionId}`);
+  const scrollToQuestion = (questionId: string | number) => {
+    const el = document.getElementById(`question-${String(questionId)}`);
     if (el) {
       el.scrollIntoView({ behavior: "smooth", block: "center" });
     }

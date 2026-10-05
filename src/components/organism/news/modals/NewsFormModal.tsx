@@ -17,13 +17,15 @@ export interface NewsFormData {
 interface NewsFormModalProps {
   isOpen: boolean;
   editingNews: NewsData | null;
+  isSubmitting?: boolean;
   onClose: () => void;
-  onSubmit: (formData: NewsFormData) => void;
+  onSubmit: (formData: NewsFormData) => Promise<void> | void;
 }
 
 export const NewsFormModal: React.FC<NewsFormModalProps> = ({
   isOpen,
   editingNews,
+  isSubmitting = false,
   onClose,
   onSubmit,
 }) => {
@@ -307,9 +309,16 @@ export const NewsFormModal: React.FC<NewsFormModalProps> = ({
             </button>
             <button
               type="submit"
-              className="px-5 py-2.5 bg-[#5A67FF] hover:bg-indigo-600 text-white rounded-xl font-bold text-xs transition-colors shadow-xs cursor-pointer"
+              disabled={isSubmitting}
+              className="px-5 py-2.5 bg-[#5A67FF] hover:bg-indigo-600 text-white rounded-xl font-bold text-xs transition-colors shadow-xs cursor-pointer disabled:opacity-60"
             >
-              {editingNews ? "Save Changes" : "Create Article"}
+              {isSubmitting
+                ? editingNews
+                  ? "Saving..."
+                  : "Creating..."
+                : editingNews
+                  ? "Save Changes"
+                  : "Create Article"}
             </button>
           </div>
         </form>

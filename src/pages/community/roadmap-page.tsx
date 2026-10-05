@@ -73,12 +73,8 @@ export default function GrandHorizontalRoadmapPage({
 
   const roadmap = React.useMemo(() => {
     if (!roadmapResponse) return null;
-    return (
-      roadmapResponse?.data?.roadmap ||
-      roadmapResponse?.data ||
-      roadmapResponse?.result ||
-      roadmapResponse
-    );
+    const payload = (roadmapResponse as any)?.data ?? roadmapResponse;
+    return payload?.roadmap ?? payload ?? null;
   }, [roadmapResponse]);
 
   const nodes = React.useMemo(() => {

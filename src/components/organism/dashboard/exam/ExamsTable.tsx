@@ -25,11 +25,11 @@ interface ExamsTableProps {
   isLoading: boolean;
   isError: boolean;
   onRefetch: () => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: string | number) => void;
   onEdit: (exam: Exam) => void;
   onView: (exam: Exam) => void;
   onAddQuestionsToExam?: (
-    examId: string,
+    examId: string | number,
     questions: SelectedQuestionPayload[],
   ) => void;
 }
@@ -128,21 +128,21 @@ export default function ExamsTable({
     return [];
   }, [selectedExamForAdd]);
   // Extract existing question IDs across single-part and multi-part exams
-  const alreadySelectedQuestionIds: string[] = useMemo(() => {
+  const alreadySelectedQuestionIds: number[] = useMemo(() => {
     if (!selectedExamForAdd) return [];
 
     const directQs =
       selectedExamForAdd.questions
-        ?.map((q: any) => q.id || q.questionId)
-        .filter(Boolean) || [];
+        ?.map((q: any) => (typeof q.id === "number" ? q.id : Number(q.id ?? q.questionId)))
+        .filter((id): id is number => Number.isFinite(id)) || [];
 
     const partQs =
       selectedExamForAdd.parts
         ?.flatMap((part: any) => part.questions || [])
-        .map((q: any) => q.id || q.questionId)
-        .filter(Boolean) || [];
+        .map((q: any) => (typeof q.id === "number" ? q.id : Number(q.id ?? q.questionId)))
+        .filter((id): id is number => Number.isFinite(id)) || [];
 
-    return Array.from(new Set([...directQs, ...partQs])) as string[];
+    return Array.from(new Set([...directQs, ...partQs]));
   }, [selectedExamForAdd]);
 
   if (isLoading) {

@@ -36,8 +36,8 @@ export default function NewsManagementPage() {
 
   const [createNew, { isLoading: isCreating }] = useCreateNewMutation();
   const [updateNews, { isLoading: isUpdating }] = useUpdateNewsMutation();
-  const [deleteNews, { isLoading: isDeleting }] = useDeleteNewsMutation();
-  const [deletingId, setDeletingId] = React.useState<string | null>(null);
+  const [deleteNews] = useDeleteNewsMutation();
+  const [, setDeletingId] = React.useState<string | null>(null);
 
   const newsList = newsResponse?.data ?? [];
   const pagination = newsResponse?.pagination;

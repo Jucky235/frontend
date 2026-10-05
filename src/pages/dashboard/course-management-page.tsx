@@ -13,7 +13,7 @@ import {
 
 export default function CourseManagementPage() {
   // Mock Data Array for Assigned System Courses
-  const [courses, setCourses] = React.useState([
+  const [courses] = React.useState([
     {
       id: "crs-1",
       title: "Full-Stack Web Engineering",

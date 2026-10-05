@@ -34,9 +34,8 @@ export default function FlashcardsListPage() {
         title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         desc.toLowerCase().includes(searchQuery.toLowerCase());
 
-      const progress = deck.progress ?? 0;
-      if (activeTab === "completed") return matchesSearch && progress === 100;
-      if (activeTab === "in-progress") return matchesSearch && progress < 100;
+      if (activeTab === "completed") return matchesSearch;
+      if (activeTab === "in-progress") return matchesSearch;
       return matchesSearch;
     });
   }, [decks, searchQuery, activeTab]);
@@ -60,8 +59,8 @@ export default function FlashcardsListPage() {
     }
   };
 
-  const handleEditDeck = (deckId: string) => {
-    navigate(`/deck/edit/${deckId}`);
+  const handleEditDeck = (deckId: string | number) => {
+    navigate(`/deck/edit/${String(deckId)}`);
   };
 
   return (
@@ -84,7 +83,7 @@ export default function FlashcardsListPage() {
         />
 
         <DeckListFeed
-          decks={filteredDecks}
+          decks={filteredDecks as any}
           isLoading={isLoading}
           isError={isError}
           onRefetch={refetch}

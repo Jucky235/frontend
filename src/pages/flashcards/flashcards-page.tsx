@@ -82,8 +82,8 @@ export default function FlashcardsPage() {
 
     if (initializedDeckRef.current !== deckId) {
       const activeCardsList: Flashcard[] =
-        dueCards && dueCards.length > 0
-          ? dueCards
+        dueCards && dueCards.cards && dueCards.cards.length > 0
+          ? dueCards.cards
           : deck?.cards && deck.cards.length > 0
             ? deck.cards
             : [];

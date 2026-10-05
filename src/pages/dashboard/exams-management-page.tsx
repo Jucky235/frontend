@@ -36,6 +36,7 @@ export default function ExamsManagementPage() {
   const [categoryFilter, setCategoryFilter] = React.useState("ALL");
 
   // Modals state
+  const [, setDeletingId] = React.useState<string | null>(null);
   const [isQuestionModalOpen, setIsQuestionModalOpen] = React.useState(false);
   const [isCsvModalOpen, setIsCsvModalOpen] = React.useState(false);
   const [isExamModalOpen, setIsExamModalOpen] = React.useState(false);
@@ -69,7 +70,8 @@ export default function ExamsManagementPage() {
     };
   }, [exams]);
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id: string | number) => {
+    setDeletingId(String(id));
     if (confirm("Are you sure you want to delete this exam?")) {
       console.log("Delete exam ID:", id);
     }
@@ -116,18 +118,18 @@ export default function ExamsManagementPage() {
   };
 
   const handleAddQuestionsToExam = async (
-    examId: string,
+    examId: string | number,
     selectedQuestions: SelectedQuestionPayload[],
   ) => {
     try {
       const formattedQuestions = selectedQuestions.map((q) => ({
         questionId: q.questionId,
         partNumber: q.partNumber,
-        sortOrder: q.sortOrder,
+        sortOrder: q.sortOrder ?? 0,
       }));
 
       await addQuestionsToExam({
-        examId,
+        examId: String(examId),
         questions: formattedQuestions,
       }).unwrap();
     } catch (error) {

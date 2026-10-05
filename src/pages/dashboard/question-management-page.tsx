@@ -27,7 +27,6 @@ export default function QuestionManagementPage() {
   const [selectedPartFilter, setSelectedPartFilter] = React.useState<
     number | "ALL"
   >("ALL");
-  const [deletingId, setDeletingId] = React.useState<string | null>(null);
 
   // RTK Query Hooks
   const queryParams = React.useMemo(() => {
@@ -49,6 +48,7 @@ export default function QuestionManagementPage() {
   const [updateQuestion, { isLoading: isUpdating }] =
     useUpdateQuestionMutation();
   const [deleteQuestion] = useDeleteQuestionMutation();
+  const [, setDeletingId] = React.useState<string | null>(null);
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -100,11 +100,11 @@ export default function QuestionManagementPage() {
     setIsModalOpen(true);
   };
 
-  const handleDeleteQuestion = async (id: string) => {
+  const handleDeleteQuestion = async (id: string | number) => {
     if (window.confirm("Are you sure you want to delete this question?")) {
+      setDeletingId(String(id));
       try {
-        setDeletingId(id);
-        await deleteQuestion(id).unwrap();
+        await deleteQuestion(String(id)).unwrap();
       } catch (err) {
         console.error("Failed to delete question:", err);
         alert("Failed to delete question. Please try again.");
@@ -119,12 +119,6 @@ export default function QuestionManagementPage() {
 
     if (!formData.content.trim()) {
       setFormError("Question content is required.");
-      return;
-    }
-
-    const { A, B, C, D } = formData.options;
-    if (!A.trim() || !B.trim() || !C.trim() || !D.trim()) {
-      setFormError("All 4 options (A, B, C, D) must be filled out.");
       return;
     }
 
@@ -243,7 +237,7 @@ export default function QuestionManagementPage() {
       <ImportCsvModal
         isOpen={isImportCsvOpen}
         onClose={() => setIsImportCsvOpen(false)}
-        onSuccess={handleCsvImportSuccess}
+        onImport={handleCsvImportSuccess}
       />
     </div>
   );

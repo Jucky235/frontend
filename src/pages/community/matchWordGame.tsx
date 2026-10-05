@@ -331,7 +331,9 @@ export default function MatchWordGame({
               return (
                 <button
                   key={word}
-                  ref={(el) => (wordRefs.current[word] = el)}
+                  ref={(el) => {
+                    if (el) wordRefs.current[word] = el;
+                  }}
                   type="button"
                   onClick={() => handleWordClick(word)}
                   className={`w-full p-4 border-2 rounded-2xl text-left text-sm font-bold transition-all duration-200 flex items-center justify-between active:scale-98 ${style}`}
@@ -375,7 +377,9 @@ export default function MatchWordGame({
               return (
                 <button
                   key={meaning}
-                  ref={(el) => (meaningRefs.current[meaning] = el)}
+                  ref={(el) => {
+                    if (el) meaningRefs.current[meaning] = el;
+                  }}
                   type="button"
                   onClick={() => handleMeaningClick(meaning)}
                   className={`w-full p-4 border-2 rounded-2xl text-left text-xs sm:text-sm font-bold leading-snug transition-all duration-200 flex items-center justify-between active:scale-98 ${style}`}

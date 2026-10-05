@@ -5,7 +5,7 @@ import QuestionItemCard, { type QuestionItem } from "./QuestionItemCard";
 interface QuestionListProps {
   questions: QuestionItem[];
   onEdit: (question: QuestionItem) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: string | number) => void;
 }
 
 export const QuestionList: React.FC<QuestionListProps> = ({

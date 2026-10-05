@@ -145,7 +145,6 @@ export default function ProfilePage() {
 
   const [formData, setFormData] = React.useState({
     fullName: "",
-    email: "",
     notifications: true,
   });
 
@@ -153,7 +152,6 @@ export default function ProfilePage() {
     if (profile) {
       setFormData({
         fullName: profile.name || "",
-        email: profile.email || "",
         notifications: true,
       });
     }
@@ -174,7 +172,7 @@ export default function ProfilePage() {
     try {
       await updateProfile({
         name: formData.fullName,
-        email: formData.email,
+        phoneNumber: profile?.phoneNumber,
       }).unwrap();
     } catch (error: any) {
       alert(error?.data?.error || "Failed to update profile");
@@ -186,8 +184,7 @@ export default function ProfilePage() {
     navigate("/login");
   };
 
-  const isUnchanged =
-    profile?.name === formData.fullName && profile?.email === formData.email;
+  const isUnchanged = profile?.name === formData.fullName;
 
   const totalSessions = history?.length || 0;
   const totalScore =
@@ -261,13 +258,13 @@ export default function ProfilePage() {
       const total = match
         ? isArray
           ? Number(match[4] || 0)
-          : Number(match.total_questions || match.totalQuestions || 0)
+          : Number(match.total_questions ?? 0)
         : 0;
 
       const correct = match
         ? isArray
           ? Number(match[5] || 0)
-          : Number(match.correct_questions || match.correctQuestions || 0)
+          : Number(match.correct_questions ?? 0)
         : 0;
 
       let rawAccuracy = match
@@ -453,10 +450,11 @@ export default function ProfilePage() {
                     type="email"
                     id="email"
                     name="email"
-                    value={formData.email}
+                    value={profile?.email ?? ""}
                     onChange={handleInputChange}
                     className="profile-form-input"
                     required
+                    disabled
                   />
                 </div>
               </div>

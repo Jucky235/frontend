@@ -2,10 +2,10 @@ import * as React from "react";
 import { Volume2, Square } from "lucide-react";
 
 interface AudioPlayerProps {
-  questionId: string;
+  questionId: string | number;
   audioPath: string;
   playingAudioId: string | null;
-  onToggleAudio: (questionId: string, url: string) => void;
+  onToggleAudio: (questionId: string | number, url: string) => void;
 }
 
 export const AudioPlayer: React.FC<AudioPlayerProps> = ({

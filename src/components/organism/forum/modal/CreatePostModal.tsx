@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import {
   useGetAllCategoriesQuery,
-  useCreatePostMutation,
 } from "@/redux/forum/forumApiSlice";
 
 interface CreatePostModalProps {

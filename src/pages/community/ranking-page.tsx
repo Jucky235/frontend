@@ -3,7 +3,6 @@ import Header from "@/components/organism/common/Header";
 import Footer from "@/components/organism/common/Footer";
 import {
   useGetUserRankingQuery,
-  type UserRanking,
 } from "@/redux/analytics/analyticsApiSlice";
 import {
   Trophy,
@@ -83,56 +82,36 @@ export default function RankingPage() {
       return [];
     }
 
-    const mapped = list.map((item: any, index: number) => {
-      // Kiểm tra nếu item trả về dạng Array (như log console)
+    const mapped: LeaderboardUser[] = list.map((item: any, index: number) => {
       const isArrayItem = Array.isArray(item);
 
-      const rank = isArrayItem ? item[0] : (item.rank ?? index + 1);
-      const id = isArrayItem
-        ? String(item[1])
-        : String(item.id || item.user_id || index);
-      const name = isArrayItem
-        ? item[2]
-        : item.name ||
-          item.full_name ||
-          item.username ||
-          `Học viên #${index + 1}`;
-      const points = isArrayItem
-        ? Number(item[3] || 0)
-        : Number(item.points || item.total_points || 0);
-      const examsCompleted = isArrayItem
-        ? Number(item[4] || 0)
-        : Number(item.exams_completed || item.examsCompleted || 0);
-      const streakDays = isArrayItem
-        ? Number(item[5] || 0)
-        : Number(item.streak_days || item.streakDays || 0);
-
-      // Avatar fallback theo tên thật lấy từ API
-      const avatar = isArrayItem
-        ? `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=5A67FF&color=fff`
-        : item.avatar ||
-          item.avatar_url ||
-          `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=5A67FF&color=fff`;
+      const rawTrend = isArrayItem
+        ? "same"
+        : item.trend === "up"
+          ? "up"
+          : item.trend === "down"
+            ? "down"
+            : "same";
 
       return {
-        rank,
-        id,
-        name,
-        avatar,
+        rank: isArrayItem ? Number(item[0] ?? index + 1) : Number(item.rank ?? index + 1),
+        id: String(isArrayItem ? item[1] : item.id || item.user_id || index),
+        name: String(
+          isArrayItem
+            ? item[2]
+            : item.name || item.full_name || item.username || `Học viên #${index + 1}`,
+        ),
+        avatar: String(
+          isArrayItem
+            ? `https://ui-avatars.com/api/?name=${encodeURIComponent(String(item[2] ?? index))}&background=5A67FF&color=fff`
+            : item.avatar || item.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(String(item.name || item.full_name || item.username || `Học viên #${index + 1}`))}&background=5A67FF&color=fff`,
+        ),
         role: isArrayItem ? "Learner" : item.role || item.title || "Learner",
-        points,
-        examsCompleted,
-        streakDays,
-        trend: isArrayItem
-          ? "same"
-          : item.trend === "up"
-            ? "up"
-            : item.trend === "down"
-              ? "down"
-              : "same",
-        trendAmount: isArrayItem
-          ? 0
-          : item.trend_amount || item.trendAmount || 0,
+        points: Number(isArrayItem ? item[3] || 0 : item.points || item.total_points || 0),
+        examsCompleted: Number(isArrayItem ? item[4] || 0 : item.exams_completed || item.examsCompleted || 0),
+        streakDays: Number(isArrayItem ? item[5] || 0 : item.streak_days || item.streakDays || 0),
+        trend: rawTrend as LeaderboardUser["trend"],
+        trendAmount: Number(isArrayItem ? 0 : item.trend_amount || item.trendAmount || 0),
       };
     });
     console.log(`[RankingPage] Final Mapped Leaderboard Data:`, mapped);

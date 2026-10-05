@@ -21,8 +21,9 @@ export interface ExamPart {
 }
 
 export interface SelectedQuestionPayload {
-  questionId: number;
+  questionId: string | number;
   partNumber: number;
+  sortOrder?: number;
   question: Question;
 }
 
@@ -201,6 +202,7 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
         payload.push({
           questionId: q.id,
           partNumber: selectedMap[q.id],
+          sortOrder: 0,
           question: q,
         });
       }

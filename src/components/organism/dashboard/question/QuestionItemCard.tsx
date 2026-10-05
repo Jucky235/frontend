@@ -14,9 +14,11 @@ interface QuestionItemCardProps {
   question: Question;
   index: number;
   onEdit: (question: Question) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: string | number) => void;
   isDeleting?: boolean;
 }
+
+export type QuestionItem = Question;
 
 export const QuestionItemCard: React.FC<QuestionItemCardProps> = ({
   question,
@@ -27,7 +29,6 @@ export const QuestionItemCard: React.FC<QuestionItemCardProps> = ({
 }) => {
   return (
     <div className="bg-white border border-neutral-200/80 rounded-2xl p-6 shadow-xs hover:border-neutral-300 transition-all space-y-4">
-      {/* Header Info & Actions */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center space-x-2 flex-wrap gap-y-1">
           {question.partNumber && (
@@ -35,9 +36,9 @@ export const QuestionItemCard: React.FC<QuestionItemCardProps> = ({
               Part {question.partNumber}
             </span>
           )}
-          {question.category?.name && (
+          {typeof question.category === "string" && question.category && (
             <span className="text-xs font-bold text-neutral-600 bg-neutral-100 px-2.5 py-1 rounded-lg shrink-0">
-              {question.category.name}
+              {question.category}
             </span>
           )}
           <span className="text-xs font-bold text-neutral-400 font-mono">
@@ -71,7 +72,6 @@ export const QuestionItemCard: React.FC<QuestionItemCardProps> = ({
         </div>
       </div>
 
-      {/* Question Prompt */}
       <div className="flex items-start space-x-3">
         <span className="text-sm font-black text-indigo-500 bg-indigo-50 w-6 h-6 rounded-md flex items-center justify-center shrink-0 mt-0.5">
           {index + 1}
@@ -81,7 +81,6 @@ export const QuestionItemCard: React.FC<QuestionItemCardProps> = ({
         </h3>
       </div>
 
-      {/* Media Section Preview */}
       {(question.audioPath || question.imagePath) && (
         <div className="space-y-3 pt-1">
           <div className="flex flex-wrap gap-2">
@@ -121,7 +120,6 @@ export const QuestionItemCard: React.FC<QuestionItemCardProps> = ({
         </div>
       )}
 
-      {/* Options Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
         {Object.entries(question.options || {}).map(([key, optText]) => {
           const isCorrect = question.right_answer === key;
@@ -144,7 +142,6 @@ export const QuestionItemCard: React.FC<QuestionItemCardProps> = ({
         })}
       </div>
 
-      {/* Explanation */}
       {question.explanation && (
         <div className="p-3 bg-blue-50/60 text-blue-900 text-xs rounded-xl border border-blue-100 font-medium space-y-1">
           <span className="font-extrabold uppercase text-[10px] tracking-wider text-blue-700 block">

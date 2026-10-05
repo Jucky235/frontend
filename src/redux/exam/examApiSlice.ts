@@ -12,11 +12,11 @@ export interface QuestionOptions {
 }
 
 export interface Question {
-  id: number;
+  id: string | number;
   content: string;
   options: QuestionOptions;
   right_answer: string;
-  category: ExamCategory;
+  category: any;
   partNumber?: number | null;
   partId?: number | null;
   sortOrder?: number;
@@ -29,25 +29,26 @@ export interface Question {
 }
 
 export interface ExamPart {
-  id: number;
-  examId: number;
+  id?: string | number;
+  examId?: string | number;
   partNumber: number;
   name: string;
   instructions?: string | null;
   description?: string | null;
   audioPath?: string | null;
-  sortOrder: number;
+  sortOrder?: number;
+  title?: string;
   questions: Question[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Exam {
-  id: number;
+  id: string | number;
   name: string;
   code?: string | null;
   description?: string | null;
-  category: ExamCategory;
+  category: any;
   time: number;
   status: ExamStatus;
   parts?: ExamPart[];
@@ -57,45 +58,40 @@ export interface Exam {
 }
 
 export interface SubmitExamPayload {
-  examId: number;
+  examId: string | number;
   answers: Record<number | string, string>;
   startedAt: string;
   submittedAt: string;
 }
 
-export interface CreateExamQuestionItem {
-  questionId: number;
-  sortOrder: number;
-  partNumber: number;
-}
-
-export interface CreateExamPartPayload {
-  partNumber: number;
-  name: string;
-  instructions?: string;
-  description?: string;
-  sortOrder?: number;
-}
-
 export interface CreateExamPayload {
   name: string;
-  code?: string;
-  description?: string;
-  category: ExamCategory;
-  status?: ExamStatus;
+  category?: string | null;
+  description?: string | null;
   durationMinutes?: number;
-  parts?: CreateExamPartPayload[];
-  questions?: CreateExamQuestionItem[];
+  status?: ExamStatus;
+  parts?: Array<{
+    partNumber: number;
+    name: string;
+    description?: string | null;
+    sortOrder?: number;
+    title?: string;
+  }>;
+  questions?: Array<{
+    questionId: string | number;
+    partNumber?: number;
+    sortOrder?: number;
+  }>;
 }
 
 export interface AddQuestionsToExamItem {
-  questionId: number;
+  questionId: string | number;
   partNumber?: number;
   sortOrder?: number;
 }
 
 export interface AddQuestionsToExamPayload {
-  examId: number;
+  examId: string | number;
   questions: AddQuestionsToExamItem[];
 }
 

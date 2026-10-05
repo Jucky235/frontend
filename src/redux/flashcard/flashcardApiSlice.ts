@@ -13,12 +13,14 @@ export type BoxLevel =
   | "BOX_6"
   | "BOX_7";
 
-export enum FSRSRating {
-  AGAIN = 1,
-  HARD = 2,
-  GOOD = 3,
-  EASY = 4,
-}
+export const FSRSRating = {
+  AGAIN: 1,
+  HARD: 2,
+  GOOD: 3,
+  EASY: 4,
+} as const;
+
+export type FSRSRating = (typeof FSRSRating)[keyof typeof FSRSRating];
 
 export interface FlashcardProgress {
   id: string;

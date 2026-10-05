@@ -3,13 +3,13 @@ import { AudioPlayer } from "./AudioPlayer";
 import { QuestionOption } from "./QuestionOption";
 
 interface Question {
-  id: string;
+  id: string | number;
   content: string;
-  audioPath?: string;
-  imagePath?: string;
+  audioPath?: string | null;
+  imagePath?: string | null;
   options: Record<string, string>;
   right_answer: string;
-  explanation?: string;
+  explanation?: string | null;
 }
 
 interface QuestionCardProps {
@@ -19,8 +19,8 @@ interface QuestionCardProps {
   isSubmitted: boolean;
   isSubmitting: boolean;
   playingAudioId: string | null;
-  onToggleAudio: (questionId: string, url: string) => void;
-  onSelectOption: (questionId: string, optionKey: string) => void;
+  onToggleAudio: (questionId: string | number, url: string) => void;
+  onSelectOption: (questionId: string | number, optionKey: string) => void;
 }
 
 export const QuestionCard: React.FC<QuestionCardProps> = ({

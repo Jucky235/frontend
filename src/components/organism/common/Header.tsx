@@ -18,7 +18,6 @@ import {
   HelpCircle,
   Sun,
   Moon,
-  Sparkles,
   Loader2,
   ArrowRight,
   Clock,
@@ -169,7 +168,7 @@ export default function Header({
   const userName =
     profile?.name || profile?.full_name || profile?.username || "";
 
-  const { isFetching: isProfileLoading } = useGetUserProfileQuery();
+  const { isFetching: _isProfileLoading } = useGetUserProfileQuery();
 
   const searchQuery = useSelector(selectSearchQuery);
   const isSearchModalOpen = useSelector(selectIsSearchModalOpen);
@@ -344,7 +343,7 @@ export default function Header({
     {
       label: "Settings",
       icon: <Settings className="w-3.5 h-3.5" />,
-      onClick: onSettingsClick,
+      onClick: onSettingsClick ?? (() => undefined),
     },
     {
       label: "Logout",
@@ -565,7 +564,7 @@ export default function Header({
                       </button>
                     </div>
                     <div className="flex flex-wrap gap-1.5">
-                      {recentSearches.map((item, idx) => (
+                      {recentSearches.map((item: string, idx: number) => (
                         <button
                           key={idx}
                           onClick={() => dispatch(setSearchQuery(item))}
