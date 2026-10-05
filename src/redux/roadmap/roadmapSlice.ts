@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { RoadmapNodeStatus } from "../api/roadmapApiSlice";
+import type { RoadmapNodeStatus } from "./roadmapApiSlice";
 
 export type RoadmapNodeStatusFilter = "ALL" | RoadmapNodeStatus;
 

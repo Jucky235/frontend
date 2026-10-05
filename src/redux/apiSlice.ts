@@ -16,6 +16,22 @@ export const baseApiSlice = createApi({
       return headers;
     },
   }),
-  tagTypes: ["User", "History", "Analytics"],
+  tagTypes: [
+    "User",
+    "History",
+    "Analytics",
+    "Channel",
+    "Message",
+    "ChannelSummary",
+    "ChannelMessages",
+    "Deck",
+    "DueCards",
+    "Exam",
+    "Question",
+    "News",
+    "Category",
+    "Post",
+    "Roadmap",
+  ] as const,
   endpoints: () => ({}),
 });
