@@ -28,7 +28,7 @@ export default defineConfig(({ mode }) => {
     preview: {
       host: "0.0.0.0",
       port: Number(process.env.PORT) || 4173,
-      allowedHosts: ["eng-frontend-u1dc.onrender.com"],
+      allowedHosts: ["frontend-b6gp.onrender.com"],
     },
   };
 });
