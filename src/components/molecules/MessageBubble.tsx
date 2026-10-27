@@ -4,7 +4,8 @@ export interface ChatMessage {
   id: string | number;
   user: {
     name: string;
-    avatar: string;
+    avatar?: string; // 👈 Made optional to support fallback initial/icon
+    avatarUrl?: string; // 👈 Added support if your backend returns avatarUrl instead
   };
   text: string;
   timestamp: string;
@@ -15,8 +16,21 @@ export interface MessageBubbleProps {
   message: ChatMessage;
 }
 
+// Helper to generate initials if no image is available
+function getInitials(name?: string): string {
+  if (!name || !name.trim()) return "U";
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) {
+    return parts[0].substring(0, 2).toUpperCase();
+  }
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
 export const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
   const { user, text, timestamp, isMe } = message;
+
+  // Check for avatar or avatarUrl (supports Cloudinary URLs)
+  const userAvatarImage = user?.avatarUrl || user?.avatar;
 
   return (
     <div
@@ -25,11 +39,17 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
       }`}
     >
       <div className="flex flex-col items-center shrink-0">
-        <img
-          src={user.avatar}
-          alt={user.name}
-          className="w-9 h-9 rounded-full object-cover border border-border"
-        />
+        <div className="w-9 h-9 rounded-full overflow-hidden border border-border flex items-center justify-center bg-brand text-brand-foreground font-bold text-xs shadow-xs">
+          {userAvatarImage ? (
+            <img
+              src={userAvatarImage}
+              alt={user.name}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            getInitials(user.name)
+          )}
+        </div>
         <span className="text-[10px] text-foreground-subtle mt-1 max-w-[60px] truncate font-semibold">
           {user.name}
         </span>

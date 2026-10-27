@@ -139,6 +139,7 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginFormData) => {
     try {
       const result = await login(data).unwrap();
+      console.log(result);
 
       // 1. Save user payload and token details globally inside store memory
       dispatch(

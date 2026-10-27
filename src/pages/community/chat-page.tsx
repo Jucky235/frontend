@@ -7,6 +7,7 @@ import ChatFeed from "@/components/organism/chat/ChatFeed";
 import type { ChatMessage } from "@/components/molecules/MessageBubble";
 import { Sparkles, RefreshCw, X, AlertCircle } from "lucide-react";
 
+import { useSelector } from "react-redux";
 // Redux & RTK Query Imports
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import {
@@ -23,8 +24,13 @@ import {
   useSendMessageMutation,
 } from "@/redux/user/userApiSlice";
 
+import { selectUserProfile } from "@/redux/user/userSlice";
+
 export default function ChatPage() {
   const dispatch = useAppDispatch();
+
+  // Redux Profile State
+  const reduxProfile = useSelector(selectUserProfile);
 
   // 1. Redux State - Active Channel ID
   const selectedChannelId = useAppSelector(selectActiveChannelId);
@@ -36,8 +42,14 @@ export default function ChatPage() {
   const { data: channelsResponse, isLoading: isLoadingChannels } =
     useGetAllChannelsQuery();
 
-  const { data: currentUserProfile } = useGetUserProfileQuery();
+  const { data: queryUserProfile } = useGetUserProfileQuery();
   const [sendMessage] = useSendMessageMutation();
+
+  // Combine RTK Query & Redux Profile state to guarantee we get user data
+  const currentUser = React.useMemo(() => {
+    const raw = queryUserProfile || reduxProfile;
+    return raw?.userInfo || raw || {};
+  }, [queryUserProfile, reduxProfile]);
 
   // Lazy Query trigger for AI Summarization
   const [
@@ -83,7 +95,7 @@ export default function ChatPage() {
   // Reset panel & optimistic messages on channel change
   React.useEffect(() => {
     setOptimisticMessages([]);
-    setIsSummaryPanelOpen(false); // Close AI panel when user switches channel
+    setIsSummaryPanelOpen(false);
   }, [selectedChannelId]);
 
   // Query Messages for CURRENT channel
@@ -106,9 +118,23 @@ export default function ChatPage() {
     const rawMessages = fetchedMessages?.data || fetchedMessages || [];
     if (!Array.isArray(rawMessages)) return [];
 
+    const currentUserId = currentUser?.id || currentUser?.user_id;
+    const currentAvatar = currentUser?.avatarUrl || currentUser?.avatar;
+
     return rawMessages.map((msg: any) => {
-      const senderId = msg.sender?.id ?? msg.userId;
-      const currentUserId = currentUserProfile?.id;
+      const senderId = msg.sender?.id ?? msg.userId ?? msg.senderId;
+      const isMe = Boolean(
+        senderId && currentUserId && String(senderId) === String(currentUserId),
+      );
+
+      // Extract sender's avatar URL. If message is sent by current logged in user, use current user avatar as fallback.
+      const senderAvatar =
+        msg.sender?.avatarUrl ||
+        msg.sender?.avatar ||
+        msg.user?.avatarUrl ||
+        msg.user?.avatar ||
+        msg.avatarUrl ||
+        (isMe ? currentAvatar : undefined);
 
       return {
         id: msg.id || msg._id || Math.random(),
@@ -118,12 +144,9 @@ export default function ChatPage() {
             msg.sender?.username ||
             msg.user?.name ||
             msg.senderName ||
-            "Me",
-          avatar:
-            msg.sender?.avatarUrl ||
-            msg.user?.avatar ||
-            msg.avatarUrl ||
-            "https://api.dicebear.com/7.x/bottts/svg?seed=User",
+            (isMe ? "Me" : "User"),
+          avatar: senderAvatar, // Maps to avatar
+          avatarUrl: senderAvatar, // Maps to avatarUrl
         },
         text: msg.content || msg.text || "",
         timestamp: msg.createdAt
@@ -133,14 +156,10 @@ export default function ChatPage() {
               hour12: false,
             })
           : msg.timestamp || "",
-        isMe: Boolean(
-          senderId &&
-          currentUserId &&
-          String(senderId) === String(currentUserId),
-        ),
+        isMe,
       };
     });
-  }, [fetchedMessages, currentUserProfile]);
+  }, [fetchedMessages, currentUser]);
 
   // Combine server messages with unsaved optimistic messages
   const allMessages = React.useMemo(() => {
@@ -169,11 +188,15 @@ export default function ChatPage() {
   const handleSendMessage = async (text: string) => {
     if (!text.trim() || !selectedChannelId) return;
 
+    const myName = currentUser?.name || currentUser?.email || "Me";
+    const myAvatarUrl = currentUser?.avatarUrl || currentUser?.avatar;
+
     const tempMsg: ChatMessage = {
       id: `temp-${Date.now()}`,
       user: {
-        name: currentUserProfile?.name || currentUserProfile?.email || "Me",
-        avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=User",
+        name: myName,
+        avatar: myAvatarUrl,
+        avatarUrl: myAvatarUrl,
       },
       text,
       timestamp: new Date().toLocaleTimeString([], {

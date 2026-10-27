@@ -1,4 +1,4 @@
-import { baseApiSlice } from "../apiSlice"; // Import from the parent directory
+import { baseApiSlice } from "../apiSlice";
 import { type LoginFormData } from "@/validadtion/login";
 import { type SignupFormData } from "@/validadtion/register";
 
@@ -9,6 +9,7 @@ interface SignupResponse {
     id: string;
     name: string;
     email: string;
+    avatarUrl?: string;
   };
 }
 interface LoginResponse {
@@ -17,6 +18,7 @@ interface LoginResponse {
     id: string;
     name: string;
     email: string;
+    avatarUrl?: string;
   };
 }
 
@@ -28,13 +30,16 @@ export const authApiSlice = baseApiSlice.injectEndpoints({
         method: "POST",
         body: credentials,
       }),
+      // 🟢 Invalidate user/profile tags on successful login so RTK Query refetches data for the new account
+      invalidatesTags: ["User", "Profile", "Analytics", "ExamHistory"],
     }),
     signup: builder.mutation<SignupResponse, SignupFormData>({
       query: (userData) => ({
-        url: "/auth/signup", // Adjust this to match your backend signup URL (e.g., /auth/register)
+        url: "/auth/signup",
         method: "POST",
         body: userData,
       }),
+      invalidatesTags: ["User", "Profile", "Analytics", "ExamHistory"],
     }),
   }),
 });

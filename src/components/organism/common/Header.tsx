@@ -164,9 +164,13 @@ export default function Header({
   const dispatch = useDispatch();
 
   const profile = useSelector(selectUserProfile);
-  const userId = profile?.id || profile?.user_id || "";
+  const userId = profile?.userInfo?.id || profile?.userInfo?.user_id || "";
   const userName =
-    profile?.name || profile?.full_name || profile?.username || "";
+    profile?.userInfo?.name ||
+    profile?.userInfo?.full_name ||
+    profile?.userInfo?.username ||
+    "";
+  const userAvatarUrl = profile?.userInfo?.avatarUrl;
 
   const { isFetching: _isProfileLoading } = useGetUserProfileQuery();
 
@@ -507,13 +511,22 @@ export default function Header({
               </button>
             </div>
 
+            {/* User Profile Trigger with Cloudinary Avatar support */}
             <Dropdown
               align="right"
               width="w-48"
               items={profileMenuItems}
               trigger={
-                <div className="relative w-9 h-9 rounded-full bg-brand text-brand-foreground flex items-center justify-center font-bold text-xs tracking-wider border-2 border-border hover:opacity-90 transition-all shadow-xs shrink-0 cursor-pointer select-none">
-                  {userInitials}
+                <div className="relative w-9 h-9 rounded-full bg-brand text-brand-foreground flex items-center justify-center font-bold text-xs tracking-wider border-2 border-border hover:opacity-90 transition-all shadow-xs shrink-0 cursor-pointer select-none overflow-hidden">
+                  {userAvatarUrl ? (
+                    <img
+                      src={userAvatarUrl}
+                      alt={userName || "Avatar"}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    userInitials
+                  )}
                 </div>
               }
             />

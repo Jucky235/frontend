@@ -11,21 +11,23 @@ import {
   Award,
   BookOpen,
   Clock,
-  Shield,
-  KeyRound,
   Headphones,
   BookMarked,
   Mic,
   PenTool,
   Target,
   Map,
+  FileText,
+  ChevronRight,
+  CheckCircle2,
+  XCircle,
 } from "lucide-react";
+import Footer from "@/components/organism/common/Footer";
 
 import { logOut } from "@/redux/auth/authSlice";
 import {
   useGetUserProfileQuery,
   useUpdateUserProfileMutation,
-  useGetUserHistoryQuery,
 } from "@/redux/user/userApiSlice";
 import { selectUserProfile, setEditingProfile } from "@/redux/user/userSlice";
 import { useGetUserSkillSummaryQuery } from "@/redux/analytics/analyticsApiSlice";
@@ -57,7 +59,6 @@ function SkillGaugeMeter({
     return () => clearTimeout(timer);
   }, [accuracy]);
 
-  // Convert 0-100 accuracy percentage into gauge angle (-90deg to +90deg)
   const needleRotation = -90 + (animatedAccuracy / 100) * 180;
 
   return (
@@ -69,10 +70,8 @@ function SkillGaugeMeter({
         </span>
       </div>
 
-      {/* SVG Semi-Circle Arc Meter */}
       <div className="relative w-32 h-16 my-1 flex justify-center items-end">
         <svg viewBox="0 0 100 50" className="w-full h-full overflow-visible">
-          {/* Background Track Arc */}
           <path
             d="M 10 50 A 40 40 0 0 1 90 50"
             fill="none"
@@ -81,8 +80,6 @@ function SkillGaugeMeter({
             strokeLinecap="round"
             className="text-neutral-200 dark:text-neutral-800"
           />
-
-          {/* Active Filled Arc Segment */}
           <path
             d="M 10 50 A 40 40 0 0 1 90 50"
             fill="none"
@@ -95,7 +92,6 @@ function SkillGaugeMeter({
           />
         </svg>
 
-        {/* Animated Gauge Pointer Needle */}
         <div
           className="absolute bottom-0 w-1 h-12 origin-bottom transition-transform duration-1000 ease-out"
           style={{ transform: `rotate(${needleRotation}deg)` }}
@@ -103,11 +99,9 @@ function SkillGaugeMeter({
           <div className="w-full h-10 bg-foreground rounded-t-full shadow-md" />
         </div>
 
-        {/* Center Needle Pivot */}
         <div className="absolute bottom-[-4px] w-3.5 h-3.5 rounded-full bg-foreground border-2 border-background-card shadow-sm z-10" />
       </div>
 
-      {/* Accuracy Output Readout */}
       <div className="mt-2 text-center">
         <p className="text-xl font-extrabold text-foreground tracking-tight">
           {animatedAccuracy}%
@@ -125,19 +119,21 @@ export default function ProfilePage() {
   const navigate = useNavigate();
 
   const [isPasswordModalOpen, setIsPasswordModalOpen] = React.useState(false);
+  const [isUploadingAvatar, setIsUploadingAvatar] = React.useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
   // Redux User Selectors & Profile Queries
   const profile = useSelector(selectUserProfile);
-  const userId = profile?.id || profile?.user_id || "";
+  const userId = profile?.userInfo?.id || profile?.userInfo?.user_id || "";
 
   const { isFetching: isProfileLoading } = useGetUserProfileQuery();
-  const { data: history, isLoading: isHistoryLoading } =
-    useGetUserHistoryQuery();
 
-  // Fetch Real Skill Summary Data from Analytics API
+  const history = profile?.Examhistory || [];
+  const isHistoryLoading = false;
+
   const { data: skillSummary, isLoading: isSkillsLoading } =
     useGetUserSkillSummaryQuery(userId, {
-      skip: !userId, // Skip query if userId is not loaded yet
+      skip: !userId,
     });
 
   const [updateProfile, { isLoading: isSaving }] =
@@ -145,13 +141,15 @@ export default function ProfilePage() {
 
   const [formData, setFormData] = React.useState({
     fullName: "",
+    avatar: "",
     notifications: true,
   });
 
   React.useEffect(() => {
     if (profile) {
       setFormData({
-        fullName: profile.name || "",
+        fullName: profile.userInfo?.name || "",
+        avatar: profile.userInfo?.avatarUrl || "",
         notifications: true,
       });
     }
@@ -167,11 +165,44 @@ export default function ProfilePage() {
     setFormData((prev) => ({ ...prev, notifications: !prev.notifications }));
   };
 
+  // Handle Cloudinary Avatar File Selection & Upload
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingAvatar(true);
+    const dataObj = new FormData();
+    dataObj.append("file", file);
+    dataObj.append("upload_preset", "avatar_preset");
+
+    try {
+      const response = await fetch(
+        "https://api.cloudinary.com/v1_1/mxxbk0jh/image/upload",
+        {
+          method: "POST",
+          body: dataObj,
+        },
+      );
+      const data = await response.json();
+
+      if (data.secure_url) {
+        setFormData((prev) => ({ ...prev, avatar: data.secure_url }));
+        dispatch(setEditingProfile(true));
+      }
+    } catch (error) {
+      console.error("Cloudinary upload failed:", error);
+      alert("Failed to upload avatar image.");
+    } finally {
+      setIsUploadingAvatar(false);
+    }
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await updateProfile({
         name: formData.fullName,
+        avatar: formData.avatar, // Sent to backend update mutation
         phoneNumber: profile?.phoneNumber,
       }).unwrap();
     } catch (error: any) {
@@ -184,13 +215,19 @@ export default function ProfilePage() {
     navigate("/login");
   };
 
-  const isUnchanged = profile?.name === formData.fullName;
+  // 🟢 FIXED: Compare against profile.userInfo.avatarUrl instead of .avatar
+  const isUnchanged =
+    profile?.userInfo?.name === formData.fullName &&
+    profile?.userInfo?.avatarUrl === formData.avatar;
 
   const totalSessions = history?.length || 0;
   const totalScore =
-    history?.reduce((acc: number, current: any) => acc + current.score, 0) || 0;
+    history?.reduce(
+      (acc: number, current: any) => acc + Number(current.score || 0),
+      0,
+    ) || 0;
   const averageScore =
-    totalSessions > 0 ? (totalScore / totalSessions).toFixed(1) : "0";
+    totalSessions > 0 ? (totalScore / totalSessions).toFixed(0) : "0";
 
   const stats = [
     {
@@ -200,7 +237,7 @@ export default function ProfilePage() {
     },
     {
       label: "Avg Score",
-      value: `${averageScore}%`,
+      value: averageScore,
       icon: <Award className="w-5 h-5 text-brand" />,
     },
     {
@@ -210,7 +247,6 @@ export default function ProfilePage() {
     },
   ];
 
-  // Config mapping for skills with keyword fallback logic
   const skillConfigs = React.useMemo(
     () => [
       {
@@ -241,7 +277,6 @@ export default function ProfilePage() {
     [],
   );
 
-  // Map real backend analytics data onto gauge items (Supporting Array Tuple & Object formats)
   const skillAccuracies = React.useMemo(() => {
     return skillConfigs.map((cfg) => {
       const match = skillSummary?.find((item: any) => {
@@ -254,13 +289,11 @@ export default function ProfilePage() {
       });
 
       const isArray = Array.isArray(match);
-
       const total = match
         ? isArray
           ? Number(match[4] || 0)
           : Number(match.total_questions ?? 0)
         : 0;
-
       const correct = match
         ? isArray
           ? Number(match[5] || 0)
@@ -272,15 +305,11 @@ export default function ProfilePage() {
           ? Number(match[7] || 0)
           : Number(match.accuracy || 0)
         : 0;
-
-      if (rawAccuracy <= 1 && rawAccuracy > 0) {
-        rawAccuracy = rawAccuracy * 100;
-      }
-      const accuracy = Math.round(rawAccuracy);
+      if (rawAccuracy <= 1 && rawAccuracy > 0) rawAccuracy = rawAccuracy * 100;
 
       return {
         skill: isArray && match[2] ? match[2] : cfg.name,
-        accuracy,
+        accuracy: Math.round(rawAccuracy),
         correct,
         total,
         icon: cfg.icon,
@@ -298,250 +327,294 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="profile-container">
-      {/* 1. Header Hub */}
-      <header className="profile-header">
-        <div className="flex items-center space-x-4">
-          <button
-            type="button"
-            onClick={() => navigate(-1)}
-            className="profile-header-btn-back"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="hidden sm:inline">Back</span>
-          </button>
-          <div className="h-4 w-px bg-border hidden sm:block" />
-          <div className="flex items-center space-x-2">
-            <div className="profile-header-avatar">
-              {profile?.name ? profile.name.charAt(0).toUpperCase() : "U"}
-            </div>
-            <span className="font-bold text-lg text-foreground tracking-tight">
-              Workspace
-            </span>
-          </div>
-        </div>
+    <div className="min-h-screen flex flex-col bg-background">
+      {/* Hidden file input for Cloudinary upload */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept="image/*"
+        className="hidden"
+      />
 
-        <div className="flex items-center space-x-4">
-          <button type="button" className="profile-header-btn-user">
-            <User className="w-4 h-4" />
-          </button>
-          <button
-            type="button"
-            onClick={handleLogoutClick}
-            className="profile-header-btn-logout"
-          >
-            <LogOut className="w-4 h-4" />
-            <span className="hidden sm:inline">Logout</span>
-          </button>
-        </div>
-      </header>
-
-      {/* 2. Main Content Area */}
-      <main className="profile-main space-y-8">
-        {/* Banner Hero Section */}
-        <section className="profile-banner">
-          <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-banner-to rounded-full opacity-30 blur-2xl pointer-events-none" />
-          <div className="absolute top-0 right-0 w-32 h-32 bg-background-card rounded-bl-full opacity-10 pointer-events-none" />
-
-          <div className="relative z-10 flex flex-col md:flex-row md:items-end md:space-x-6 space-y-4 md:space-y-0">
-            <div className="profile-avatar-wrapper">
-              <div className="profile-avatar-inner">
-                <User className="w-12 h-12 text-brand" />
-                <button type="button" className="profile-avatar-overlay">
-                  <Camera className="w-6 h-6 text-background-card" />
-                </button>
+      <div className="profile-container flex-1 w-full flex flex-col">
+        {/* Header Hub */}
+        <header className="profile-header">
+          <div className="flex items-center space-x-4">
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="profile-header-btn-back"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span className="hidden sm:inline">Back</span>
+            </button>
+            <div className="h-4 w-px bg-border hidden sm:block" />
+            <div className="flex items-center space-x-2">
+              <div className="profile-header-avatar overflow-hidden rounded-full">
+                {formData.avatar ? (
+                  <img
+                    src={formData.avatar}
+                    alt="Avatar"
+                    className="w-full h-full object-cover"
+                  />
+                ) : profile?.userInfo?.name ? (
+                  profile.userInfo.name.charAt(0).toUpperCase()
+                ) : (
+                  "U"
+                )}
               </div>
-            </div>
-
-            <div className="space-y-1.5 pb-2">
-              <div className="flex items-center space-x-2">
-                <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
-                  {profile?.name}
-                </h1>
-                <span className="profile-badge-pro">PRO</span>
-              </div>
-              <p className="text-sm opacity-90 font-medium flex items-center space-x-1.5">
-                <Mail className="w-3.5 h-3.5 opacity-80" />
-                <span>{profile?.email}</span>
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Separated Skill Accuracy Section with Gauge Meters */}
-        <section className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h2 className="profile-section-title flex items-center space-x-2">
-              <Target className="w-4 h-4 text-brand" />
-              <span>Skill Accuracy Gauge</span>
-            </h2>
-            <div className="flex items-center space-x-3">
-              <button
-                type="button"
-                onClick={() => navigate("/roadmap")}
-                className="px-3.5 py-1.5 rounded-xl bg-brand/10 border border-brand/20 text-brand font-bold hover:bg-brand/20 transition-all flex items-center space-x-2 text-xs"
-              >
-                <Map className="w-3.5 h-3.5" />
-                <span>View Roadmap</span>
-              </button>
-              <span className="hidden sm:inline text-xs font-semibold text-foreground-subtle">
-                Real-time Precision Analysis
+              <span className="font-bold text-lg text-foreground tracking-tight">
+                Workspace
               </span>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {skillAccuracies.map((item, idx) => (
-              <SkillGaugeMeter key={idx} {...item} />
-            ))}
+          <div className="flex items-center space-x-4">
+            <button type="button" className="profile-header-btn-user">
+              <User className="w-4 h-4" />
+            </button>
+            <button
+              type="button"
+              onClick={handleLogoutClick}
+              className="profile-header-btn-logout"
+            >
+              <LogOut className="w-4 h-4" />
+              <span className="hidden sm:inline">Logout</span>
+            </button>
           </div>
-        </section>
+        </header>
 
-        {/* Profile Split-Layout Columns */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-          {/* Left Column: Learning Statistics */}
-          <div className="lg:col-span-1 space-y-6">
-            <div className="space-y-3">
-              <h2 className="profile-section-title">Learning Statistics</h2>
-              <div className="profile-card p-5 space-y-4">
-                {stats.map((stat, idx) => (
-                  <div key={idx} className="profile-stat-card">
-                    <div className="profile-stat-icon-wrapper">{stat.icon}</div>
-                    <div>
-                      <p className="text-[11px] font-bold text-foreground-subtle uppercase tracking-wider">
-                        {stat.label}
-                      </p>
-                      <p className="text-lg font-extrabold text-foreground">
-                        {stat.value}
-                      </p>
-                    </div>
-                  </div>
-                ))}
+        {/* Main Content Area */}
+        <main className="profile-main flex-1 space-y-8 pb-8">
+          {/* Banner Hero Section */}
+          <section className="profile-banner">
+            <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-banner-to rounded-full opacity-30 blur-2xl pointer-events-none" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-background-card rounded-bl-full opacity-10 pointer-events-none" />
+
+            <div className="relative z-10 flex flex-col md:flex-row md:items-end md:space-x-6 space-y-4 md:space-y-0">
+              <div className="profile-avatar-wrapper">
+                <div className="profile-avatar-inner overflow-hidden relative group">
+                  {formData.avatar ? (
+                    <img
+                      src={formData.avatar}
+                      alt="Profile Avatar"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <User className="w-12 h-12 text-brand" />
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploadingAvatar}
+                    className="profile-avatar-overlay cursor-pointer flex items-center justify-center"
+                  >
+                    <Camera className="w-6 h-6 text-background-card" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-1.5 pb-2">
+                <div className="flex items-center space-x-2">
+                  <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
+                    {profile?.userInfo?.name}
+                  </h1>
+                  <span className="profile-badge-pro">PRO</span>
+                </div>
+                <p className="text-sm opacity-90 font-medium flex items-center space-x-1.5">
+                  <Mail className="w-3.5 h-3.5 opacity-80" />
+                  <span>{profile?.userInfo?.email}</span>
+                  {isUploadingAvatar && (
+                    <span className="text-xs text-brand ml-2">
+                      Uploading avatar...
+                    </span>
+                  )}
+                </p>
               </div>
             </div>
-          </div>
+          </section>
 
-          {/* Right Column: Account Management Form */}
-          <div className="lg:col-span-2 space-y-6">
-            <h2 className="profile-section-title">Account Settings</h2>
-
-            <form onSubmit={handleSave} className="profile-card">
-              <div className="profile-form-grid">
-                <div className="space-y-2">
-                  <label htmlFor="fullName" className="profile-form-label">
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    id="fullName"
-                    name="fullName"
-                    value={formData.fullName}
-                    onChange={handleInputChange}
-                    className="profile-form-input"
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label htmlFor="email" className="profile-form-label">
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={profile?.email ?? ""}
-                    onChange={handleInputChange}
-                    className="profile-form-input"
-                    required
-                    disabled
-                  />
-                </div>
-              </div>
-
-              <hr className="border-border my-5" />
-
-              <div className="space-y-0">
-                <div className="profile-setting-row">
-                  <div className="flex items-center space-x-3 flex-1 min-w-0">
-                    <div className="profile-setting-icon">
-                      <Shield className="w-5 h-5 text-brand" />
-                    </div>
-                    <div className="profile-setting-text">
-                      <h4 className="text-sm font-bold text-foreground">
-                        Email Notifications
-                      </h4>
-                      <p className="text-xs text-foreground-subtle">
-                        Receive system performance metrics directly.
-                      </p>
-                    </div>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={handleToggle}
-                    className={`profile-toggle-btn ${
-                      formData.notifications ? "bg-brand" : "bg-background-hover"
-                    }`}
-                  >
-                    <div
-                      className={`profile-toggle-knob ${
-                        formData.notifications ? "translate-x-5" : "translate-x-0"
-                      }`}
-                    />
-                  </button>
-                </div>
-
-                <div className="profile-setting-row">
-                  <div className="flex items-center space-x-3 flex-1 min-w-0">
-                    <div className="profile-setting-icon">
-                      <KeyRound className="w-5 h-5 text-brand" />
-                    </div>
-                    <div className="profile-setting-text">
-                      <h4 className="text-sm font-bold text-foreground">
-                        Account Password
-                      </h4>
-                      <p className="text-xs text-foreground-subtle">
-                        Update your account authentication token configuration.
-                      </p>
-                    </div>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => setIsPasswordModalOpen(true)}
-                    className="profile-btn-secondary profile-setting-action"
-                  >
-                    Change Password
-                  </button>
-                </div>
-              </div>
-
-              <div className="profile-submit-row">
+          {/* Skill Accuracy Section */}
+          <section className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h2 className="profile-section-title flex items-center space-x-2">
+                <Target className="w-4 h-4 text-brand" />
+                <span>Skill Accuracy Gauge</span>
+              </h2>
+              <div className="flex items-center space-x-3">
                 <button
-                  type="submit"
-                  disabled={isSaving || isUnchanged}
-                  className="profile-btn-primary"
+                  type="button"
+                  onClick={() => navigate("/roadmap")}
+                  className="px-3.5 py-1.5 rounded-xl bg-brand/10 border border-brand/20 text-brand font-bold hover:bg-brand/20 transition-all flex items-center space-x-2 text-xs"
                 >
-                  <Save className="w-4 h-4" />
-                  <span>{isSaving ? "Saving..." : "Save Changes"}</span>
+                  <Map className="w-3.5 h-3.5" />
+                  <span>View Roadmap</span>
                 </button>
               </div>
-            </form>
+            </div>
+
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {skillAccuracies.map((item, idx) => (
+                <SkillGaugeMeter key={idx} {...item} />
+              ))}
+            </div>
+          </section>
+
+          {/* Profile Split-Layout Columns */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            {/* Left Column: Learning Statistics & Exam History */}
+            <div className="lg:col-span-1 space-y-8">
+              <div className="space-y-3">
+                <h2 className="profile-section-title">Learning Statistics</h2>
+                <div className="profile-card p-5 space-y-4">
+                  {stats.map((stat, idx) => (
+                    <div key={idx} className="profile-stat-card">
+                      <div className="profile-stat-icon-wrapper">
+                        {stat.icon}
+                      </div>
+                      <div>
+                        <p className="text-[11px] font-bold text-foreground-subtle uppercase tracking-wider">
+                          {stat.label}
+                        </p>
+                        <p className="text-lg font-extrabold text-foreground">
+                          {stat.value}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h2 className="profile-section-title flex items-center space-x-2">
+                    <FileText className="w-4 h-4 text-brand" />
+                    <span>Recent Exam History</span>
+                  </h2>
+                  <span className="text-xs font-semibold text-foreground-subtle">
+                    {history.length}{" "}
+                    {history.length === 1 ? "entry" : "entries"}
+                  </span>
+                </div>
+
+                <div className="profile-card divide-y divide-border overflow-hidden">
+                  {history.length === 0 ? (
+                    <div className="p-6 text-center text-foreground-subtle space-y-2">
+                      <FileText className="w-8 h-8 mx-auto opacity-40 text-foreground-subtle" />
+                      <p className="text-sm font-medium">
+                        No exam history recorded yet.
+                      </p>
+                    </div>
+                  ) : (
+                    history.slice(0, 5).map((item: any, idx: number) => {
+                      const score = Number(item.score || 0);
+                      const examTitle = `Exam #${item.examId || idx + 1}`;
+                      const rawDate = item.submittedAt || item.createdAt;
+                      const formattedDate = rawDate
+                        ? new Date(rawDate).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })
+                        : "Recently";
+
+                      const isPassed = item.isPassed ?? score >= 600;
+
+                      return (
+                        <div
+                          key={item.id || idx}
+                          onClick={() =>
+                            item.id && navigate(`/exam-history/${item.id}`)
+                          }
+                          className="p-4 flex items-center justify-between hover:bg-background-hover transition-colors cursor-pointer group"
+                        >
+                          <div className="flex items-center space-x-3 min-w-0">
+                            <div className="shrink-0">
+                              {isPassed ? (
+                                <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                              ) : (
+                                <XCircle className="w-5 h-5 text-rose-500" />
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-sm font-bold text-foreground truncate group-hover:text-brand transition-colors">
+                                {examTitle}
+                              </p>
+                              <div className="flex items-center space-x-2 text-[11px] text-foreground-subtle mt-0.5">
+                                <span>{formattedDate}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <ChevronRight className="w-4 h-4 text-foreground-subtle group-hover:translate-x-0.5 transition-transform" />
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Account Management Form */}
+            <div className="lg:col-span-2 space-y-6">
+              <h2 className="profile-section-title">Account Settings</h2>
+
+              <form onSubmit={handleSave} className="profile-card">
+                <div className="profile-form-grid">
+                  <div className="space-y-2">
+                    <label htmlFor="fullName" className="profile-form-label">
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      id="fullName"
+                      name="fullName"
+                      value={formData.fullName}
+                      onChange={handleInputChange}
+                      className="profile-form-input"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label htmlFor="email" className="profile-form-label">
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={profile?.userInfo?.email ?? ""}
+                      disabled
+                      className="profile-form-input"
+                    />
+                  </div>
+                </div>
+
+                <hr className="border-border my-5" />
+
+                <div className="profile-submit-row">
+                  <button
+                    type="submit"
+                    disabled={isSaving || isUnchanged || isUploadingAvatar}
+                    className="profile-btn-primary"
+                  >
+                    <Save className="w-4 h-4" />
+                    <span>{isSaving ? "Saving..." : "Save Changes"}</span>
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
 
-      {/* 3. Footer */}
-      <footer className="profile-footer">
-        &copy; 2026 Workspace System. All rights reserved.
-      </footer>
+        <ChangePasswordModal
+          isOpen={isPasswordModalOpen}
+          onClose={() => setIsPasswordModalOpen(false)}
+        />
+      </div>
 
-      {/* 4. Modal Mount */}
-      <ChangePasswordModal
-        isOpen={isPasswordModalOpen}
-        onClose={() => setIsPasswordModalOpen(false)}
-      />
+      <Footer />
     </div>
   );
 }
