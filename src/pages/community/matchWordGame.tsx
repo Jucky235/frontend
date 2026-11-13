@@ -194,10 +194,10 @@ export default function MatchWordGame({
               x2="100%"
               y2="0%"
             >
-              <stop offset="0%" stopColor="var(--brand, #6366f1)" />
+              <stop offset="0%" stopColor="var(--brand, brand)" />
               <stop
                 offset="100%"
-                stopColor="var(--brand, #6366f1)"
+                stopColor="var(--brand, brand)"
                 stopOpacity="0.8"
               />
             </linearGradient>
@@ -246,7 +246,7 @@ export default function MatchWordGame({
               const isErr = errorPair !== null;
               const strokeColor = isErr
                 ? "rgb(239 68 68)"
-                : "var(--brand, #6366f1)";
+                : "var(--brand, brand)";
 
               return (
                 <path

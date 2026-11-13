@@ -176,7 +176,7 @@ export const CreateSingleQuestionModal: React.FC<
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
-        <div className="relative w-full max-w-2xl rounded-xl bg-white shadow-xl dark:bg-gray-800">
+        <div className="relative w-full max-w-2xl rounded-xl bg-background-card shadow-xl dark:bg-gray-800">
           {/* Header */}
           <div className="flex items-center justify-between border-b p-4 dark:border-gray-700">
             <h2 className="text-xl font-bold text-gray-900 dark:text-white">

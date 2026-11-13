@@ -15,12 +15,12 @@ export const QuestionList: React.FC<QuestionListProps> = ({
 }) => {
   if (questions.length === 0) {
     return (
-      <div className="bg-white p-12 text-center rounded-2xl border border-neutral-200/80 shadow-xs space-y-3">
+      <div className="bg-background-card p-12 text-center rounded-2xl border border-border/80 shadow-xs space-y-3">
         <HelpCircle className="w-10 h-10 text-neutral-300 mx-auto" />
-        <p className="text-base font-bold text-neutral-700">
+        <p className="text-base font-bold text-foreground-muted">
           No questions found
         </p>
-        <p className="text-xs text-neutral-500 max-w-sm mx-auto">
+        <p className="text-xs text-foreground-subtle max-w-sm mx-auto">
           Try adjusting your search keywords or part filter, or create a new
           question.
         </p>

@@ -43,7 +43,7 @@ const renderStatusBadge = (status: NewsData["status"]) => {
       );
     case "ARCHIVED":
       return (
-        <span className="bg-neutral-100 text-neutral-600 text-[10px] font-extrabold px-2.5 py-1 rounded-md inline-flex items-center space-x-1">
+        <span className="bg-background-hover text-foreground-muted text-[10px] font-extrabold px-2.5 py-1 rounded-md inline-flex items-center space-x-1">
           <Archive className="w-3 h-3" />
           <span>Archived</span>
         </span>
@@ -83,11 +83,11 @@ export const NewsTable: React.FC<NewsTableProps> = ({
 
   return (
     <>
-      <div className="bg-white border border-neutral-200/80 rounded-2xl overflow-hidden shadow-xs">
+      <div className="bg-background-card border border-border/80 rounded-2xl overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-neutral-50/80 border-b border-neutral-100 text-[11px] font-bold text-neutral-400 uppercase tracking-wider">
+              <tr className="bg-background/80 border-b border-border-subtle text-[11px] font-bold text-foreground-subtle uppercase tracking-wider">
                 <th className="py-3.5 px-4">Article</th>
                 <th className="py-3.5 px-4">Category</th>
                 <th className="py-3.5 px-4">Status</th>
@@ -101,10 +101,10 @@ export const NewsTable: React.FC<NewsTableProps> = ({
                 <tr>
                   <td
                     colSpan={6}
-                    className="py-12 text-center text-neutral-400"
+                    className="py-12 text-center text-foreground-subtle"
                   >
                     <div className="flex items-center justify-center space-x-2">
-                      <Loader2 className="w-5 h-5 animate-spin text-[#5A67FF]" />
+                      <Loader2 className="w-5 h-5 animate-spin text-brand" />
                       <span className="font-bold">
                         Loading news articles...
                       </span>
@@ -118,7 +118,7 @@ export const NewsTable: React.FC<NewsTableProps> = ({
                   return (
                     <tr
                       key={item.id}
-                      className="hover:bg-neutral-50/50 transition-colors"
+                      className="hover:bg-background/50 transition-colors"
                     >
                       <td className="py-3.5 px-4">
                         <div className="flex items-center space-x-3">
@@ -126,45 +126,45 @@ export const NewsTable: React.FC<NewsTableProps> = ({
                             <img
                               src={item.thumbnail}
                               alt=""
-                              className="w-10 h-10 rounded-lg object-cover border border-neutral-200 shrink-0"
+                              className="w-10 h-10 rounded-lg object-cover border border-border shrink-0"
                             />
                           ) : (
-                            <div className="w-10 h-10 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-400 shrink-0">
+                            <div className="w-10 h-10 rounded-lg bg-background-hover flex items-center justify-center text-foreground-subtle shrink-0">
                               <FileText className="w-5 h-5" />
                             </div>
                           )}
                           <div className="min-w-0 max-w-xs sm:max-w-md">
-                            <h2 className="font-extrabold text-neutral-800 truncate">
+                            <h2 className="font-extrabold text-foreground truncate">
                               {item.title}
                             </h2>
-                            <p className="text-[10px] text-neutral-400 truncate">
+                            <p className="text-[10px] text-foreground-subtle truncate">
                               /{item.slug}
                             </p>
                           </div>
                         </div>
                       </td>
                       <td className="py-3.5 px-4">
-                        <span className="bg-neutral-100 text-neutral-700 text-[10px] font-extrabold px-2.5 py-1 rounded-md">
+                        <span className="bg-background-hover text-foreground-muted text-[10px] font-extrabold px-2.5 py-1 rounded-md">
                           {item.category}
                         </span>
                       </td>
                       <td className="py-3.5 px-4">
                         {renderStatusBadge(item.status)}
                       </td>
-                      <td className="py-3.5 px-4 font-bold text-neutral-600">
+                      <td className="py-3.5 px-4 font-bold text-foreground-muted">
                         {item.viewsCount}
                       </td>
-                      <td className="py-3.5 px-4 text-neutral-400 font-semibold">
+                      <td className="py-3.5 px-4 text-foreground-subtle font-semibold">
                         {item.publishedAt
                           ? new Date(item.publishedAt).toLocaleDateString()
                           : "—"}
                       </td>
                       <td className="py-3.5 px-4 text-right">
-                        <div className="flex items-center justify-end space-x-2 text-neutral-400">
+                        <div className="flex items-center justify-end space-x-2 text-foreground-subtle">
                           <button
                             onClick={() => onEdit(item)}
                             disabled={isItemDeleting}
-                            className="p-1.5 hover:text-[#5A67FF] hover:bg-indigo-50 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
+                            className="p-1.5 hover:text-brand hover:bg-pink-50 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
                             title="Edit Article"
                           >
                             <Edit2 className="w-4 h-4" />
@@ -190,7 +190,7 @@ export const NewsTable: React.FC<NewsTableProps> = ({
                 <tr>
                   <td
                     colSpan={6}
-                    className="py-12 text-center text-neutral-400 font-bold"
+                    className="py-12 text-center text-foreground-subtle font-bold"
                   >
                     No articles found.
                   </td>
@@ -220,7 +220,7 @@ export const NewsTable: React.FC<NewsTableProps> = ({
         description={
           <span>
             Are you sure you want to delete{" "}
-            <strong className="text-neutral-800">
+            <strong className="text-foreground">
               "{selectedForDelete?.title}"
             </strong>
             ? This action cannot be undone.

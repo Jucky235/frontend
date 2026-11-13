@@ -18,22 +18,23 @@ export const MessageInputBar: React.FC<MessageInputBarProps> = ({
   };
 
   return (
-    <div className="p-4 bg-background-card border-t border-border-subtle">
-      <form onSubmit={handleSubmit} className="flex items-center space-x-3">
+    <div className="border-t border-border bg-background-card p-3 sm:p-4">
+      <form onSubmit={handleSubmit} className="flex items-center gap-2.5">
         <input
           type="text"
-          placeholder="type message..."
+          aria-label="Write a message"
+          placeholder="Write a message…"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
-          className="flex-1 bg-background-input text-foreground placeholder-foreground-subtle text-xs px-4 py-3.5 rounded-xl border border-transparent focus:outline-none focus:bg-background-card focus:border-brand transition-all font-medium"
+          className="h-12 min-w-0 flex-1 rounded-xl border border-transparent bg-background-hover/70 px-4 text-xs font-medium text-foreground outline-none transition placeholder:text-foreground-subtle focus:border-brand/40 focus:bg-background focus:ring-4 focus:ring-brand/10"
         />
         <button
           type="submit"
           disabled={!inputText.trim()}
-          className="bg-brand hover:bg-brand-hover disabled:opacity-40 text-white px-6 py-3.5 rounded-xl font-bold text-xs flex items-center space-x-2 transition-all cursor-pointer active:scale-95 shadow-md shrink-0"
+          className="flex h-12 shrink-0 cursor-pointer items-center gap-2 rounded-xl bg-brand px-4 text-xs font-bold text-brand-foreground shadow-sm shadow-brand/20 transition hover:bg-brand-hover active:scale-95 disabled:cursor-not-allowed disabled:opacity-45 sm:px-5"
         >
-          <span>Send</span>
-          <Send className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Send</span>
+          <Send className="h-4 w-4" />
         </button>
       </form>
     </div>

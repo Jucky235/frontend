@@ -227,7 +227,7 @@ export default function LoginPage() {
                 disabled={isLoading}
                 className="sr-only peer"
               />
-              <div className="w-10 h-6 bg-border rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand relative" />
+              <div className="w-10 h-6 bg-border rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-background-card after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand relative" />
               <span className="text-sm text-muted-foreground font-medium">
                 Remember me
               </span>

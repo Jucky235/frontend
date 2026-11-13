@@ -335,7 +335,7 @@ export default function GrandHorizontalRoadmapPage({
                     <div className="absolute top-4 left-16 text-amber-500/30 animate-pulse">
                       <Globe className="w-14 h-14" />
                     </div>
-                    <div className="absolute bottom-6 right-28 text-indigo-500/30">
+                    <div className="absolute bottom-6 right-28 text-pink-500/30">
                       <Orbit className="w-20 h-20" />
                     </div>
                     <div className="absolute top-8 left-1/2 -translate-x-1/2 text-brand/25 -rotate-45">
@@ -409,13 +409,13 @@ export default function GrandHorizontalRoadmapPage({
 
                           {(isInProgress || isAvailable) && (
                             <div className="absolute -top-12 z-20 animate-bounce">
-                              <div className="bg-brand text-white font-black text-[11px] uppercase tracking-wider px-3.5 py-1.5 rounded-xl shadow-lg border-2 border-white dark:border-neutral-900 flex items-center space-x-1">
+                              <div className="bg-brand text-white font-black text-[11px] uppercase tracking-wider px-3.5 py-1.5 rounded-xl shadow-lg border-2 border-white dark:border-border flex items-center space-x-1">
                                 <Sparkles className="w-3.5 h-3.5 fill-white" />
                                 <span>
                                   {isInProgress ? "CONTINUE" : "START"}
                                 </span>
                               </div>
-                              <div className="w-2.5 h-2.5 bg-brand rotate-45 mx-auto -mt-1.5 border-r border-b border-white dark:border-neutral-900" />
+                              <div className="w-2.5 h-2.5 bg-brand rotate-45 mx-auto -mt-1.5 border-r border-b border-white dark:border-border" />
                             </div>
                           )}
 
@@ -430,7 +430,7 @@ export default function GrandHorizontalRoadmapPage({
                                   ? "bg-brand text-white border-brand-hover shadow-brand/40 shadow-xl ring-4 ring-brand/30 animate-pulse hover:bg-brand-hover"
                                   : isAvailable
                                     ? "bg-amber-500 text-white border-amber-700 shadow-amber-500/30 shadow-lg hover:bg-amber-400"
-                                    : "bg-neutral-200 dark:bg-neutral-800 text-neutral-400 dark:text-neutral-600 border-neutral-300 dark:border-neutral-900 cursor-not-allowed opacity-80"
+                                    : "bg-border dark:bg-background-hover text-foreground-subtle dark:text-foreground-muted border-border dark:border-border cursor-not-allowed opacity-80"
                             }`}
                           >
                             {(isInProgress || isAvailable) && (

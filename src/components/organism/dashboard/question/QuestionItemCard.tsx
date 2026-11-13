@@ -28,20 +28,20 @@ export const QuestionItemCard: React.FC<QuestionItemCardProps> = ({
   isDeleting = false,
 }) => {
   return (
-    <div className="bg-white border border-neutral-200/80 rounded-2xl p-6 shadow-xs hover:border-neutral-300 transition-all space-y-4">
+    <div className="bg-background-card border border-border/80 rounded-2xl p-6 shadow-xs hover:border-border transition-all space-y-4">
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center space-x-2 flex-wrap gap-y-1">
           {question.partNumber && (
-            <span className="text-xs font-extrabold text-[#5A67FF] bg-indigo-50 px-3 py-1 rounded-lg shrink-0">
+            <span className="text-xs font-extrabold text-brand bg-pink-50 px-3 py-1 rounded-lg shrink-0">
               Part {question.partNumber}
             </span>
           )}
           {typeof question.category === "string" && question.category && (
-            <span className="text-xs font-bold text-neutral-600 bg-neutral-100 px-2.5 py-1 rounded-lg shrink-0">
+            <span className="text-xs font-bold text-foreground-muted bg-background-hover px-2.5 py-1 rounded-lg shrink-0">
               {question.category}
             </span>
           )}
-          <span className="text-xs font-bold text-neutral-400 font-mono">
+          <span className="text-xs font-bold text-foreground-subtle font-mono">
             ID: {question.id}
           </span>
         </div>
@@ -51,7 +51,7 @@ export const QuestionItemCard: React.FC<QuestionItemCardProps> = ({
             type="button"
             onClick={() => onEdit(question)}
             disabled={isDeleting}
-            className="p-2 text-neutral-500 hover:text-[#5A67FF] hover:bg-indigo-50 rounded-lg transition-all cursor-pointer disabled:opacity-50"
+            className="p-2 text-foreground-subtle hover:text-brand hover:bg-pink-50 rounded-lg transition-all cursor-pointer disabled:opacity-50"
             title="Edit Question"
           >
             <Edit2 className="w-4 h-4" />
@@ -60,7 +60,7 @@ export const QuestionItemCard: React.FC<QuestionItemCardProps> = ({
             type="button"
             onClick={() => onDelete(question.id)}
             disabled={isDeleting}
-            className="p-2 text-neutral-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all cursor-pointer disabled:opacity-50"
+            className="p-2 text-foreground-subtle hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all cursor-pointer disabled:opacity-50"
             title="Delete Question"
           >
             {isDeleting ? (
@@ -73,10 +73,10 @@ export const QuestionItemCard: React.FC<QuestionItemCardProps> = ({
       </div>
 
       <div className="flex items-start space-x-3">
-        <span className="text-sm font-black text-indigo-500 bg-indigo-50 w-6 h-6 rounded-md flex items-center justify-center shrink-0 mt-0.5">
+        <span className="text-sm font-black text-pink-500 bg-pink-50 w-6 h-6 rounded-md flex items-center justify-center shrink-0 mt-0.5">
           {index + 1}
         </span>
-        <h3 className="text-base font-bold text-neutral-800 leading-snug">
+        <h3 className="text-base font-bold text-foreground leading-snug">
           {question.content}
         </h3>
       </div>
@@ -99,7 +99,7 @@ export const QuestionItemCard: React.FC<QuestionItemCardProps> = ({
           </div>
 
           {question.imagePath && (
-            <div className="max-w-xs overflow-hidden rounded-xl border border-neutral-200 bg-neutral-50">
+            <div className="max-w-xs overflow-hidden rounded-xl border border-border bg-background">
               <img
                 src={question.imagePath}
                 alt="Question Media"
@@ -129,7 +129,7 @@ export const QuestionItemCard: React.FC<QuestionItemCardProps> = ({
               className={`flex items-center space-x-3 p-3 rounded-xl text-xs font-semibold border transition-all ${
                 isCorrect
                   ? "bg-emerald-50/80 border-emerald-300 text-emerald-900"
-                  : "bg-neutral-50 border-neutral-200/80 text-neutral-700"
+                  : "bg-background border-border/80 text-foreground-muted"
               }`}
             >
               <OptionBadge label={key} isCorrect={isCorrect} />

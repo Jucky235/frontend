@@ -216,22 +216,22 @@ export default function ImportCsvModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-900/50 backdrop-blur-xs animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background-card/50 backdrop-blur-xs animate-in fade-in duration-200">
       <div
-        className="bg-white border border-neutral-200/80 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden"
+        className="bg-background-card border border-border/80 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-100 bg-neutral-50/50">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle bg-background/50">
           <div className="flex items-center space-x-2.5">
             <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
               <FileSpreadsheet className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base font-extrabold text-neutral-800">
+              <h2 className="text-base font-extrabold text-foreground">
                 Import Questions from CSV
               </h2>
-              <p className="text-[11px] text-neutral-400 font-medium">
+              <p className="text-[11px] text-foreground-subtle font-medium">
                 Bulk import multiple choice questions into your exam suite
               </p>
             </div>
@@ -240,7 +240,7 @@ export default function ImportCsvModal({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 rounded-lg transition-colors cursor-pointer"
+            className="p-1.5 text-foreground-subtle hover:text-foreground-muted hover:bg-background-hover rounded-lg transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -256,14 +256,14 @@ export default function ImportCsvModal({
           )}
 
           {/* Download CSV Template Bar */}
-          <div className="flex items-center justify-between p-3.5 bg-indigo-50/50 border border-indigo-100 rounded-xl">
-            <div className="text-xs text-indigo-900 font-medium">
+          <div className="flex items-center justify-between p-3.5 bg-pink-50/50 border border-pink-100 rounded-xl">
+            <div className="text-xs text-pink-900 font-medium">
               Need the correct format? Download our sample CSV template.
             </div>
             <button
               type="button"
               onClick={downloadSampleCsv}
-              className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-pink-600 hover:bg-pink-700 text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Sample CSV</span>
@@ -281,8 +281,8 @@ export default function ImportCsvModal({
               onDrop={handleDrop}
               className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all cursor-pointer ${
                 isDragging
-                  ? "border-indigo-500 bg-indigo-50/20"
-                  : "border-neutral-200 hover:border-indigo-400 hover:bg-neutral-50/50"
+                  ? "border-pink-500 bg-pink-50/20"
+                  : "border-border hover:border-pink-400 hover:bg-background/50"
               }`}
             >
               <input
@@ -300,14 +300,14 @@ export default function ImportCsvModal({
                 htmlFor="csv-file-input"
                 className="cursor-pointer space-y-3 block"
               >
-                <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto">
+                <div className="w-12 h-12 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center mx-auto">
                   <Upload className="w-6 h-6" />
                 </div>
                 <div>
-                  <p className="text-xs font-extrabold text-neutral-800">
+                  <p className="text-xs font-extrabold text-foreground">
                     Click to upload or drag and drop
                   </p>
-                  <p className="text-[11px] text-neutral-400 font-medium mt-0.5">
+                  <p className="text-[11px] text-foreground-subtle font-medium mt-0.5">
                     CSV files only (max 5MB)
                   </p>
                 </div>
@@ -316,14 +316,14 @@ export default function ImportCsvModal({
           ) : (
             /* File Preview & Questions List */
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-3.5 bg-neutral-50 border border-neutral-200/80 rounded-xl">
+              <div className="flex items-center justify-between p-3.5 bg-background border border-border/80 rounded-xl">
                 <div className="flex items-center space-x-3">
                   <FileSpreadsheet className="w-5 h-5 text-emerald-600" />
                   <div>
-                    <p className="text-xs font-bold text-neutral-800">
+                    <p className="text-xs font-bold text-foreground">
                       {file.name}
                     </p>
-                    <p className="text-[10px] text-neutral-400 font-medium">
+                    <p className="text-[10px] text-foreground-subtle font-medium">
                       {(file.size / 1024).toFixed(1)} KB •{" "}
                       {parsedQuestions.length} questions parsed
                     </p>
@@ -335,7 +335,7 @@ export default function ImportCsvModal({
                     setFile(null);
                     setParsedQuestions([]);
                   }}
-                  className="p-1.5 text-neutral-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer"
+                  className="p-1.5 text-foreground-subtle hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -344,7 +344,7 @@ export default function ImportCsvModal({
               {parsedQuestions.length > 0 && (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-neutral-700">
+                    <span className="text-xs font-bold text-foreground-muted">
                       Parsed Questions Preview
                     </span>
                     <span className="inline-flex items-center space-x-1 text-[11px] text-emerald-600 font-bold">
@@ -353,18 +353,18 @@ export default function ImportCsvModal({
                     </span>
                   </div>
 
-                  <div className="max-h-60 overflow-y-auto border border-neutral-200/80 rounded-xl divide-y divide-neutral-100 bg-white">
+                  <div className="max-h-60 overflow-y-auto border border-border/80 rounded-xl divide-y divide-neutral-100 bg-background-card">
                     {parsedQuestions.map((q, idx) => (
                       <div key={idx} className="p-3 text-xs space-y-1">
                         <div className="flex items-center justify-between">
-                          <span className="font-bold text-neutral-800">
+                          <span className="font-bold text-foreground">
                             {idx + 1}. {q.content}
                           </span>
-                          <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 font-bold rounded text-[10px]">
+                          <span className="px-2 py-0.5 bg-pink-50 text-pink-700 font-bold rounded text-[10px]">
                             Part {q.partNumber} • Answer: {q.right_answer}
                           </span>
                         </div>
-                        <div className="grid grid-cols-2 gap-2 text-[11px] text-neutral-500 font-medium pt-1">
+                        <div className="grid grid-cols-2 gap-2 text-[11px] text-foreground-subtle font-medium pt-1">
                           <span>A: {q.options.A}</span>
                           <span>B: {q.options.B}</span>
                           <span>C: {q.options.C}</span>
@@ -380,12 +380,12 @@ export default function ImportCsvModal({
         </div>
 
         {/* Footer Actions */}
-        <div className="flex items-center justify-end space-x-3 px-6 py-4 border-t border-neutral-100 bg-neutral-50/50">
+        <div className="flex items-center justify-end space-x-3 px-6 py-4 border-t border-border-subtle bg-background/50">
           <button
             type="button"
             onClick={onClose}
             disabled={isSubmitting}
-            className="px-4 py-2.5 rounded-xl text-xs font-bold text-neutral-600 hover:bg-neutral-100 transition-colors cursor-pointer disabled:opacity-50"
+            className="px-4 py-2.5 rounded-xl text-xs font-bold text-foreground-muted hover:bg-background-hover transition-colors cursor-pointer disabled:opacity-50"
           >
             Cancel
           </button>

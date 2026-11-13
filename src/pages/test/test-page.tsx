@@ -226,8 +226,8 @@ export default function TestPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-neutral-50 text-neutral-500">
-        <RefreshCw className="w-8 h-8 animate-spin text-[#5A67FF] mb-4" />
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground-subtle">
+        <RefreshCw className="w-8 h-8 animate-spin text-brand mb-4" />
         <p className="font-medium animate-pulse">Loading exam parts...</p>
       </div>
     );
@@ -235,7 +235,7 @@ export default function TestPage() {
 
   if (error || !exam) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-neutral-50 text-rose-500 font-bold">
+      <div className="min-h-screen flex items-center justify-center bg-background text-rose-500 font-bold">
         Failed to load exam data.
       </div>
     );
@@ -260,7 +260,7 @@ export default function TestPage() {
   const isLowTime = timeLeft !== null && timeLeft <= 300; // Less than 5 mins
 
   return (
-    <div className="min-h-screen w-full bg-neutral-50 font-inter py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen w-full bg-background font-inter py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <ExamHeader examName={exam.name} onBack={() => navigate(-1)} />
 
@@ -276,17 +276,17 @@ export default function TestPage() {
             )}
 
             {/* Part Header & Instructions */}
-            <div className="bg-white p-5 rounded-2xl border border-neutral-200 shadow-xs space-y-2">
+            <div className="bg-background-card p-5 rounded-2xl border border-border shadow-xs space-y-2">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-black text-neutral-800">
+                <h2 className="text-xl font-black text-foreground">
                   {currentPart.name || `Part ${currentPartIndex + 1}`}
                 </h2>
-                <span className="text-xs font-semibold text-neutral-500 bg-neutral-100 px-3 py-1 rounded-full">
+                <span className="text-xs font-semibold text-foreground-subtle bg-background-hover px-3 py-1 rounded-full">
                   {currentPart.questions?.length || 0} Questions
                 </span>
               </div>
               {currentPart.instructions && (
-                <p className="text-sm text-neutral-600 italic bg-neutral-50 p-3 rounded-xl border border-neutral-100">
+                <p className="text-sm text-foreground-muted italic bg-background p-3 rounded-xl border border-border-subtle">
                   {currentPart.instructions}
                 </p>
               )}
@@ -313,7 +313,7 @@ export default function TestPage() {
             </div>
 
             {/* Navigation Bottom Controls */}
-            <div className="flex items-center justify-between pt-4 border-t border-neutral-200">
+            <div className="flex items-center justify-between pt-4 border-t border-border">
               <button
                 type="button"
                 disabled={currentPartIndex === 0}
@@ -321,7 +321,7 @@ export default function TestPage() {
                   setCurrentPartIndex((prev) => prev - 1);
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
-                className="flex items-center space-x-1.5 px-4 py-2.5 bg-white border border-neutral-200 hover:bg-neutral-100 disabled:opacity-40 disabled:cursor-not-allowed text-neutral-700 font-bold text-sm rounded-xl transition-all cursor-pointer"
+                className="flex items-center space-x-1.5 px-4 py-2.5 bg-background-card border border-border hover:bg-background-hover disabled:opacity-40 disabled:cursor-not-allowed text-foreground-muted font-bold text-sm rounded-xl transition-all cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4" />
                 <span>Previous Part</span>
@@ -334,7 +334,7 @@ export default function TestPage() {
                     setCurrentPartIndex((prev) => prev + 1);
                     window.scrollTo({ top: 0, behavior: "smooth" });
                   }}
-                  className="flex items-center space-x-1.5 px-5 py-2.5 bg-[#5A67FF] hover:bg-indigo-600 text-white font-bold text-sm rounded-xl transition-all shadow-xs cursor-pointer"
+                  className="flex items-center space-x-1.5 px-5 py-2.5 bg-brand hover:bg-brand-hover text-brand-foreground font-bold text-sm rounded-xl transition-all shadow-xs cursor-pointer"
                 >
                   <span>Next Part</span>
                   <ChevronRight className="w-4 h-4" />
@@ -371,11 +371,11 @@ export default function TestPage() {
                 className={`flex items-center justify-between p-4 rounded-2xl border transition-all shadow-xs ${
                   isLowTime
                     ? "bg-rose-50 border-rose-200 text-rose-700 animate-pulse"
-                    : "bg-white border-neutral-200 text-neutral-800"
+                    : "bg-background-card border-border text-foreground"
                 }`}
               >
                 <div className="flex items-center space-x-2">
-                  <Clock className="w-5 h-5 text-[#5A67FF]" />
+                  <Clock className="w-5 h-5 text-brand" />
                   <span className="font-bold text-sm">Time Remaining</span>
                 </div>
                 <span className="font-black text-lg tracking-wider font-mono">
@@ -385,12 +385,12 @@ export default function TestPage() {
             )}
 
             {/* Sidebar Parts & Navigation Card */}
-            <div className="bg-white p-5 rounded-2xl border border-neutral-200 shadow-xs space-y-4">
-              <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
-                <h3 className="font-extrabold text-neutral-800 text-base">
+            <div className="bg-background-card p-5 rounded-2xl border border-border shadow-xs space-y-4">
+              <div className="flex items-center justify-between border-b border-border-subtle pb-3">
+                <h3 className="font-extrabold text-foreground text-base">
                   Parts & Navigation
                 </h3>
-                <span className="text-xs font-bold text-[#5A67FF] bg-indigo-50 px-2.5 py-1 rounded-lg">
+                <span className="text-xs font-bold text-brand bg-pink-50 px-2.5 py-1 rounded-lg">
                   {answeredQuestionsCount} / {totalQuestions} Done
                 </span>
               </div>
@@ -413,8 +413,8 @@ export default function TestPage() {
                       onClick={() => setCurrentPartIndex(idx)}
                       className={`w-full flex items-center justify-between p-3 rounded-xl font-bold text-xs transition-all cursor-pointer ${
                         isActive
-                          ? "bg-[#5A67FF] text-white shadow-xs"
-                          : "bg-neutral-50 text-neutral-700 hover:bg-neutral-100 border border-neutral-200/60"
+                          ? "bg-brand text-brand-foreground shadow-xs"
+                          : "bg-background text-foreground-muted hover:bg-background-hover border border-border/60"
                       }`}
                     >
                       <span>
@@ -428,8 +428,8 @@ export default function TestPage() {
                         <span
                           className={`text-[11px] px-2 py-0.5 rounded-md ${
                             isActive
-                              ? "bg-white/20 text-white"
-                              : "bg-neutral-200/60 text-neutral-600"
+                              ? "bg-background-card/20 text-white"
+                              : "bg-border/60 text-foreground-muted"
                           }`}
                         >
                           {partAnsweredCount}/{part.questions?.length || 0}
@@ -441,8 +441,8 @@ export default function TestPage() {
               </div>
 
               {/* Active Part Question Grid */}
-              <div className="pt-2 border-t border-neutral-100 space-y-2">
-                <span className="text-xs font-bold text-neutral-500 uppercase tracking-wider block">
+              <div className="pt-2 border-t border-border-subtle space-y-2">
+                <span className="text-xs font-bold text-foreground-subtle uppercase tracking-wider block">
                   Quick Jump (
                   {currentPart.name || `Part ${currentPartIndex + 1}`})
                 </span>
@@ -460,7 +460,7 @@ export default function TestPage() {
                           className={`h-8 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center ${
                             isAnswered
                               ? "bg-emerald-500 text-white shadow-2xs"
-                              : "bg-neutral-100 hover:bg-neutral-200 text-neutral-600 border border-neutral-200"
+                              : "bg-background-hover hover:bg-border text-foreground-muted border border-border"
                           }`}
                         >
                           {globalIdx}

@@ -12,12 +12,12 @@ export const ExamHeader: React.FC<ExamHeaderProps> = ({ examName, onBack }) => (
     <button
       onClick={onBack}
       type="button"
-      className="flex items-center space-x-1 text-sm font-semibold text-neutral-500 hover:text-indigo-600 transition-colors cursor-pointer"
+      className="flex items-center space-x-1 text-sm font-semibold text-foreground-subtle hover:text-pink-600 transition-colors cursor-pointer"
     >
       <ChevronLeft className="w-4 h-4" />
       <span>Back</span>
     </button>
-    <span className="text-xs font-bold uppercase tracking-widest text-neutral-400 bg-neutral-200/60 px-3 py-1 rounded-md">
+    <span className="text-xs font-bold uppercase tracking-widest text-foreground-subtle bg-border/60 px-3 py-1 rounded-md">
       {examName}
     </span>
   </div>

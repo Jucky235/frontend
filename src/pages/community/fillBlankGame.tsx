@@ -139,7 +139,7 @@ export default function FillBlankGame({
             Question {currentIndex + 1} of {exercise.questions.length}
           </span>
         </div>
-        <div className="w-full bg-neutral-200 dark:bg-neutral-800 h-2.5 rounded-full overflow-hidden">
+        <div className="w-full bg-border dark:bg-background-hover h-2.5 rounded-full overflow-hidden">
           <div
             className="bg-brand h-full transition-all duration-300"
             style={{

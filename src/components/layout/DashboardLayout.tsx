@@ -112,7 +112,7 @@ export default function DashboardLayout() {
                 <div
                   className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
                     isActive
-                      ? "bg-white/20 text-brand-foreground"
+                      ? "bg-background-card/20 text-brand-foreground"
                       : "bg-background-hover text-foreground-subtle group-hover:text-foreground group-hover:bg-background"
                   }`}
                 >

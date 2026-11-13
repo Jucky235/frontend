@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link } from "react-router-dom"; // Added for routing
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LogOut,
   User,
@@ -22,6 +22,8 @@ interface ExamListPageProps {
 }
 
 export default function ExamListPage({ pageSize = 6 }: ExamListPageProps) {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { data: exams = [], isLoading, isError, error } = useGetExamsQuery();
   const [searchQuery, setSearchQuery] = React.useState("");
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -57,7 +59,13 @@ export default function ExamListPage({ pageSize = 6 }: ExamListPageProps) {
       {/* 1. Dynamic Top Navigation Hub Bar */}
       <header className="study-header">
         <div className="flex items-center space-x-4">
-          <button type="button" className="study-header-back-btn">
+          <button
+            type="button"
+            onClick={() =>
+              location.key === "default" ? navigate("/") : navigate(-1)
+            }
+            className="study-header-back-btn"
+          >
             <ArrowLeft className="w-4 h-4" />
             <span className="hidden sm:inline">Back</span>
           </button>

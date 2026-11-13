@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import {
   Search,
@@ -29,6 +29,7 @@ import Dropdown, {
 } from "@/components/organism/common/Dropdown";
 import { useGetUserProfileQuery } from "@/redux/user/userApiSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { useTheme } from "@/context/ThemeContext";
 import { selectUserId, selectUserProfile } from "@/redux/user/userSlice";
 import {
   selectSearchQuery,
@@ -162,6 +163,8 @@ export default function Header({
 }: HeaderProps) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === "dark";
 
   const profile = useSelector(selectUserProfile);
   const userId = useSelector(selectUserId);
@@ -215,30 +218,6 @@ export default function Header({
       console.error("Navigation Search Error:", err);
     }
   };
-
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    if (typeof window !== "undefined") {
-      return (
-        localStorage.getItem("theme") === "dark" ||
-        (!("theme" in localStorage) &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches)
-      );
-    }
-    return false;
-  });
-
-  useEffect(() => {
-    const root = document.documentElement;
-    if (isDark) {
-      root.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      root.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [isDark]);
-
-  const toggleTheme = () => setIsDark((prev) => !prev);
 
   const defaultNavItems: NavItem[] = [
     {
@@ -385,14 +364,20 @@ export default function Header({
 
   return (
     <DropdownProvider>
-      <header className="w-full bg-background-card border-b border-border text-foreground shadow-xs sticky top-0 z-50">
+      <header className="sticky top-0 z-50 w-full border-b border-border/80 bg-background-card/95 text-foreground shadow-sm shadow-black/10 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-6">
             <Link
               to="/"
-              className="w-10 h-10 rounded-full bg-brand text-brand-foreground flex items-center justify-center font-black text-base tracking-tighter shadow-sm hover:scale-105 transition-transform"
+              aria-label="S English home"
+              className="group flex items-center gap-2.5"
             >
-              Eng
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-pink-500 to-violet-600 text-lg font-black tracking-tight text-white shadow-md shadow-pink-950/25 transition-transform group-hover:scale-105">
+                S
+              </span>
+              <span className="hidden text-sm font-extrabold tracking-tight text-foreground sm:inline">
+                S <span className="text-brand">English</span>
+              </span>
             </Link>
 
             <nav className="hidden lg:flex items-center space-x-6 text-xs font-bold lowercase tracking-wide">
@@ -463,8 +448,18 @@ export default function Header({
               <Search className="w-4 h-4" />
             </button>
 
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="p-1.5 text-foreground-subtle transition-colors hover:text-brand md:hidden"
+              aria-label="Toggle theme"
+              title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            >
+              {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </button>
+
             <div className="hidden md:flex items-center space-x-3 text-foreground-subtle">
-              <button className="hover:text-rose-500 transition-colors p-1">
+              <button className="p-1 transition-colors hover:text-brand">
                 <Heart className="w-4 h-4 fill-current stroke-none" />
               </button>
 

@@ -245,10 +245,10 @@ export default function ChatPage() {
     : null;
 
   return (
-    <div className="h-screen w-full bg-background text-foreground flex flex-col overflow-hidden select-none">
+    <div className="flex min-h-screen w-full flex-col bg-background text-foreground lg:h-screen lg:overflow-hidden">
       <Header />
 
-      <div className="flex-1 max-w-7xl w-full mx-auto p-4 flex gap-4 overflow-hidden h-[calc(100vh-4rem)]">
+      <main className="mx-auto flex min-h-0 w-full max-w-[1500px] flex-1 flex-col gap-3 px-3 py-3 lg:h-[calc(100vh-4rem)] lg:flex-row lg:gap-4 lg:px-5 lg:py-4">
         {/* Left: Chat Sidebar */}
         <ChatSidebar
           channels={isLoadingChannels ? [] : channels}
@@ -258,7 +258,7 @@ export default function ChatPage() {
         />
 
         {/* Center: Main Chat Feed */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex min-h-[55vh] min-w-0 flex-1 flex-col overflow-hidden lg:min-h-0">
           <ChatFeed
             channelName={currentChannelName}
             messages={isLoadingMessages ? [] : allMessages}
@@ -267,11 +267,11 @@ export default function ChatPage() {
               selectedChannelId && (
                 <button
                   onClick={handleFetchSummary}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-indigo-600 bg-white hover:bg-indigo-50 rounded-lg transition-colors shadow-sm cursor-pointer shrink-0 dark:bg-white dark:text-indigo-600 dark:hover:bg-indigo-50"
-                  title={`Tóm tắt #${currentChannelName}`}
+                  className="flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-white/20 bg-white/15 px-3 py-1.5 text-[10px] font-bold text-white shadow-sm backdrop-blur transition hover:bg-white/25"
+                  title={`Summarize #${currentChannelName} with AI`}
                 >
-                  <Sparkles className="w-4 h-4 text-indigo-600" />
-                  <span>Tóm tắt AI</span>
+                  <Sparkles className="h-3.5 w-3.5" />
+                  <span className="hidden sm:inline">AI summary</span>
                 </button>
               )
             }
@@ -280,13 +280,13 @@ export default function ChatPage() {
 
         {/* Right: AI Summary Panel */}
         {isSummaryPanelOpen && (
-          <aside className="w-80 bg-background-card border border-border/80 rounded-2xl flex flex-col overflow-hidden shadow-xs transition-all duration-300 shrink-0">
+          <aside className="flex max-h-72 w-full shrink-0 flex-col overflow-hidden rounded-2xl border border-border bg-background-card shadow-sm transition-all duration-300 lg:max-h-none lg:w-80">
             {/* Panel Header */}
-            <div className="p-4 border-b border-border/80 flex items-center justify-between bg-background-subtle-hover/80">
+            <div className="flex items-center justify-between border-b border-border bg-background-hover/60 p-4">
               <div className="flex items-center gap-2 overflow-hidden">
-                <Sparkles className="w-4 h-4 text-indigo-600 shrink-0" />
-                <h3 className="text-sm font-semibold text-foreground truncate">
-                  Tóm tắt #{currentChannelName}
+                <Sparkles className="h-4 w-4 shrink-0 text-brand" />
+                <h3 className="truncate text-sm font-semibold text-foreground">
+                  AI summary · #{currentChannelName}
                 </h3>
               </div>
               <div className="flex items-center gap-1 shrink-0">
@@ -294,17 +294,18 @@ export default function ChatPage() {
                   onClick={handleFetchSummary}
                   disabled={isGeneratingSummary}
                   className="p-1.5 text-foreground-muted hover:text-foreground rounded-md hover:bg-background-hover transition-colors disabled:opacity-50"
-                  title="Tải lại tóm tắt"
+                  title="Refresh summary"
                 >
                   <RefreshCw
                     className={`w-4 h-4 ${
-                      isGeneratingSummary ? "animate-spin text-indigo-600" : ""
+                      isGeneratingSummary ? "animate-spin text-brand" : ""
                     }`}
                   />
                 </button>
                 <button
                   onClick={() => setIsSummaryPanelOpen(false)}
-                  className="p-1.5 text-foreground-muted hover:text-foreground rounded-md hover:bg-background-hover transition-colors"
+                  aria-label="Close summary"
+                  className="rounded-md p-1.5 text-foreground-muted transition-colors hover:bg-background-hover hover:text-foreground"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -312,12 +313,12 @@ export default function ChatPage() {
             </div>
 
             {/* Panel Content Body */}
-            <div className="flex-1 p-4 overflow-y-auto text-sm text-foreground-muted leading-relaxed">
+            <div className="flex-1 overflow-y-auto p-4 text-sm leading-relaxed text-foreground-muted">
               {isGeneratingSummary ? (
                 <div className="h-full flex flex-col items-center justify-center gap-3 text-foreground-subtle py-12">
-                  <RefreshCw className="w-6 h-6 animate-spin text-indigo-600" />
+                  <RefreshCw className="h-6 w-6 animate-spin text-brand" />
                   <p className="text-xs font-medium text-foreground-muted">
-                    Đang đọc tin nhắn kênh #{currentChannelName}...
+                    Reading recent messages in #{currentChannelName}…
                   </p>
                 </div>
               ) : isSummaryError ? (
@@ -325,7 +326,7 @@ export default function ChatPage() {
                   <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                   <span>
                     {(summaryError as any)?.data?.error ||
-                      "Không thể tạo tóm tắt lúc này."}
+                      "We couldn’t create a summary right now."}
                   </span>
                 </div>
               ) : summaryContent ? (
@@ -333,14 +334,14 @@ export default function ChatPage() {
                   {summaryContent}
                 </div>
               ) : (
-                <div className="text-center py-12 text-foreground-subtle text-xs">
-                  Nhấn "Tóm tắt AI" để xem tổng hợp kênh này.
+                <div className="py-12 text-center text-xs text-foreground-subtle">
+                  Select AI summary to get the main points from this channel.
                 </div>
               )}
             </div>
           </aside>
         )}
-      </div>
+      </main>
     </div>
   );
 }

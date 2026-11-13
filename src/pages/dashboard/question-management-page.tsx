@@ -150,12 +150,12 @@ export default function QuestionManagementPage() {
   return (
     <div className="w-full space-y-6">
       {/* --- Top Action Bar --- */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-neutral-200/80 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-background-card p-6 rounded-2xl border border-border/80 shadow-xs">
         <div>
-          <h1 className="text-2xl font-black text-neutral-800 tracking-tight">
+          <h1 className="text-2xl font-black text-foreground tracking-tight">
             Question Management
           </h1>
-          <p className="text-sm font-medium text-neutral-500 mt-0.5">
+          <p className="text-sm font-medium text-foreground-subtle mt-0.5">
             Create, edit, and organize exam questions by TOEIC/IELTS parts.
           </p>
         </div>
@@ -175,7 +175,7 @@ export default function QuestionManagementPage() {
           <button
             type="button"
             onClick={handleOpenCreateModal}
-            className="flex items-center justify-center space-x-2 bg-[#5A67FF] hover:bg-indigo-600 active:scale-95 text-white font-bold text-sm px-5 py-2.5 rounded-xl transition-all shadow-xs cursor-pointer"
+            className="flex items-center justify-center space-x-2 bg-brand hover:bg-brand-hover active:scale-95 text-brand-foreground font-bold text-sm px-5 py-2.5 rounded-xl transition-all shadow-xs cursor-pointer"
           >
             <Plus className="w-4 h-4 stroke-[2.5]" />
             <span>Add New Question</span>
@@ -193,21 +193,21 @@ export default function QuestionManagementPage() {
 
       {/* --- Main Content Area --- */}
       {isLoading ? (
-        <div className="bg-white p-16 text-center rounded-2xl border border-neutral-200/80 shadow-xs flex flex-col items-center justify-center space-y-3">
-          <Loader2 className="w-8 h-8 text-[#5A67FF] animate-spin" />
-          <p className="text-sm font-semibold text-neutral-600">
+        <div className="bg-background-card p-16 text-center rounded-2xl border border-border/80 shadow-xs flex flex-col items-center justify-center space-y-3">
+          <Loader2 className="w-8 h-8 text-brand animate-spin" />
+          <p className="text-sm font-semibold text-foreground-muted">
             Loading questions...
           </p>
         </div>
       ) : isError ? (
-        <div className="bg-white p-12 text-center rounded-2xl border border-rose-200 shadow-xs space-y-3">
+        <div className="bg-background-card p-12 text-center rounded-2xl border border-rose-200 shadow-xs space-y-3">
           <AlertCircle className="w-10 h-10 text-rose-500 mx-auto" />
-          <p className="text-base font-bold text-neutral-800">
+          <p className="text-base font-bold text-foreground">
             Failed to load questions
           </p>
           <button
             onClick={() => refetch()}
-            className="px-4 py-2 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-xs font-bold rounded-xl transition-all cursor-pointer"
+            className="px-4 py-2 bg-background-hover hover:bg-border text-foreground-muted text-xs font-bold rounded-xl transition-all cursor-pointer"
           >
             Retry
           </button>

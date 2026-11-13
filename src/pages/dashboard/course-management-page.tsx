@@ -56,10 +56,10 @@ export default function CourseManagementPage() {
       {/* Header Action Dashboard Hub Row */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-neutral-800 tracking-tight">
+          <h1 className="text-2xl font-extrabold text-foreground tracking-tight">
             Course Curations
           </h1>
-          <p className="text-xs text-neutral-400 font-medium mt-0.5">
+          <p className="text-xs text-foreground-subtle font-medium mt-0.5">
             Construct course parameters, map flashcard collection arrays, and
             inspect enrollment metrics.
           </p>
@@ -67,7 +67,7 @@ export default function CourseManagementPage() {
 
         <button
           type="button"
-          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm px-4 py-2.5 rounded-xl tracking-wide shadow-md transition-all flex items-center justify-center space-x-2 cursor-pointer active:scale-95 self-start sm:self-auto"
+          className="bg-pink-600 hover:bg-pink-700 text-white font-bold text-sm px-4 py-2.5 rounded-xl tracking-wide shadow-md transition-all flex items-center justify-center space-x-2 cursor-pointer active:scale-95 self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
           <span>Create Course</span>
@@ -76,43 +76,43 @@ export default function CourseManagementPage() {
 
       {/* High-Density Analytics Summary Row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        <div className="bg-white border border-neutral-200/80 p-5 rounded-2xl flex items-center space-x-4 shadow-xs">
-          <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-[#5A67FF]">
+        <div className="bg-background-card border border-border/80 p-5 rounded-2xl flex items-center space-x-4 shadow-xs">
+          <div className="w-10 h-10 rounded-xl bg-pink-50 flex items-center justify-center text-brand">
             <GraduationCap className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
+            <p className="text-[10px] font-bold text-foreground-subtle uppercase tracking-wider">
               Active Courses
             </p>
-            <p className="text-xl font-black text-neutral-800 mt-0.5">
+            <p className="text-xl font-black text-foreground mt-0.5">
               {courses.length}
             </p>
           </div>
         </div>
 
-        <div className="bg-white border border-neutral-200/80 p-5 rounded-2xl flex items-center space-x-4 shadow-xs">
+        <div className="bg-background-card border border-border/80 p-5 rounded-2xl flex items-center space-x-4 shadow-xs">
           <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
             <Layers className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
+            <p className="text-[10px] font-bold text-foreground-subtle uppercase tracking-wider">
               Mapped Card Decks
             </p>
-            <p className="text-xl font-black text-neutral-800 mt-0.5">
+            <p className="text-xl font-black text-foreground mt-0.5">
               12 Arrays
             </p>
           </div>
         </div>
 
-        <div className="bg-white border border-neutral-200/80 p-5 rounded-2xl flex items-center space-x-4 shadow-xs">
+        <div className="bg-background-card border border-border/80 p-5 rounded-2xl flex items-center space-x-4 shadow-xs">
           <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
             <Users className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
+            <p className="text-[10px] font-bold text-foreground-subtle uppercase tracking-wider">
               Total Enrolled
             </p>
-            <p className="text-xl font-black text-neutral-800 mt-0.5">
+            <p className="text-xl font-black text-foreground mt-0.5">
               231 Users
             </p>
           </div>
@@ -120,25 +120,25 @@ export default function CourseManagementPage() {
       </div>
 
       {/* Filter Control Utility Box */}
-      <div className="bg-white border border-neutral-200/80 p-4 rounded-2xl shadow-xs">
+      <div className="bg-background-card border border-border/80 p-4 rounded-2xl shadow-xs">
         <div className="relative w-full max-w-md">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground-subtle" />
           <input
             type="text"
             placeholder="Search by course title or database code..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-xl border border-neutral-200 text-xs font-medium text-neutral-800 focus:outline-none focus:border-[#5A67FF] transition-all"
+            className="w-full pl-10 pr-4 py-2 rounded-xl border border-border text-xs font-medium text-foreground focus:outline-none focus:border-brand transition-all"
           />
         </div>
       </div>
 
       {/* Main Course System Layout Table Data */}
-      <div className="bg-white border border-neutral-200/80 rounded-2xl overflow-hidden shadow-xs">
+      <div className="bg-background-card border border-border/80 rounded-2xl overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-neutral-50 border-b border-neutral-200 text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
+              <tr className="bg-background border-b border-border text-[10px] font-bold text-foreground-subtle uppercase tracking-wider">
                 <th className="px-6 py-4">Course Parameters</th>
                 <th className="px-6 py-4">Deck Frameworks</th>
                 <th className="px-6 py-4">Active Seats</th>
@@ -146,24 +146,24 @@ export default function CourseManagementPage() {
                 <th className="px-6 py-4 text-center">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-200/80 text-xs font-medium text-neutral-700">
+            <tbody className="divide-y divide-neutral-200/80 text-xs font-medium text-foreground-muted">
               {filteredCourses.length > 0 ? (
                 filteredCourses.map((course) => (
                   <tr
                     key={course.id}
-                    className="hover:bg-neutral-50/50 transition-colors group"
+                    className="hover:bg-background/50 transition-colors group"
                   >
                     {/* Title and Identification Code */}
                     <td className="px-6 py-4">
                       <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 rounded-lg bg-neutral-100 group-hover:bg-indigo-50 flex items-center justify-center text-neutral-500 group-hover:text-[#5A67FF] transition-colors">
+                        <div className="w-8 h-8 rounded-lg bg-background-hover group-hover:bg-pink-50 flex items-center justify-center text-foreground-subtle group-hover:text-brand transition-colors">
                           <BookOpen className="w-4 h-4" />
                         </div>
                         <div>
-                          <p className="font-bold text-neutral-800">
+                          <p className="font-bold text-foreground">
                             {course.title}
                           </p>
-                          <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-wider mt-0.5">
+                          <p className="text-[10px] text-foreground-subtle font-bold uppercase tracking-wider mt-0.5">
                             {course.code}
                           </p>
                         </div>
@@ -173,10 +173,10 @@ export default function CourseManagementPage() {
                     {/* Associated Flashcard Decks Count */}
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-1.5">
-                        <span className="font-bold text-neutral-800">
+                        <span className="font-bold text-foreground">
                           {course.associatedDecks} Decks
                         </span>
-                        <span className="text-neutral-400 font-normal">
+                        <span className="text-foreground-subtle font-normal">
                           in array
                         </span>
                       </div>
@@ -185,7 +185,7 @@ export default function CourseManagementPage() {
                     {/* Total Enrolled Students Count */}
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-1.5">
-                        <span className="font-bold text-neutral-800">
+                        <span className="font-bold text-foreground">
                           {course.totalStudents} Students
                         </span>
                       </div>
@@ -213,7 +213,7 @@ export default function CourseManagementPage() {
                     <td className="px-6 py-4 text-center whitespace-nowrap">
                       <button
                         type="button"
-                        className="w-7 h-7 inline-flex items-center justify-center text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 rounded-lg transition-all cursor-pointer"
+                        className="w-7 h-7 inline-flex items-center justify-center text-foreground-subtle hover:text-foreground-muted hover:bg-background-hover rounded-lg transition-all cursor-pointer"
                       >
                         <MoreVertical className="w-4 h-4" />
                       </button>
@@ -224,7 +224,7 @@ export default function CourseManagementPage() {
                 <tr>
                   <td
                     colSpan={5}
-                    className="px-6 py-10 text-center font-semibold text-neutral-400"
+                    className="px-6 py-10 text-center font-semibold text-foreground-subtle"
                   >
                     No matching course curations found in current dataset
                     arrays.

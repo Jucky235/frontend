@@ -34,12 +34,12 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
 
   return (
     <div
-      className={`flex items-start space-x-3 max-w-2xl ${
-        isMe ? "ml-auto flex-row-reverse space-x-reverse" : ""
+      className={`flex max-w-2xl items-end gap-2.5 sm:gap-3 ${
+        isMe ? "ml-auto flex-row-reverse" : ""
       }`}
     >
       <div className="flex flex-col items-center shrink-0">
-        <div className="w-9 h-9 rounded-full overflow-hidden border border-border flex items-center justify-center bg-brand text-brand-foreground font-bold text-xs shadow-xs">
+        <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-brand/20 bg-gradient-to-br from-brand to-violet-600 text-xs font-bold text-white shadow-sm">
           {userAvatarImage ? (
             <img
               src={userAvatarImage}
@@ -50,22 +50,22 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
             getInitials(user.name)
           )}
         </div>
-        <span className="text-[10px] text-foreground-subtle mt-1 max-w-[60px] truncate font-semibold">
+        <span className="mt-1 max-w-[72px] truncate text-[9px] font-semibold text-foreground-subtle">
           {user.name}
         </span>
       </div>
 
       <div
-        className={`border px-4 py-2.5 rounded-2xl space-y-1 shadow-xs max-w-xl ${
+        className={`max-w-[82%] space-y-1 rounded-2xl border px-4 py-2.5 shadow-sm sm:max-w-xl ${
           isMe
-            ? "bg-brand text-white border-brand rounded-tr-xs"
-            : "bg-background-card text-foreground border-border/80 rounded-tl-xs"
+            ? "rounded-br-md border-brand bg-brand text-brand-foreground"
+            : "rounded-bl-md border-border bg-background-card text-foreground"
         }`}
       >
-        <p className="text-xs font-medium leading-relaxed">{text}</p>
+        <p className="break-words text-xs font-medium leading-relaxed">{text}</p>
         <div
           className={`text-[10px] font-semibold text-right ${
-            isMe ? "text-brand-text-subtle" : "text-foreground-subtle"
+            isMe ? "text-white/75" : "text-foreground-subtle"
           }`}
         >
           {timestamp}

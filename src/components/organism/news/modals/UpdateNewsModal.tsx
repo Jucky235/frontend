@@ -67,7 +67,7 @@ export const UpdateNewsModal: React.FC<UpdateNewsModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="w-full max-w-2xl rounded-lg bg-white p-6 shadow-xl dark:bg-gray-800">
+      <div className="w-full max-w-2xl rounded-lg bg-background-card p-6 shadow-xl dark:bg-gray-800">
         <div className="mb-4 flex items-center justify-between border-b pb-3 dark:border-gray-700">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
             Edit News Article

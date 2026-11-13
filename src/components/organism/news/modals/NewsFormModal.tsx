@@ -118,14 +118,14 @@ export const NewsFormModal: React.FC<NewsFormModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white border border-neutral-200/80 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl p-6 space-y-6">
-        <div className="flex items-center justify-between border-b border-neutral-100 pb-4">
-          <h2 className="text-lg font-black text-neutral-800">
+      <div className="bg-background-card border border-border/80 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl p-6 space-y-6">
+        <div className="flex items-center justify-between border-b border-border-subtle pb-4">
+          <h2 className="text-lg font-black text-foreground">
             {editingNews ? "Edit Article" : "Create New Article"}
           </h2>
           <button
             onClick={onClose}
-            className="p-1 text-neutral-400 hover:text-neutral-600 rounded-lg cursor-pointer"
+            className="p-1 text-foreground-subtle hover:text-foreground-muted rounded-lg cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -133,7 +133,7 @@ export const NewsFormModal: React.FC<NewsFormModalProps> = ({
 
         <form onSubmit={handleSubmitForm} className="space-y-4 text-xs">
           <div className="space-y-1">
-            <label className="font-extrabold text-neutral-700">
+            <label className="font-extrabold text-foreground-muted">
               Article Title
             </label>
             <input
@@ -142,13 +142,13 @@ export const NewsFormModal: React.FC<NewsFormModalProps> = ({
               placeholder="e.g., Official TOEIC Pattern Updates 2026"
               value={formData.title}
               onChange={handleTitleChange}
-              className="w-full px-4 py-2.5 bg-neutral-100 border border-transparent rounded-xl text-xs font-semibold text-neutral-800 focus:outline-none focus:bg-white focus:border-[#5A67FF] transition-all"
+              className="w-full px-4 py-2.5 bg-background-hover border border-transparent rounded-xl text-xs font-semibold text-foreground focus:outline-none focus:bg-background-card focus:border-brand transition-all"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="font-extrabold text-neutral-700 flex items-center space-x-1">
-              <Globe className="w-3.5 h-3.5 text-neutral-400" />
+            <label className="font-extrabold text-foreground-muted flex items-center space-x-1">
+              <Globe className="w-3.5 h-3.5 text-foreground-subtle" />
               <span>URL Slug</span>
             </label>
             <input
@@ -159,13 +159,13 @@ export const NewsFormModal: React.FC<NewsFormModalProps> = ({
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, slug: e.target.value }))
               }
-              className="w-full px-4 py-2 bg-neutral-100 border border-transparent rounded-xl text-xs font-medium text-neutral-600 focus:outline-none focus:bg-white focus:border-[#5A67FF] transition-all"
+              className="w-full px-4 py-2 bg-background-hover border border-transparent rounded-xl text-xs font-medium text-foreground-muted focus:outline-none focus:bg-background-card focus:border-brand transition-all"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="font-extrabold text-neutral-700">
+              <label className="font-extrabold text-foreground-muted">
                 Category
               </label>
               <select
@@ -176,7 +176,7 @@ export const NewsFormModal: React.FC<NewsFormModalProps> = ({
                     category: e.target.value as NewsData["category"],
                   }))
                 }
-                className="w-full px-4 py-2.5 bg-neutral-100 border border-transparent rounded-xl font-bold text-neutral-800 focus:outline-none focus:bg-white focus:border-[#5A67FF]"
+                className="w-full px-4 py-2.5 bg-background-hover border border-transparent rounded-xl font-bold text-foreground focus:outline-none focus:bg-background-card focus:border-brand"
               >
                 <option value="GENERAL">General</option>
                 <option value="EXAM_TIPS">Exam Tips</option>
@@ -187,7 +187,7 @@ export const NewsFormModal: React.FC<NewsFormModalProps> = ({
             </div>
 
             <div className="space-y-1">
-              <label className="font-extrabold text-neutral-700">
+              <label className="font-extrabold text-foreground-muted">
                 Publish Status
               </label>
               <select
@@ -198,7 +198,7 @@ export const NewsFormModal: React.FC<NewsFormModalProps> = ({
                     status: e.target.value as NewsData["status"],
                   }))
                 }
-                className="w-full px-4 py-2.5 bg-neutral-100 border border-transparent rounded-xl font-bold text-neutral-800 focus:outline-none focus:bg-white focus:border-[#5A67FF]"
+                className="w-full px-4 py-2.5 bg-background-hover border border-transparent rounded-xl font-bold text-foreground focus:outline-none focus:bg-background-card focus:border-brand"
               >
                 <option value="DRAFT">Draft</option>
                 <option value="PUBLISHED">Published</option>
@@ -208,7 +208,7 @@ export const NewsFormModal: React.FC<NewsFormModalProps> = ({
           </div>
 
           <div className="space-y-1">
-            <label className="font-extrabold text-neutral-700">
+            <label className="font-extrabold text-foreground-muted">
               Cover Thumbnail URL
             </label>
             <input
@@ -221,12 +221,12 @@ export const NewsFormModal: React.FC<NewsFormModalProps> = ({
                   thumbnail: e.target.value,
                 }))
               }
-              className="w-full px-4 py-2.5 bg-neutral-100 border border-transparent rounded-xl text-xs font-medium text-neutral-800 focus:outline-none focus:bg-white focus:border-[#5A67FF]"
+              className="w-full px-4 py-2.5 bg-background-hover border border-transparent rounded-xl text-xs font-medium text-foreground focus:outline-none focus:bg-background-card focus:border-brand"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="font-extrabold text-neutral-700">
+            <label className="font-extrabold text-foreground-muted">
               Summary / Preview Snippet
             </label>
             <textarea
@@ -239,12 +239,12 @@ export const NewsFormModal: React.FC<NewsFormModalProps> = ({
                   summary: e.target.value,
                 }))
               }
-              className="w-full px-4 py-2.5 bg-neutral-100 border border-transparent rounded-xl text-xs font-medium text-neutral-800 focus:outline-none focus:bg-white focus:border-[#5A67FF]"
+              className="w-full px-4 py-2.5 bg-background-hover border border-transparent rounded-xl text-xs font-medium text-foreground focus:outline-none focus:bg-background-card focus:border-brand"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="font-extrabold text-neutral-700">
+            <label className="font-extrabold text-foreground-muted">
               Full Content
             </label>
             <textarea
@@ -258,13 +258,13 @@ export const NewsFormModal: React.FC<NewsFormModalProps> = ({
                   content: e.target.value,
                 }))
               }
-              className="w-full px-4 py-2.5 bg-neutral-100 border border-transparent rounded-xl text-xs font-medium text-neutral-800 focus:outline-none focus:bg-white focus:border-[#5A67FF]"
+              className="w-full px-4 py-2.5 bg-background-hover border border-transparent rounded-xl text-xs font-medium text-foreground focus:outline-none focus:bg-background-card focus:border-brand"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="font-extrabold text-neutral-700 flex items-center space-x-1">
-              <Tag className="w-3.5 h-3.5 text-neutral-400" />
+            <label className="font-extrabold text-foreground-muted flex items-center space-x-1">
+              <Tag className="w-3.5 h-3.5 text-foreground-subtle" />
               <span>Tags (Press Enter to Add)</span>
             </label>
             <input
@@ -278,13 +278,13 @@ export const NewsFormModal: React.FC<NewsFormModalProps> = ({
                 }))
               }
               onKeyDown={handleAddTag}
-              className="w-full px-4 py-2 bg-neutral-100 border border-transparent rounded-xl text-xs font-medium text-neutral-800 focus:outline-none focus:bg-white focus:border-[#5A67FF]"
+              className="w-full px-4 py-2 bg-background-hover border border-transparent rounded-xl text-xs font-medium text-foreground focus:outline-none focus:bg-background-card focus:border-brand"
             />
             <div className="flex flex-wrap gap-1.5 pt-1">
               {formData.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="bg-indigo-50 text-[#5A67FF] text-[10px] font-bold px-2.5 py-1 rounded-md flex items-center space-x-1"
+                  className="bg-pink-50 text-brand text-[10px] font-bold px-2.5 py-1 rounded-md flex items-center space-x-1"
                 >
                   <span>#{tag}</span>
                   <button
@@ -299,18 +299,18 @@ export const NewsFormModal: React.FC<NewsFormModalProps> = ({
             </div>
           </div>
 
-          <div className="pt-4 border-t border-neutral-100 flex items-center justify-end space-x-3">
+          <div className="pt-4 border-t border-border-subtle flex items-center justify-end space-x-3">
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-xl font-bold text-xs transition-colors cursor-pointer"
+              className="px-5 py-2.5 bg-background-hover hover:bg-border text-foreground-muted rounded-xl font-bold text-xs transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-5 py-2.5 bg-[#5A67FF] hover:bg-indigo-600 text-white rounded-xl font-bold text-xs transition-colors shadow-xs cursor-pointer disabled:opacity-60"
+              className="px-5 py-2.5 bg-brand hover:bg-brand-hover text-brand-foreground rounded-xl font-bold text-xs transition-colors shadow-xs cursor-pointer disabled:opacity-60"
             >
               {isSubmitting
                 ? editingNews

@@ -65,7 +65,7 @@ export default function ConfirmModal({
       {/* Backdrop */}
       <div
         onClick={!isLoading ? onClose : undefined}
-        className="fixed inset-0 bg-neutral-900/40 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
+        className="fixed inset-0 bg-background-card/40 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
       />
 
       {/* Modal Card */}

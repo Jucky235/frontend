@@ -19,18 +19,18 @@ export const ChannelButton: React.FC<ChannelButtonProps> = ({
   return (
     <button
       onClick={() => onSelect(id)}
-      className={`w-full px-6 py-2 flex items-center justify-between transition-colors relative cursor-pointer ${
+      className={`flex w-auto shrink-0 items-center justify-between gap-2 rounded-lg px-3 py-2 transition-colors relative cursor-pointer lg:w-full lg:px-5 ${
         isSelected
-          ? "bg-brand-light text-brand"
+          ? "bg-brand/10 text-brand"
           : "hover:bg-background-hover text-foreground-muted"
       }`}
     >
       <div className="flex items-center space-x-3">
         {activeIndicator && (
-          <span className="absolute left-2 w-1 h-3.5 bg-status-active rounded-full" />
+          <span className="absolute left-2 h-3.5 w-1 rounded-full bg-emerald-500" />
         )}
         <div
-          className={`w-6 h-6 rounded flex items-center justify-center transition-colors ${
+          className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md transition-colors ${
             isSelected
               ? "bg-brand text-white"
               : "bg-background-hover text-foreground-subtle"

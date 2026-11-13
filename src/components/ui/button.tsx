@@ -14,7 +14,7 @@ const button = tv({
   variants: {
     variant: {
       default: {
-        container: "bg-black text-white dark:bg-white dark:text-black",
+        container: "bg-brand text-brand-foreground hover:bg-brand-hover",
         label: "",
         indicator: "",
       },
@@ -24,7 +24,7 @@ const button = tv({
         indicator: "text-white",
       },
       outline: {
-        container: "border border-neutral-400 text-black dark:text-neutral-100",
+        container: "border border-border text-foreground hover:bg-background-hover",
         label: "",
         indicator: "",
       },
@@ -34,12 +34,12 @@ const button = tv({
         indicator: "",
       },
       ghost: {
-        container: "bg-transparent text-black underline dark:text-white",
+        container: "bg-transparent text-foreground underline",
         label: "",
         indicator: "",
       },
       link: {
-        container: "bg-transparent text-black",
+        container: "bg-transparent text-brand",
         label: "",
         indicator: "",
       },
@@ -62,8 +62,8 @@ const button = tv({
     disabled: {
       true: {
         container:
-          "bg-neutral-300 text-neutral-600 dark:bg-neutral-300 dark:text-neutral-600 opacity-60",
-        indicator: "text-neutral-400 dark:text-neutral-400",
+          "bg-neutral-300 text-foreground-muted dark:bg-neutral-300 dark:text-foreground-muted opacity-60",
+        indicator: "text-foreground-subtle dark:text-foreground-subtle",
       },
     },
     fullWidth: {

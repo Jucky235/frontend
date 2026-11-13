@@ -130,10 +130,10 @@ export default function UserManagementPage() {
       {/* Header Action Dashboard Hub Row */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-neutral-800 tracking-tight">
+          <h1 className="text-2xl font-extrabold text-foreground tracking-tight">
             User Management
           </h1>
-          <p className="text-xs text-neutral-400 font-medium mt-0.5">
+          <p className="text-xs text-foreground-subtle font-medium mt-0.5">
             Administer system authorization levels, access status, and view
             application metrics.
           </p>
@@ -141,7 +141,7 @@ export default function UserManagementPage() {
 
         <button
           type="button"
-          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm px-4 py-2.5 rounded-xl tracking-wide shadow-md transition-all flex items-center justify-center space-x-2 cursor-pointer active:scale-95 self-start sm:self-auto"
+          className="bg-pink-600 hover:bg-pink-700 text-white font-bold text-sm px-4 py-2.5 rounded-xl tracking-wide shadow-md transition-all flex items-center justify-center space-x-2 cursor-pointer active:scale-95 self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
           <span>Add New User</span>
@@ -150,43 +150,43 @@ export default function UserManagementPage() {
 
       {/* Operational Performance Summary Mini-Widgets */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        <div className="bg-white border border-neutral-200/80 p-5 rounded-2xl flex items-center space-x-4 shadow-xs">
-          <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-[#5A67FF]">
+        <div className="bg-background-card border border-border/80 p-5 rounded-2xl flex items-center space-x-4 shadow-xs">
+          <div className="w-10 h-10 rounded-xl bg-pink-50 flex items-center justify-center text-brand">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
+            <p className="text-[10px] font-bold text-foreground-subtle uppercase tracking-wider">
               Total System Users
             </p>
-            <p className="text-xl font-black text-neutral-800 mt-0.5">
+            <p className="text-xl font-black text-foreground mt-0.5">
               {totalUsers}
             </p>
           </div>
         </div>
 
-        <div className="bg-white border border-neutral-200/80 p-5 rounded-2xl flex items-center space-x-4 shadow-xs">
+        <div className="bg-background-card border border-border/80 p-5 rounded-2xl flex items-center space-x-4 shadow-xs">
           <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
             <UserCheck className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
+            <p className="text-[10px] font-bold text-foreground-subtle uppercase tracking-wider">
               Current Page Items
             </p>
-            <p className="text-xl font-black text-neutral-800 mt-0.5">
+            <p className="text-xl font-black text-foreground mt-0.5">
               {users.length}
             </p>
           </div>
         </div>
 
-        <div className="bg-white border border-neutral-200/80 p-5 rounded-2xl flex items-center space-x-4 shadow-xs">
-          <div className="w-10 h-10 rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-500">
+        <div className="bg-background-card border border-border/80 p-5 rounded-2xl flex items-center space-x-4 shadow-xs">
+          <div className="w-10 h-10 rounded-xl bg-background-hover flex items-center justify-center text-foreground-subtle">
             <Award className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
+            <p className="text-[10px] font-bold text-foreground-subtle uppercase tracking-wider">
               Total Pages
             </p>
-            <p className="text-xl font-black text-neutral-800 mt-0.5">
+            <p className="text-xl font-black text-foreground mt-0.5">
               {pagination?.totalPages || 1}
             </p>
           </div>
@@ -194,28 +194,28 @@ export default function UserManagementPage() {
       </div>
 
       {/* Controls & Search Filter Deck Row */}
-      <div className="bg-white border border-neutral-200/80 p-4 rounded-2xl shadow-xs flex items-center justify-between">
+      <div className="bg-background-card border border-border/80 p-4 rounded-2xl shadow-xs flex items-center justify-between">
         <div className="relative w-full max-w-md">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground-subtle" />
           <input
             type="text"
             placeholder="Filter by name or email..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-10 py-2 rounded-xl border border-neutral-200 text-xs font-medium text-neutral-800 focus:outline-none focus:border-[#5A67FF] transition-all"
+            className="w-full pl-10 pr-10 py-2 rounded-xl border border-border text-xs font-medium text-foreground focus:outline-none focus:border-brand transition-all"
           />
           {isFetching && (
-            <Loader2 className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-600 animate-spin" />
+            <Loader2 className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-pink-600 animate-spin" />
           )}
         </div>
       </div>
 
       {/* Main System Users Structured Table Data */}
-      <div className="bg-white border border-neutral-200/80 rounded-2xl shadow-xs">
+      <div className="bg-background-card border border-border/80 rounded-2xl shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-neutral-50 border-b border-neutral-200 text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
+              <tr className="bg-background border-b border-border text-[10px] font-bold text-foreground-subtle uppercase tracking-wider">
                 <th className="px-6 py-4">User Identity</th>
                 <th className="px-6 py-4">Access Level (Role)</th>
                 <th className="px-6 py-4">Phone Number</th>
@@ -223,12 +223,12 @@ export default function UserManagementPage() {
                 <th className="px-6 py-4 text-center">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-200/80 text-xs font-medium text-neutral-700">
+            <tbody className="divide-y divide-neutral-200/80 text-xs font-medium text-foreground-muted">
               {isLoading ? (
                 <tr>
                   <td colSpan={5} className="px-6 py-12 text-center">
-                    <div className="flex flex-col items-center justify-center space-y-2 text-neutral-400">
-                      <Loader2 className="w-6 h-6 animate-spin text-indigo-600" />
+                    <div className="flex flex-col items-center justify-center space-y-2 text-foreground-subtle">
+                      <Loader2 className="w-6 h-6 animate-spin text-pink-600" />
                       <p className="font-semibold text-xs">
                         Loading users data...
                       </p>
@@ -277,7 +277,7 @@ export default function UserManagementPage() {
                   return (
                     <tr
                       key={user.id}
-                      className={`hover:bg-neutral-50/50 transition-colors group ${
+                      className={`hover:bg-background/50 transition-colors group ${
                         isCurrentDeleting
                           ? "opacity-50 pointer-events-none"
                           : ""
@@ -286,14 +286,14 @@ export default function UserManagementPage() {
                       {/* Name & Email Identity Column */}
                       <td className="px-6 py-4">
                         <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 rounded-lg bg-neutral-100 group-hover:bg-indigo-50 flex items-center justify-center text-neutral-500 group-hover:text-[#5A67FF] transition-colors font-bold text-xs uppercase">
+                          <div className="w-8 h-8 rounded-lg bg-background-hover group-hover:bg-pink-50 flex items-center justify-center text-foreground-subtle group-hover:text-brand transition-colors font-bold text-xs uppercase">
                             {user.name ? user.name.charAt(0) : "U"}
                           </div>
                           <div>
-                            <p className="font-bold text-neutral-800">
+                            <p className="font-bold text-foreground">
                               {user.name || "N/A"}
                             </p>
-                            <p className="text-[11px] text-neutral-400 flex items-center space-x-1 mt-0.5">
+                            <p className="text-[11px] text-foreground-subtle flex items-center space-x-1 mt-0.5">
                               <Mail className="w-3 h-3" />
                               <span>{user.email}</span>
                             </p>
@@ -307,7 +307,7 @@ export default function UserManagementPage() {
                           className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${
                             user.role?.name === "ADMIN"
                               ? "bg-purple-50 text-purple-600 border border-purple-100"
-                              : "bg-indigo-50 text-[#5A67FF] border border-indigo-100"
+                              : "bg-pink-50 text-brand border border-pink-100"
                           }`}
                         >
                           {user.role?.name || "USER"}
@@ -316,13 +316,13 @@ export default function UserManagementPage() {
 
                       {/* Phone Number Column */}
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-neutral-600 font-medium">
+                        <span className="text-foreground-muted font-medium">
                           {user.phoneNumber || "—"}
                         </span>
                       </td>
 
                       {/* Joined Date Column */}
-                      <td className="px-6 py-4 whitespace-nowrap text-neutral-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-foreground-subtle">
                         {new Date(user.createdAt).toLocaleDateString("en-US", {
                           year: "numeric",
                           month: "short",
@@ -342,7 +342,7 @@ export default function UserManagementPage() {
                             trigger={
                               <button
                                 type="button"
-                                className="w-7 h-7 inline-flex items-center justify-center text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 rounded-lg transition-all cursor-pointer"
+                                className="w-7 h-7 inline-flex items-center justify-center text-foreground-subtle hover:text-foreground-muted hover:bg-background-hover rounded-lg transition-all cursor-pointer"
                               >
                                 <MoreVertical className="w-4 h-4" />
                               </button>
@@ -357,7 +357,7 @@ export default function UserManagementPage() {
                 <tr>
                   <td
                     colSpan={5}
-                    className="px-6 py-10 text-center font-semibold text-neutral-400"
+                    className="px-6 py-10 text-center font-semibold text-foreground-subtle"
                   >
                     No matching user records found.
                   </td>
@@ -369,14 +369,14 @@ export default function UserManagementPage() {
 
         {/* Pagination Controls */}
         {pagination && pagination.totalPages > 1 && (
-          <div className="px-6 py-4 bg-neutral-50/50 border-t border-neutral-200/80 flex items-center justify-between rounded-b-2xl">
-            <p className="text-xs text-neutral-500 font-medium">
+          <div className="px-6 py-4 bg-background/50 border-t border-border/80 flex items-center justify-between rounded-b-2xl">
+            <p className="text-xs text-foreground-subtle font-medium">
               Showing page{" "}
-              <span className="font-bold text-neutral-800">
+              <span className="font-bold text-foreground">
                 {pagination.page}
               </span>{" "}
               of{" "}
-              <span className="font-bold text-neutral-800">
+              <span className="font-bold text-foreground">
                 {pagination.totalPages}
               </span>{" "}
               ({pagination.total} total)
@@ -386,7 +386,7 @@ export default function UserManagementPage() {
               <button
                 onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
                 disabled={page === 1 || isFetching}
-                className="p-1.5 rounded-lg border border-neutral-200 bg-white text-neutral-600 hover:bg-neutral-100 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                className="p-1.5 rounded-lg border border-border bg-background-card text-foreground-muted hover:bg-background-hover disabled:opacity-40 disabled:cursor-not-allowed transition-all"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
@@ -395,7 +395,7 @@ export default function UserManagementPage() {
                   setPage((prev) => Math.min(prev + 1, pagination.totalPages))
                 }
                 disabled={page === pagination.totalPages || isFetching}
-                className="p-1.5 rounded-lg border border-neutral-200 bg-white text-neutral-600 hover:bg-neutral-100 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                className="p-1.5 rounded-lg border border-border bg-background-card text-foreground-muted hover:bg-background-hover disabled:opacity-40 disabled:cursor-not-allowed transition-all"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>

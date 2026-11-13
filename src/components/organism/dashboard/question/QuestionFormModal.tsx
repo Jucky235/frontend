@@ -37,17 +37,17 @@ export const QuestionFormModal: React.FC<QuestionFormModalProps> = ({
         if (e.target === e.currentTarget && !isSaving) onClose();
       }}
     >
-      <div className="bg-white rounded-2xl border border-neutral-200 shadow-2xl w-full max-w-2xl my-8 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-background-card rounded-2xl border border-border shadow-2xl w-full max-w-2xl my-8 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
         {/* Modal Header */}
-        <div className="flex items-center justify-between p-5 border-b border-neutral-100">
-          <h2 className="text-lg font-black text-neutral-800">
+        <div className="flex items-center justify-between p-5 border-b border-border-subtle">
+          <h2 className="text-lg font-black text-foreground">
             {editingQuestion ? "Edit Question" : "Create New Question"}
           </h2>
           <button
             type="button"
             onClick={onClose}
             disabled={isSaving}
-            className="p-1.5 text-neutral-400 hover:text-neutral-700 rounded-lg hover:bg-neutral-100 transition-all cursor-pointer disabled:opacity-50"
+            className="p-1.5 text-foreground-subtle hover:text-foreground-muted rounded-lg hover:bg-background-hover transition-all cursor-pointer disabled:opacity-50"
           >
             <X className="w-5 h-5" />
           </button>
@@ -65,7 +65,7 @@ export const QuestionFormModal: React.FC<QuestionFormModalProps> = ({
           {/* Part Selection & Right Answer */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-neutral-700 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-bold text-foreground-muted uppercase tracking-wider mb-1.5">
                 Exam Part
               </label>
               <select
@@ -76,7 +76,7 @@ export const QuestionFormModal: React.FC<QuestionFormModalProps> = ({
                     partNumber: Number(e.target.value),
                   })
                 }
-                className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-sm font-semibold text-neutral-800 focus:outline-none focus:border-[#5A67FF]"
+                className="w-full px-3 py-2 bg-background border border-border rounded-xl text-sm font-semibold text-foreground focus:outline-none focus:border-brand"
               >
                 {[1, 2, 3, 4, 5, 6, 7].map((num) => (
                   <option key={num} value={num}>
@@ -87,7 +87,7 @@ export const QuestionFormModal: React.FC<QuestionFormModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-neutral-700 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-bold text-foreground-muted uppercase tracking-wider mb-1.5">
                 Correct Answer
               </label>
               <select
@@ -98,7 +98,7 @@ export const QuestionFormModal: React.FC<QuestionFormModalProps> = ({
                     right_answer: e.target.value as "A" | "B" | "C" | "D",
                   })
                 }
-                className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-sm font-semibold text-neutral-800 focus:outline-none focus:border-[#5A67FF]"
+                className="w-full px-3 py-2 bg-background border border-border rounded-xl text-sm font-semibold text-foreground focus:outline-none focus:border-brand"
               >
                 {(["A", "B", "C", "D"] as const).map((opt) => (
                   <option key={opt} value={opt}>
@@ -111,7 +111,7 @@ export const QuestionFormModal: React.FC<QuestionFormModalProps> = ({
 
           {/* Question Content */}
           <div>
-            <label className="block text-xs font-bold text-neutral-700 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-bold text-foreground-muted uppercase tracking-wider mb-1.5">
               Question Content *
             </label>
             <textarea
@@ -122,13 +122,13 @@ export const QuestionFormModal: React.FC<QuestionFormModalProps> = ({
                 onClearError();
                 onFormDataChange({ ...formData, content: e.target.value });
               }}
-              className="w-full p-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm font-medium text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#5A67FF]/20 focus:border-[#5A67FF]"
+              className="w-full p-3 bg-background border border-border rounded-xl text-sm font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand"
             />
           </div>
 
           {/* Options Input */}
           <div className="space-y-3">
-            <label className="block text-xs font-bold text-neutral-700 uppercase tracking-wider">
+            <label className="block text-xs font-bold text-foreground-muted uppercase tracking-wider">
               Answer Options *
             </label>
 
@@ -138,7 +138,7 @@ export const QuestionFormModal: React.FC<QuestionFormModalProps> = ({
                   className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 ${
                     formData.right_answer === key
                       ? "bg-emerald-600 text-white"
-                      : "bg-neutral-200 text-neutral-600"
+                      : "bg-border text-foreground-muted"
                   }`}
                 >
                   {key}
@@ -157,7 +157,7 @@ export const QuestionFormModal: React.FC<QuestionFormModalProps> = ({
                       },
                     });
                   }}
-                  className="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-sm font-medium text-neutral-800 focus:outline-none focus:border-[#5A67FF]"
+                  className="w-full px-3 py-2 bg-background border border-border rounded-xl text-sm font-medium text-foreground focus:outline-none focus:border-brand"
                 />
               </div>
             ))}
@@ -165,7 +165,7 @@ export const QuestionFormModal: React.FC<QuestionFormModalProps> = ({
 
           {/* Explanation */}
           <div>
-            <label className="block text-xs font-bold text-neutral-600 mb-1">
+            <label className="block text-xs font-bold text-foreground-muted mb-1">
               Explanation (Optional)
             </label>
             <textarea
@@ -175,24 +175,24 @@ export const QuestionFormModal: React.FC<QuestionFormModalProps> = ({
               onChange={(e) =>
                 onFormDataChange({ ...formData, explanation: e.target.value })
               }
-              className="w-full p-3 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-medium text-neutral-800 focus:outline-none focus:border-[#5A67FF]"
+              className="w-full p-3 bg-background border border-border rounded-xl text-xs font-medium text-foreground focus:outline-none focus:border-brand"
             />
           </div>
 
           {/* Footer Buttons */}
-          <div className="flex items-center justify-end space-x-3 pt-4 border-t border-neutral-100">
+          <div className="flex items-center justify-end space-x-3 pt-4 border-t border-border-subtle">
             <button
               type="button"
               onClick={onClose}
               disabled={isSaving}
-              className="px-4 py-2.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-bold text-xs rounded-xl transition-all cursor-pointer disabled:opacity-50"
+              className="px-4 py-2.5 bg-background-hover hover:bg-border text-foreground-muted font-bold text-xs rounded-xl transition-all cursor-pointer disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSaving}
-              className="flex items-center space-x-2 px-5 py-2.5 bg-[#5A67FF] hover:bg-indigo-600 text-white font-bold text-xs rounded-xl transition-all shadow-xs cursor-pointer disabled:opacity-50"
+              className="flex items-center space-x-2 px-5 py-2.5 bg-brand hover:bg-brand-hover text-brand-foreground font-bold text-xs rounded-xl transition-all shadow-xs cursor-pointer disabled:opacity-50"
             >
               {isSaving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
               <span>

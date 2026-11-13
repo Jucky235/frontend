@@ -25,6 +25,7 @@ export interface UserProfile {
 
 export interface UpdateProfilePayload {
   name?: string;
+  avatar?: string;
   phoneNumber?: string;
   gender?: string;
   password?: string;

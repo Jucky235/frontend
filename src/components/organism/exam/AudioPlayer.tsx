@@ -21,10 +21,10 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
       <button
         type="button"
         onClick={() => onToggleAudio(questionId, audioPath)}
-        className={`flex items-center space-x-2 text-xs font-bold px-4 py-2 rounded-xl transition-all cursor-pointer select-none border border-neutral-200 ${
+        className={`flex items-center space-x-2 text-xs font-bold px-4 py-2 rounded-xl transition-all cursor-pointer select-none border border-border ${
           isPlaying
             ? "bg-rose-50 text-rose-600 border-rose-200"
-            : "bg-neutral-50 text-neutral-700 hover:bg-neutral-100"
+            : "bg-background text-foreground-muted hover:bg-background-hover"
         }`}
       >
         {isPlaying ? (

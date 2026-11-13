@@ -34,14 +34,14 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
   onSelectOption,
 }) => {
   return (
-    <div className="bg-white border border-neutral-200 rounded-2xl p-6 shadow-xs space-y-5">
+    <div className="bg-background-card border border-border rounded-2xl p-6 shadow-xs space-y-5">
       {/* Title & Media */}
       <div className="flex items-start space-x-3">
-        <span className="text-sm font-black text-indigo-500 bg-indigo-50 w-6 h-6 rounded-md flex items-center justify-center shrink-0 mt-0.5">
+        <span className="text-sm font-black text-pink-500 bg-pink-50 w-6 h-6 rounded-md flex items-center justify-center shrink-0 mt-0.5">
           {index + 1}
         </span>
         <div className="space-y-4 w-full">
-          <h2 className="text-base font-bold text-neutral-800 leading-snug">
+          <h2 className="text-base font-bold text-foreground leading-snug">
             {q.content}
           </h2>
 
@@ -55,7 +55,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
           )}
 
           {q.imagePath && (
-            <div className="w-full max-w-md bg-neutral-100 border border-neutral-200 rounded-xl overflow-hidden shadow-xs">
+            <div className="w-full max-w-md bg-background-hover border border-border rounded-xl overflow-hidden shadow-xs">
               <img
                 src={q.imagePath}
                 alt={`Question visual illustration ${index + 1}`}

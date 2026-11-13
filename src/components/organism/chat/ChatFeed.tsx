@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Hash } from "lucide-react";
+import { Hash, MessageCircle } from "lucide-react";
 import MessageBubble, {
   type ChatMessage,
 } from "@/components/molecules/MessageBubble";
@@ -32,18 +32,19 @@ export const ChatFeed: React.FC<ChatFeedProps> = ({
   }, [messages, channelName]);
 
   return (
-    <section className="flex-1 bg-background-card border border-border/80 rounded-2xl flex flex-col justify-between overflow-hidden shadow-xs relative">
+    <section className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-2xl border border-border bg-background-card shadow-sm">
       {/* Header Banner */}
-      <div className="px-6 py-3.5 bg-gradient-to-r from-banner-from to-banner-to text-white flex items-center justify-between border-b border-banner-border/20">
-        <div className="flex items-center space-x-2 min-w-0">
-          <Hash className="w-5 h-5 opacity-80 shrink-0" />
-          <h2 className="text-base font-extrabold tracking-tight truncate">
+      <div className="flex min-h-16 items-center justify-between gap-3 border-b border-brand/15 bg-gradient-to-r from-banner-from to-banner-to px-4 py-3 text-white sm:px-6">
+        <div className="flex min-w-0 items-center gap-2.5">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white/15"><Hash className="h-4 w-4"/></span>
+          <div className="min-w-0"><h2 className="truncate text-sm font-extrabold tracking-tight sm:text-base">
             {channelName}
-          </h2>
+          </h2><p className="mt-0.5 hidden truncate text-[10px] text-white/75 sm:block">Chat with learners in this community channel</p></div>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
-          <span className="text-xs bg-white/20 font-bold px-3 py-1 rounded-full backdrop-blur-md">
+        <div className="flex shrink-0 items-center gap-2">
+          <span className="hidden items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-[10px] font-bold backdrop-blur-md sm:inline-flex">
+            <MessageCircle className="h-3 w-3"/>
             Community Channel
           </span>
           {headerAction}
@@ -51,10 +52,8 @@ export const ChatFeed: React.FC<ChatFeedProps> = ({
       </div>
 
       {/* Stream Area */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-background-feed">
-        {messages.map((msg) => (
-          <MessageBubble key={msg.id} message={msg} />
-        ))}
+      <div className="flex-1 space-y-4 overflow-y-auto bg-background-feed p-4 sm:p-6">
+        {messages.length ? messages.map((msg) => <MessageBubble key={msg.id} message={msg} />) : <div className="grid min-h-full place-items-center py-12 text-center"><div className="max-w-xs"><span className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-brand/10 text-brand"><MessageCircle className="h-5 w-5"/></span><h3 className="mt-3 text-sm font-bold">Start the conversation</h3><p className="mt-1 text-xs leading-5 text-foreground-subtle">Say hello and practice English with the community.</p></div></div>}
         {/* Invisible target element to scroll into view */}
         <div ref={messagesEndRef} />
       </div>

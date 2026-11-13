@@ -105,7 +105,7 @@ export default function HeroBanner({
             className="max-w-md space-y-3.5 text-white transition-all duration-300 animate-in fade-in motion-reduce:animate-none"
           >
             {currentSlide.badgeText && (
-              <span className="inline-block bg-white/20 text-white text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full backdrop-blur-md">
+              <span className="inline-block bg-background-card/20 text-white text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full backdrop-blur-md">
                 {currentSlide.badgeText}
               </span>
             )}
@@ -121,7 +121,7 @@ export default function HeroBanner({
             <div className="pt-2">
               <button
                 onClick={currentSlide.onButtonClick}
-                className="bg-white text-brand hover:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand font-bold text-sm px-5 py-2.5 rounded-xl tracking-wide shadow-md transition-all flex items-center space-x-2 cursor-pointer active:scale-95"
+                className="bg-background-card text-brand hover:bg-background-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand font-bold text-sm px-5 py-2.5 rounded-xl tracking-wide shadow-md transition-all flex items-center space-x-2 cursor-pointer active:scale-95"
               >
                 <span>{currentSlide.buttonText || "Get Started"}</span>
                 <ArrowRight className="w-4 h-4" />
@@ -153,8 +153,8 @@ export default function HeroBanner({
                   aria-label={`Go to slide ${idx + 1}`}
                   className={`h-2 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand ${
                     idx === currentIndex
-                      ? "w-7 bg-white"
-                      : "w-2 bg-white/40 hover:bg-white/70"
+                      ? "w-7 bg-background-card"
+                      : "w-2 bg-background-card/40 hover:bg-background-card/70"
                   }`}
                 />
               ))}
@@ -165,7 +165,7 @@ export default function HeroBanner({
               <button
                 onClick={prevSlide}
                 aria-label="Previous Slide"
-                className="p-2 rounded-full bg-white/10 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand transition-colors backdrop-blur-md text-white active:scale-90"
+                className="p-2 rounded-full bg-background-card/10 hover:bg-background-card/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand transition-colors backdrop-blur-md text-white active:scale-90"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
@@ -173,7 +173,7 @@ export default function HeroBanner({
               <button
                 onClick={nextSlide}
                 aria-label="Next Slide"
-                className="p-2 rounded-full bg-white/10 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand transition-colors backdrop-blur-md text-white active:scale-90"
+                className="p-2 rounded-full bg-background-card/10 hover:bg-background-card/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand transition-colors backdrop-blur-md text-white active:scale-90"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -184,7 +184,7 @@ export default function HeroBanner({
 
       {/* Abstract Background Blobs */}
       <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-brand rounded-full opacity-30 blur-2xl pointer-events-none" />
-      <div className="absolute top-0 right-0 w-32 h-32 bg-white rounded-bl-full opacity-10 pointer-events-none" />
+      <div className="absolute top-0 right-0 w-32 h-32 bg-background-card rounded-bl-full opacity-10 pointer-events-none" />
     </section>
   );
 }

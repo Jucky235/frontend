@@ -1,5 +1,15 @@
 import * as React from "react";
-import { X, Lock, Eye, EyeOff, ShieldCheck, Loader2 } from "lucide-react";
+import {
+  AlertCircle,
+  Check,
+  Eye,
+  EyeOff,
+  KeyRound,
+  Loader2,
+  LockKeyhole,
+  ShieldCheck,
+  X,
+} from "lucide-react";
 import { useChangePasswordMutation } from "@/redux/user/userApiSlice";
 
 interface ChangePasswordModalProps {
@@ -11,253 +21,170 @@ export default function ChangePasswordModal({
   isOpen,
   onClose,
 }: ChangePasswordModalProps) {
-  // Hook up your RTK Query mutation hook
   const [changePassword, { isLoading: isUpdating }] =
     useChangePasswordMutation();
-
   const [showCurrent, setShowCurrent] = React.useState(false);
   const [showNew, setShowNew] = React.useState(false);
   const [showConfirm, setShowConfirm] = React.useState(false);
-
   const [formData, setFormData] = React.useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
-
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
-  // Clear states when dialog resets or closes
   React.useEffect(() => {
     if (!isOpen) {
-      setFormData({
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: "",
-      });
+      setFormData({ currentPassword: "", newPassword: "", confirmPassword: "" });
       setErrorMessage(null);
+      setShowCurrent(false);
+      setShowNew(false);
+      setShowConfirm(false);
+      return;
     }
-  }, [isOpen]);
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !isUpdating) onClose();
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [isOpen, isUpdating, onClose]);
 
   if (!isOpen) return null;
 
-  const requirements = {
-    length: formData.newPassword.length >= 8,
-    match:
-      formData.newPassword === formData.confirmPassword &&
-      formData.confirmPassword !== "",
-  };
-
+  const hasMinimumLength = formData.newPassword.length >= 8;
+  const passwordsMatch =
+    formData.confirmPassword.length > 0 &&
+    formData.newPassword === formData.confirmPassword;
   const canSubmit =
-    requirements.length &&
-    requirements.match &&
-    formData.currentPassword !== "" &&
+    Boolean(formData.currentPassword) &&
+    hasMinimumLength &&
+    passwordsMatch &&
     !isUpdating;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const updateField = (field: keyof typeof formData, value: string) => {
+    setFormData((previous) => ({ ...previous, [field]: value }));
+    setErrorMessage(null);
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     if (!canSubmit) return;
     setErrorMessage(null);
 
     try {
-      // Execute query using unwrap to process errors within the catch container
       await changePassword({
         currentPassword: formData.currentPassword,
         newPassword: formData.newPassword,
       }).unwrap();
-
       onClose();
     } catch (error: any) {
       setErrorMessage(
-        error?.data?.error || "Failed to update security credentials.",
+        error?.data?.error || "We couldn’t update your password. Check your current password and try again.",
       );
     }
   };
 
-  return (
-    <div className="modal-overlay selection:bg-brand-light">
-      {/* 1. Blur Overlay Backdrop */}
-      <div
-        className="modal-backdrop"
-        onClick={!isUpdating ? onClose : undefined}
-      />
+  const passwordField = (
+    id: string,
+    label: string,
+    value: string,
+    visible: boolean,
+    setVisible: React.Dispatch<React.SetStateAction<boolean>>,
+    placeholder: string,
+    field: keyof typeof formData,
+    autoComplete: string,
+  ) => (
+    <div className="space-y-1.5">
+      <label htmlFor={id} className="block text-xs font-semibold text-foreground">
+        {label}
+      </label>
+      <div className="relative">
+        <LockKeyhole className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground-subtle" />
+        <input
+          id={id}
+          name={id}
+          type={visible ? "text" : "password"}
+          value={value}
+          onChange={(event) => updateField(field, event.target.value)}
+          placeholder={placeholder}
+          autoComplete={autoComplete}
+          disabled={isUpdating}
+          required
+          className="h-11 w-full rounded-xl border border-border bg-background pl-10 pr-11 text-sm text-foreground outline-none transition placeholder:text-foreground-subtle/70 focus:border-brand focus:ring-4 focus:ring-brand/10 disabled:opacity-60"
+        />
+        <button
+          type="button"
+          onClick={() => setVisible((previous) => !previous)}
+          disabled={isUpdating}
+          aria-label={visible ? `Hide ${label.toLowerCase()}` : `Show ${label.toLowerCase()}`}
+          className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg p-2 text-foreground-subtle transition hover:bg-background-hover hover:text-foreground disabled:opacity-50"
+        >
+          {visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+        </button>
+      </div>
+    </div>
+  );
 
-      {/* 2. Central Dialog Box Wrapper */}
-      <div className="modal-panel font-inter animate-in fade-in zoom-in-95 duration-200">
-        {/* Header Block Panel */}
-        <div className="modal-header">
-          <div className="flex items-center space-x-3">
-            <div className="modal-icon-badge">
-              <Lock className="w-4 h-4" />
-            </div>
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-black/55 p-4 backdrop-blur-sm"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget && !isUpdating) onClose();
+      }}
+    >
+      <section
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="change-password-title"
+        className="relative my-auto w-full max-w-md overflow-hidden rounded-3xl border border-border bg-background-card shadow-2xl shadow-black/30 animate-in fade-in zoom-in-95 duration-200"
+      >
+        <div className="pointer-events-none absolute -right-14 -top-16 h-40 w-40 rounded-full bg-brand/10 blur-3xl" />
+        <header className="relative flex items-start justify-between gap-4 border-b border-border px-6 py-5 sm:px-7">
+          <div className="flex items-start gap-3.5">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-brand/10 text-brand ring-1 ring-brand/15">
+              <KeyRound className="h-5 w-5" />
+            </span>
             <div>
-              <h2 className="modal-title">Update Security Credentials</h2>
-              <p className="modal-subtitle">
-                Revoke current runtime tokens and provision a new access pass.
-              </p>
+              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-brand">Account security</p>
+              <h2 id="change-password-title" className="mt-1 text-lg font-extrabold tracking-tight text-foreground">Change password</h2>
+              <p className="mt-1 text-xs leading-5 text-foreground-subtle">Choose a new password to keep your account secure.</p>
             </div>
           </div>
-
           <button
             type="button"
             onClick={onClose}
             disabled={isUpdating}
-            className="modal-close-btn"
+            aria-label="Close dialog"
+            className="rounded-xl p-2 text-foreground-subtle transition hover:bg-background-hover hover:text-foreground disabled:opacity-50"
           >
-            <X className="w-4 h-4" />
+            <X className="h-4 w-4" />
           </button>
-        </div>
+        </header>
 
-        <hr className="modal-divider" />
+        <form onSubmit={handleSubmit} className="relative space-y-4 px-6 py-5 sm:px-7 sm:py-6">
+          {errorMessage && <div role="alert" className="flex items-start gap-2.5 rounded-xl border border-rose-500/20 bg-rose-500/10 px-3.5 py-3 text-xs leading-5 text-rose-600 dark:text-rose-300"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />{errorMessage}</div>}
 
-        {/* 3. High-Density Parameter Input Form */}
-        <form onSubmit={handleSubmit} className="modal-form">
-          {/* Runtime Error Message Notification Panel */}
-          {errorMessage && (
-            <div className="modal-error-banner">{errorMessage}</div>
-          )}
+          {passwordField("current-password", "Current password", formData.currentPassword, showCurrent, setShowCurrent, "Enter your current password", "currentPassword", "current-password")}
+          {passwordField("new-password", "New password", formData.newPassword, showNew, setShowNew, "At least 8 characters", "newPassword", "new-password")}
+          {passwordField("confirm-password", "Confirm new password", formData.confirmPassword, showConfirm, setShowConfirm, "Enter the new password again", "confirmPassword", "new-password")}
 
-          {/* Field: Current Token Verification */}
-          <div className="modal-field">
-            <label className="modal-field-label">Current Password</label>
-            <div className="modal-input-wrapper">
-              <input
-                type={showCurrent ? "text" : "password"}
-                disabled={isUpdating}
-                value={formData.currentPassword}
-                onChange={(e) =>
-                  setFormData({ ...formData, currentPassword: e.target.value })
-                }
-                placeholder="Enter current password ..."
-                className="modal-input"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowCurrent(!showCurrent)}
-                disabled={isUpdating}
-                className="modal-input-toggle-btn"
-              >
-                {showCurrent ? (
-                  <EyeOff className="w-3.5 h-3.5" />
-                ) : (
-                  <Eye className="w-3.5 h-3.5" />
-                )}
-              </button>
+          <div className="rounded-2xl border border-border bg-background-hover/50 p-3.5">
+            <p className="mb-2.5 text-[10px] font-bold uppercase tracking-wider text-foreground-subtle">Password checks</p>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {[{ label: "At least 8 characters", met: hasMinimumLength }, { label: "Passwords match", met: passwordsMatch }].map(({ label, met }) => <div key={label} className={`flex items-center gap-2 text-[10px] font-medium ${met ? "text-emerald-600 dark:text-emerald-400" : "text-foreground-subtle"}`}><span className={`grid h-4 w-4 place-items-center rounded-full ${met ? "bg-emerald-500/15" : "bg-background-hover"}`}>{met && <Check className="h-3 w-3"/>}</span>{label}</div>)}
             </div>
           </div>
 
-          {/* Field: New Target Key Generation */}
-          <div className="modal-field">
-            <label className="modal-field-label">New Password</label>
-            <div className="modal-input-wrapper">
-              <input
-                type={showNew ? "text" : "password"}
-                disabled={isUpdating}
-                value={formData.newPassword}
-                onChange={(e) =>
-                  setFormData({ ...formData, newPassword: e.target.value })
-                }
-                placeholder="Minimum 8 characters..."
-                className="modal-input"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowNew(!showNew)}
-                disabled={isUpdating}
-                className="modal-input-toggle-btn"
-              >
-                {showNew ? (
-                  <EyeOff className="w-3.5 h-3.5" />
-                ) : (
-                  <Eye className="w-3.5 h-3.5" />
-                )}
-              </button>
-            </div>
-          </div>
-
-          {/* Field: Confirm Target Key Generation */}
-          <div className="modal-field">
-            <label className="modal-field-label">Confirm New Password</label>
-            <div className="modal-input-wrapper">
-              <input
-                type={showConfirm ? "text" : "password"}
-                disabled={isUpdating}
-                value={formData.confirmPassword}
-                onChange={(e) =>
-                  setFormData({ ...formData, confirmPassword: e.target.value })
-                }
-                placeholder="Verify matching value..."
-                className="modal-input"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirm(!showConfirm)}
-                disabled={isUpdating}
-                className="modal-input-toggle-btn"
-              >
-                {showConfirm ? (
-                  <EyeOff className="w-3.5 h-3.5" />
-                ) : (
-                  <Eye className="w-3.5 h-3.5" />
-                )}
-              </button>
-            </div>
-          </div>
-
-          {/* 4. Real-time Array Condition Trackers */}
-          <div className="modal-requirements-panel">
-            <div className="modal-requirement">
-              <span
-                className={`modal-requirement-dot ${requirements.length ? "is-met" : ""}`}
-              />
-              <span
-                className={`modal-requirement-text ${requirements.length ? "is-met" : ""}`}
-              >
-                Must contain at least 8 characters
-              </span>
-            </div>
-            <div className="modal-requirement">
-              <span
-                className={`modal-requirement-dot ${requirements.match ? "is-met" : ""}`}
-              />
-              <span
-                className={`modal-requirement-text ${requirements.match ? "is-met" : ""}`}
-              >
-                New credentials match perfectly
-              </span>
-            </div>
-          </div>
-
-          {/* 5. Execution Controls Baseline Row */}
-          <div className="modal-actions">
-            <button
-              type="button"
-              onClick={onClose}
-              disabled={isUpdating}
-              className="modal-btn-cancel active:scale-97"
-            >
-              Cancel
+          <footer className="flex flex-col-reverse gap-2 border-t border-border pt-4 sm:flex-row sm:justify-end">
+            <button type="button" onClick={onClose} disabled={isUpdating} className="rounded-xl border border-border px-4 py-2.5 text-xs font-semibold text-foreground-muted transition hover:bg-background-hover disabled:opacity-50">Cancel</button>
+            <button type="submit" disabled={!canSubmit} className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-xs font-bold text-brand-foreground shadow-sm shadow-brand/20 transition hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-45">
+              {isUpdating ? <Loader2 className="h-4 w-4 animate-spin"/> : <ShieldCheck className="h-4 w-4"/>}
+              {isUpdating ? "Updating password…" : "Update password"}
             </button>
-            <button
-              type="submit"
-              disabled={!canSubmit}
-              className={`modal-btn-submit active:scale-97 ${
-                canSubmit ? "is-enabled" : "is-disabled"
-              }`}
-            >
-              {isUpdating ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              ) : (
-                <ShieldCheck className="w-3.5 h-3.5" />
-              )}
-              <span>{isUpdating ? "Committing..." : "Commit Change"}</span>
-            </button>
-          </div>
+          </footer>
         </form>
-      </div>
+      </section>
     </div>
   );
 }

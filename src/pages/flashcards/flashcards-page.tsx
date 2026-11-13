@@ -185,7 +185,7 @@ export default function FlashcardsPage() {
   if (isDeckError || !deck || totalCards === 0) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-950 px-4">
-        <div className="text-center space-y-4 max-w-md bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
+        <div className="text-center space-y-4 max-w-md bg-background-card dark:bg-slate-900 p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
           <AlertCircle className="w-12 h-12 text-rose-500 mx-auto" />
           <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
             {!deck ? "Deck Not Found" : "No Due Flashcards"}
@@ -222,7 +222,7 @@ export default function FlashcardsPage() {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans">
       {/* Header */}
-      <header className="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-10 px-6 flex items-center justify-between">
+      <header className="h-16 border-b border-slate-200 dark:border-slate-800 bg-background-card/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-10 px-6 flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <button
             type="button"
@@ -293,7 +293,7 @@ export default function FlashcardsPage() {
               {/* Flashcard Component */}
               <div
                 onClick={() => dispatch(toggleFlip())}
-                className="relative min-h-[320px] bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-200 p-8 flex flex-col justify-between cursor-pointer select-none group"
+                className="relative min-h-[320px] bg-background-card dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-200 p-8 flex flex-col justify-between cursor-pointer select-none group"
               >
                 <div className="flex justify-between items-center">
                   <span className="inline-flex items-center space-x-1.5 text-xs font-medium text-slate-400">
@@ -378,7 +378,7 @@ export default function FlashcardsPage() {
             {/* Sidebar Stats */}
             <aside className="lg:col-span-5 space-y-4 lg:sticky lg:top-24">
               {/* Deck Info */}
-              <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-3">
+              <div className="bg-background-card dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-3">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
                   <Layers className="w-4 h-4 text-blue-500" />
                   Deck Metadata
@@ -413,7 +413,7 @@ export default function FlashcardsPage() {
               </div>
 
               {/* Accuracy Display */}
-              <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-4">
+              <div className="bg-background-card dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-4">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
                   <Target className="w-4 h-4 text-blue-500" />
                   Session Mastery Rate
@@ -430,7 +430,7 @@ export default function FlashcardsPage() {
               </div>
 
               {/* Session Timer */}
-              <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+              <div className="bg-background-card dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <Clock className="w-5 h-5 text-blue-500" />
                   <div>
@@ -451,7 +451,7 @@ export default function FlashcardsPage() {
         ) : (
           /* Session Complete Screen */
           <div className="max-w-2xl mx-auto">
-            <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm text-center space-y-6">
+            <div className="bg-background-card dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm text-center space-y-6">
               <div className="w-16 h-16 bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center mx-auto">
                 <HelpCircle className="w-8 h-8" />
               </div>
