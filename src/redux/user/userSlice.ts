@@ -63,6 +63,16 @@ export const {
 export default userSlice.reducer;
 
 export const selectUserProfile = (state: any) => state.user.profile;
+export const selectUserId = (state: any): string => {
+  const profile = state.user.profile;
+  return (
+    profile?.userInfo?.id ||
+    profile?.userInfo?.user_id ||
+    profile?.id ||
+    profile?.user_id ||
+    ""
+  );
+};
 export const selectIsEditingProfile = (state: any) =>
   state.user.isEditingProfile;
 export const selectThemePreference = (state: any) =>

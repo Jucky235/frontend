@@ -7,6 +7,12 @@ export interface Role {
 
 export interface UserProfile {
   id: string;
+  user_id?: string;
+  userInfo?: {
+    id?: string;
+    user_id?: string;
+    [key: string]: unknown;
+  };
   name: string;
   email: string;
   phoneNumber?: string;

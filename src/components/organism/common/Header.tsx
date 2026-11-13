@@ -29,7 +29,7 @@ import Dropdown, {
 } from "@/components/organism/common/Dropdown";
 import { useGetUserProfileQuery } from "@/redux/user/userApiSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { selectUserProfile } from "@/redux/user/userSlice";
+import { selectUserId, selectUserProfile } from "@/redux/user/userSlice";
 import {
   selectSearchQuery,
   selectIsSearchModalOpen,
@@ -164,7 +164,7 @@ export default function Header({
   const dispatch = useDispatch();
 
   const profile = useSelector(selectUserProfile);
-  const userId = profile?.userInfo?.id || profile?.userInfo?.user_id || "";
+  const userId = useSelector(selectUserId);
   const userName =
     profile?.userInfo?.name ||
     profile?.userInfo?.full_name ||

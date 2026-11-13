@@ -17,7 +17,11 @@ import {
   ArrowLeft,
 } from "lucide-react";
 
-import { selectUserProfile, setLocalProfile } from "@/redux/user/userSlice";
+import {
+  selectUserId,
+  selectUserProfile,
+  setLocalProfile,
+} from "@/redux/user/userSlice";
 import { useGetUserProfileQuery } from "@/redux/user/userApiSlice";
 import {
   useGetUserRoadmapQuery,
@@ -43,19 +47,26 @@ export default function GrandHorizontalRoadmapPage({
   const { data: userProfileData, isLoading: isProfileLoading } =
     useGetUserProfileQuery();
   const profile = useSelector(selectUserProfile);
-
+  const profileUserId = useSelector(selectUserId);
   React.useEffect(() => {
     if (userProfileData && !profile) {
       dispatch(setLocalProfile(userProfileData));
     }
   }, [userProfileData, profile, dispatch]);
 
-  const userId = propUserId || profile?.id || userProfileData?.id || "";
+  const userId =
+    propUserId ||
+    profileUserId ||
+    userProfileData?.userInfo?.id ||
+    userProfileData?.userInfo?.user_id ||
+    userProfileData?.id ||
+    "";
 
   const {
     data: roadmapResponse,
     isLoading: isRoadmapLoading,
     isError,
+    error: roadmapError,
   } = useGetUserRoadmapQuery(userId, {
     skip: !userId,
   });
@@ -85,12 +96,36 @@ export default function GrandHorizontalRoadmapPage({
     return [...rawNodes].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   }, [roadmap]);
 
+  React.useEffect(() => {
+    console.log("[Roadmap] Query state", {
+      userId,
+      skipped: !userId,
+      isProfileLoading,
+      isRoadmapLoading,
+      isError,
+      error: roadmapError,
+      response: roadmapResponse,
+      parsedRoadmap: roadmap,
+      nodeCount: nodes.length,
+    });
+  }, [
+    userId,
+    isProfileLoading,
+    isRoadmapLoading,
+    isError,
+    roadmapError,
+    roadmapResponse,
+    roadmap,
+    nodes.length,
+  ]);
+
   const handleGenerateRoadmap = async () => {
     if (!userId) return;
     try {
-      await generateRoadmap({ userId }).unwrap();
+      const result = await generateRoadmap({ userId }).unwrap();
+      console.log("[Roadmap] Generation succeeded", { userId, result });
     } catch (err) {
-      console.error("Failed to generate roadmap:", err);
+      console.error("[Roadmap] Generation failed", { userId, error: err });
     }
   };
 

@@ -29,7 +29,11 @@ import {
   useGetUserProfileQuery,
   useUpdateUserProfileMutation,
 } from "@/redux/user/userApiSlice";
-import { selectUserProfile, setEditingProfile } from "@/redux/user/userSlice";
+import {
+  selectUserId,
+  selectUserProfile,
+  setEditingProfile,
+} from "@/redux/user/userSlice";
 import { useGetUserSkillSummaryQuery } from "@/redux/analytics/analyticsApiSlice";
 
 import ChangePasswordModal from "@/components/organism/profile/modals/ChangePasswordModal";
@@ -124,8 +128,8 @@ export default function ProfilePage() {
 
   // Redux User Selectors & Profile Queries
   const profile = useSelector(selectUserProfile);
-  const userId = profile?.userInfo?.id || profile?.userInfo?.user_id || "";
-
+  const userId = useSelector(selectUserId);
+  console.log(profile);
   const { isFetching: isProfileLoading } = useGetUserProfileQuery();
 
   const history = profile?.Examhistory || [];
