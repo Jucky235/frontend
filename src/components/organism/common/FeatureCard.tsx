@@ -20,16 +20,16 @@ export default function FeatureCard({
   return (
     <Link
       to={to} // Changed href={href} to to={to}
-      className="bg-background-card border border-border/80 hover:border-brand/40 p-6 rounded-2xl transition-all shadow-xs hover:shadow-md group flex flex-col justify-between space-y-4 cursor-pointer block"
+      className="bg-background-card border border-border/80 hover:border-brand/40 p-6 rounded-2xl transition-all shadow-xs hover:shadow-md group flex flex-col justify-between space-y-5 cursor-pointer block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
     >
       <div className="space-y-3">
         <div className="w-12 h-12 bg-background-hover group-hover:bg-brand-light rounded-xl flex items-center justify-center transition-colors">
           {icon}
         </div>
-        <h3 className="text-base font-bold text-foreground group-hover:text-brand transition-colors">
+        <h3 className="text-lg font-bold text-foreground group-hover:text-brand transition-colors">
           {title}
         </h3>
-        <p className="text-xs text-foreground-subtle leading-relaxed font-medium">
+        <p className="text-sm text-foreground-subtle leading-6 font-medium">
           {desc}
         </p>
       </div>

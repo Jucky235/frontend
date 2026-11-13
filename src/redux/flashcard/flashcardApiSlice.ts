@@ -1,17 +1,11 @@
 import { baseApiSlice } from "../apiSlice";
 
-export type ExamCategory = "TOEIC";
+export type ExamCategory = "GENERAL" | "TOEIC";
 export type DeckStatus = "ACTIVE" | "INACTIVE";
 export type DeckVisibility = "PUBLIC" | "PRIVATE";
 
 export type BoxLevel =
-  | "BOX_1"
-  | "BOX_2"
-  | "BOX_3"
-  | "BOX_4"
-  | "BOX_5"
-  | "BOX_6"
-  | "BOX_7";
+  "BOX_1" | "BOX_2" | "BOX_3" | "BOX_4" | "BOX_5" | "BOX_6" | "BOX_7";
 
 export const FSRSRating = {
   AGAIN: 1,
@@ -95,6 +89,34 @@ export interface CreateDeckPayload {
   visibility?: DeckVisibility;
 }
 
+export interface ImportedDeckCardPayload {
+  frontContent: string;
+  backContent: string;
+  explanation?: string | null;
+  imagePath?: string | null;
+  audioPath?: string | null;
+  partNumber?: number | null;
+}
+
+export interface ImportDeckFromCsvPayload {
+  name?: string;
+  deckName?: string;
+  title?: string;
+  description?: string | null;
+  category?: ExamCategory;
+  visibility?: DeckVisibility;
+  csv?: string;
+  csvData?: string;
+  data?: string;
+  cards?: ImportedDeckCardPayload[];
+}
+
+export interface ImportedDeckResult {
+  deck: Deck;
+  cards: Flashcard[];
+  importedCount: number;
+}
+
 export interface CreateFlashcardPayload {
   deckId: string;
   frontContent: string;
@@ -123,6 +145,20 @@ export interface ApiResponse<T> {
 
 export const flashcardApiSlice = baseApiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    getPublicDecks: builder.query<Deck[], void>({
+      query: () => ({
+        url: "/flashcards/decks/public",
+        method: "GET",
+      }),
+      transformResponse: (response: ApiResponse<Deck[]>) => response.data,
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: "Deck" as const, id })),
+              { type: "Deck", id: "LIST" },
+            ]
+          : [{ type: "Deck", id: "LIST" }],
+    }),
     getDecks: builder.query<Deck[], void>({
       query: () => ({
         url: "/flashcards/decks",
@@ -182,6 +218,17 @@ export const flashcardApiSlice = baseApiSlice.injectEndpoints({
       invalidatesTags: [{ type: "Deck", id: "LIST" }],
     }),
 
+    importDeckFromCsv: builder.mutation<ImportedDeckResult, ImportDeckFromCsvPayload>({
+      query: (body) => ({
+        url: "/flashcards/decks/import-csv",
+        method: "POST",
+        body,
+      }),
+      transformResponse: (response: ApiResponse<ImportedDeckResult>) =>
+        response.data,
+      invalidatesTags: [{ type: "Deck", id: "LIST" }],
+    }),
+
     addFlashcard: builder.mutation<Flashcard, CreateFlashcardPayload>({
       query: ({ deckId, ...body }) => ({
         url: `/flashcards/decks/${deckId}/cards`,
@@ -214,11 +261,13 @@ export const flashcardApiSlice = baseApiSlice.injectEndpoints({
 });
 
 export const {
+  useGetPublicDecksQuery,
   useGetDecksQuery,
   useGetDeckByIdQuery,
   useGetDeckStudyStatsQuery,
   useGetDueCardsQuery,
   useCreateDeckMutation,
+  useImportDeckFromCsvMutation,
   useAddFlashcardMutation,
   useSubmitCardReviewMutation,
 } = flashcardApiSlice;

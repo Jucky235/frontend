@@ -11,6 +11,7 @@ import flashcardReducer from "./flashcard/flashcardSlice";
 import analyticsReducer from "./analytics/analyticsSlice";
 import roadmapReducer from "./roadmap/roadmapSlice";
 import navigationReducer from "./navigation/navigationSlice";
+import dictionaryReducer from "./dictionary/dictionarySlice";
 
 export const store = configureStore({
   reducer: {
@@ -26,6 +27,7 @@ export const store = configureStore({
     analytics: analyticsReducer,
     roadmap: roadmapReducer,
     navigation: navigationReducer,
+    dictionary: dictionaryReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(baseApiSlice.middleware),

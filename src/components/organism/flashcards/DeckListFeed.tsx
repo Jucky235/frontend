@@ -9,6 +9,9 @@ interface DeckListFeedProps {
   onRefetch: () => void;
   onStudyDeck?: (deckId: string | number) => void;
   onEditDeck?: (deckId: string | number) => void;
+  onDeleteDeck?: (deckId: string | number) => void;
+  onImportDeck?: (deckId: string | number) => void;
+  onExportDeck?: (deckId: string | number) => void;
 }
 
 export const DeckListFeed: React.FC<DeckListFeedProps> = ({
@@ -18,6 +21,9 @@ export const DeckListFeed: React.FC<DeckListFeedProps> = ({
   onRefetch,
   onStudyDeck,
   onEditDeck,
+  onDeleteDeck,
+  onImportDeck,
+  onExportDeck,
 }) => {
   if (isLoading) {
     return (
@@ -59,6 +65,9 @@ export const DeckListFeed: React.FC<DeckListFeedProps> = ({
           deck={deck}
           onStudyClick={onStudyDeck}
           onEditClick={onEditDeck}
+          onDeleteClick={onDeleteDeck}
+          onImportClick={onImportDeck}
+          onExportClick={onExportDeck}
         />
       ))}
     </div>

@@ -25,6 +25,8 @@ import RankingPage from "@/pages/community/ranking-page";
 import RoadmapPage from "@/pages/community/roadmap-page";
 import ForgotPasswordPage from "@/pages/auth/forgot-password-page";
 import NotFoundPage from "@/pages/not-found/not-found-page";
+import FlashcardHubPage from "@/pages/community/flashcard-hub-page";
+import DictionaryPage from "@/pages/community/dictionary-page";
 
 // Import the new Dashboard Layout wrapper
 import DashboardLayout from "@/components/layout/DashboardLayout";
@@ -114,6 +116,14 @@ export const router = createBrowserRouter([
   {
     path: "/roadmap",
     element: <RoadmapPage />,
+  },
+  {
+    path: "/flashcard/hub",
+    element: <FlashcardHubPage />,
+  },
+  {
+    path: "/dictionary",
+    element: <DictionaryPage />,
   },
 
   // Protected Admin Routes with Sidebar Layout

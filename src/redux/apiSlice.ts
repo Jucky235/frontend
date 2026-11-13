@@ -32,6 +32,7 @@ export const baseApiSlice = createApi({
     "Category",
     "Post",
     "Roadmap",
+    "Dictionary",
   ] as const,
   endpoints: () => ({}),
 });

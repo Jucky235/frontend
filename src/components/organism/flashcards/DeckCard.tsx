@@ -9,6 +9,9 @@ import {
   Sparkles,
   RotateCcw,
   BookOpen,
+  Pencil,
+  Trash2,
+  FileUp,
 } from "lucide-react";
 import { useGetDeckStudyStatsQuery } from "@/redux/flashcard/flashcardApiSlice";
 
@@ -23,7 +26,6 @@ export interface DeckItemData {
   category?: string;
   tag?: string;
   lastStudied?: string;
-  // Explicit FSRS metrics override (optional)
   dueCount?: number;
   newCount?: number;
   learningCount?: number;
@@ -34,26 +36,41 @@ interface DeckCardProps {
   deck: DeckItemData;
   onStudyClick?: (deckId: string | number) => void;
   onEditClick?: (deckId: string | number) => void;
+  onDeleteClick?: (deckId: string | number) => void;
+  onExportClick?: (deckId: string | number) => void;
 }
 
 export const DeckCard: React.FC<DeckCardProps> = ({
   deck,
   onStudyClick,
   onEditClick,
+  onDeleteClick,
+  onExportClick,
 }) => {
   const navigate = useNavigate();
+  const menuRef = React.useRef<HTMLDivElement | null>(null);
+  const [menuOpen, setMenuOpen] = React.useState(false);
 
-  // Fetch live deck stats via RTK Query
   const { data: stats } = useGetDeckStudyStatsQuery(String(deck.id), {
     skip: !deck.id,
   });
+
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const title = deck.name || deck.title || "Untitled Deck";
   const desc = deck.description || deck.desc || "No description provided.";
   const tag = deck.category || deck.tag || "TOEIC";
   const lastStudied = deck.lastStudied || "Not studied yet";
 
-  // Priority: Direct Props -> Fetched RTK Query Stats -> Prisma Counts -> 0
   const cardCount =
     deck.cardCount ??
     stats?.totalCards ??
@@ -75,9 +92,28 @@ export const DeckCard: React.FC<DeckCardProps> = ({
     }
   };
 
+  const handleMenuAction = (
+    action: "edit" | "delete" | "export",
+    event: React.MouseEvent,
+  ) => {
+    event.stopPropagation();
+    setMenuOpen(false);
+
+    if (action === "edit") {
+      onEditClick?.(deck.id);
+      return;
+    }
+
+    if (action === "delete") {
+      onDeleteClick?.(deck.id);
+      return;
+    }
+
+    onExportClick?.(deck.id);
+  };
+
   return (
-    <div className="deckcard group">
-      {/* Left Column: Icon & Basic Info */}
+    <div className="deckcard group" ref={menuRef}>
       <div className="flex items-start space-x-4 flex-1">
         <div className="deckcard-icon-wrapper">
           <div className="deckcard-icon-box">
@@ -100,20 +136,14 @@ export const DeckCard: React.FC<DeckCardProps> = ({
         </div>
       </div>
 
-      {/* Right Column: FSRS Metrics & Actions */}
       <div className="flex items-center justify-between md:justify-end gap-6 border-t md:border-t-0 border-border pt-4 md:pt-0">
-        {/* FSRS Queue Breakdown */}
         <div className="flex items-center space-x-4">
           <div className="deckcard-stats-pill">
-            {/* New Cards */}
             <div className="deckcard-stat-item" title="New cards to learn">
               <Sparkles className="deckcard-stat-icon variant-new w-3.5 h-3.5" />
-              <span className="deckcard-stat-value variant-new">
-                {newCount}
-              </span>
+              <span className="deckcard-stat-value variant-new">{newCount}</span>
             </div>
 
-            {/* Learning Cards */}
             <div
               className="deckcard-stat-item"
               title="Cards currently in learning phase"
@@ -124,7 +154,6 @@ export const DeckCard: React.FC<DeckCardProps> = ({
               </span>
             </div>
 
-            {/* Review Cards */}
             <div className="deckcard-stat-item" title="Cards due for review">
               <BookOpen className="deckcard-stat-icon variant-review w-3.5 h-3.5" />
               <span className="deckcard-stat-value variant-review">
@@ -133,7 +162,6 @@ export const DeckCard: React.FC<DeckCardProps> = ({
             </div>
           </div>
 
-          {/* Total & Last Studied */}
           <div className="deckcard-meta hidden lg:block">
             <p className="deckcard-meta-label">
               <Clock className="w-3 h-3" />
@@ -144,16 +172,49 @@ export const DeckCard: React.FC<DeckCardProps> = ({
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex items-center space-x-2 flex-shrink-0">
-          <button
-            type="button"
-            title="Edit Deck"
-            onClick={() => onEditClick?.(deck.id)}
-            className="deckcard-btn-edit cursor-pointer active:scale-95"
-          >
-            <Settings className="w-4 h-4" />
-          </button>
+        <div className="relative flex items-center space-x-2 flex-shrink-0">
+          <div className="relative">
+            <button
+              type="button"
+              title="Deck options"
+              onClick={(event) => {
+                event.stopPropagation();
+                setMenuOpen((prev) => !prev);
+              }}
+              className="deckcard-btn-edit cursor-pointer active:scale-95"
+            >
+              <Settings className="w-4 h-4" />
+            </button>
+
+            {menuOpen && (
+              <div className="absolute right-0 top-full mt-2 w-40 rounded-xl border border-border bg-background-card shadow-lg z-20 overflow-hidden">
+                <button
+                  type="button"
+                  onClick={(event) => handleMenuAction("edit", event)}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-foreground hover:bg-background-hover"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  onClick={(event) => handleMenuAction("delete", event)}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-foreground hover:bg-background-hover"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  Delete
+                </button>
+                <button
+                  type="button"
+                  onClick={(event) => handleMenuAction("export", event)}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-foreground hover:bg-background-hover"
+                >
+                  <FileUp className="w-3.5 h-3.5" />
+                  Export
+                </button>
+              </div>
+            )}
+          </div>
 
           <button
             type="button"

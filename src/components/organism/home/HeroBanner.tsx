@@ -54,7 +54,8 @@ export default function HeroBanner({
   autoPlayInterval = 5000,
 }: HeroBannerProps) {
   const [currentIndex, setCurrentIndex] = React.useState(0);
-  const [isPaused, setIsPaused] = React.useState(false);
+  const [isHovered, setIsHovered] = React.useState(false);
+  const [isFocused, setIsFocused] = React.useState(false);
 
   const nextSlide = React.useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % slides.length);
@@ -66,24 +67,34 @@ export default function HeroBanner({
 
   // Auto-play timer setup
   React.useEffect(() => {
-    if (isPaused || slides.length <= 1) return;
+    if (isHovered || isFocused || slides.length <= 1) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const timer = setInterval(() => {
       nextSlide();
     }, autoPlayInterval);
 
     return () => clearInterval(timer);
-  }, [nextSlide, autoPlayInterval, isPaused, slides.length]);
+  }, [nextSlide, autoPlayInterval, isHovered, isFocused, slides.length]);
 
   const currentSlide = slides[currentIndex];
 
   return (
     <section
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
+      aria-label="Learning highlights"
+      aria-roledescription="carousel"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onFocusCapture={() => setIsFocused(true)}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+          setIsFocused(false);
+        }
+      }}
       /* Gradient banner linh hoạt theo màu --banner-from và --banner-to */
       className="w-full h-auto min-h-[320px] md:h-96 bg-gradient-to-br from-banner-from to-banner-to rounded-3xl text-white relative overflow-hidden shadow-lg select-none border border-banner-border flex flex-col justify-between"
     >
+      <div className="absolute inset-0 bg-gradient-to-r from-slate-950/65 via-slate-950/35 to-slate-950/10 pointer-events-none" />
       {/* Slide Container */}
       <div className="absolute inset-0 p-6 md:p-12 flex flex-col justify-between z-10">
         {/* Main Content Area (Text + Optional Image Layout) */}
@@ -91,26 +102,26 @@ export default function HeroBanner({
           {/* Dynamic Slide Text Content */}
           <div
             key={currentIndex}
-            className="max-w-md space-y-3.5 transition-all duration-300 animate-in fade-in"
+            className="max-w-md space-y-3.5 text-white transition-all duration-300 animate-in fade-in motion-reduce:animate-none"
           >
             {currentSlide.badgeText && (
-              <span className="inline-block bg-white/20 text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full backdrop-blur-md">
+              <span className="inline-block bg-white/20 text-white text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full backdrop-blur-md">
                 {currentSlide.badgeText}
               </span>
             )}
 
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight leading-tight line-clamp-2">
+            <h1 className="text-white text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight leading-tight line-clamp-2">
               {currentSlide.title}
             </h1>
 
-            <p className="text-xs sm:text-sm opacity-90 leading-relaxed font-medium line-clamp-3">
+            <p className="text-white/90 text-xs sm:text-sm leading-relaxed font-medium line-clamp-3">
               {currentSlide.description}
             </p>
 
             <div className="pt-2">
               <button
                 onClick={currentSlide.onButtonClick}
-                className="bg-white text-brand hover:bg-neutral-100 font-bold text-sm px-5 py-2.5 rounded-xl tracking-wide shadow-md transition-all flex items-center space-x-2 cursor-pointer active:scale-95"
+                className="bg-white text-brand hover:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand font-bold text-sm px-5 py-2.5 rounded-xl tracking-wide shadow-md transition-all flex items-center space-x-2 cursor-pointer active:scale-95"
               >
                 <span>{currentSlide.buttonText || "Get Started"}</span>
                 <ArrowRight className="w-4 h-4" />
@@ -140,7 +151,7 @@ export default function HeroBanner({
                   key={idx}
                   onClick={() => setCurrentIndex(idx)}
                   aria-label={`Go to slide ${idx + 1}`}
-                  className={`h-2 rounded-full transition-all duration-300 ${
+                  className={`h-2 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand ${
                     idx === currentIndex
                       ? "w-7 bg-white"
                       : "w-2 bg-white/40 hover:bg-white/70"
@@ -154,7 +165,7 @@ export default function HeroBanner({
               <button
                 onClick={prevSlide}
                 aria-label="Previous Slide"
-                className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors backdrop-blur-md text-white active:scale-90"
+                className="p-2 rounded-full bg-white/10 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand transition-colors backdrop-blur-md text-white active:scale-90"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
@@ -162,7 +173,7 @@ export default function HeroBanner({
               <button
                 onClick={nextSlide}
                 aria-label="Next Slide"
-                className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors backdrop-blur-md text-white active:scale-90"
+                className="p-2 rounded-full bg-white/10 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand transition-colors backdrop-blur-md text-white active:scale-90"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
