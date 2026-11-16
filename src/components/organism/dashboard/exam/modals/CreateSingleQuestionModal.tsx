@@ -206,7 +206,7 @@ export const CreateSingleQuestionModal: React.FC<
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Danh mục (Category)
+                  Danh mục
                 </label>
                 <select
                   value={category}
@@ -215,13 +215,13 @@ export const CreateSingleQuestionModal: React.FC<
                 >
                   <option value="TOEIC">TOEIC</option>
                   <option value="IELTS">IELTS</option>
-                  <option value="GENERAL">General</option>
+                  <option value="GENERAL">Chung</option>
                 </select>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Part (Phần thi)
+                  Phần thi
                 </label>
                 <input
                   type="number"

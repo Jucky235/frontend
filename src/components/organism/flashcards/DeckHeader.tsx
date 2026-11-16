@@ -13,9 +13,9 @@ export const DeckHeader: React.FC<DeckHeaderProps> = ({
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
       <div>
-        <h1 className="deck-header-title">Decks</h1>
+        <h1 className="deck-header-title">Bộ thẻ</h1>
         <p className="deck-header-subtitle">
-          Select an interactive card bundle module to test your abilities.
+          Chọn bộ thẻ tương tác để kiểm tra khả năng của bạn.
         </p>
       </div>
 
@@ -27,7 +27,7 @@ export const DeckHeader: React.FC<DeckHeaderProps> = ({
             className="deck-header-create-btn cursor-pointer active:scale-95"
           >
             <Upload className="w-4 h-4" />
-            <span>Import Deck</span>
+            <span>Nhập bộ thẻ</span>
           </button>
         )}
 
@@ -37,7 +37,7 @@ export const DeckHeader: React.FC<DeckHeaderProps> = ({
           className="deck-header-create-btn cursor-pointer active:scale-95"
         >
           <Plus className="w-4 h-4" />
-          <span>Create Deck</span>
+          <span>Tạo bộ thẻ</span>
         </button>
       </div>
     </div>

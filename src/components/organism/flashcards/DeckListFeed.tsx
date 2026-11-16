@@ -29,7 +29,7 @@ export const DeckListFeed: React.FC<DeckListFeedProps> = ({
     return (
       <div className="deck-feed-panel">
         <Loader2 className="deck-feed-spinner w-5 h-5 animate-spin" />
-        <span>Fetching study decks...</span>
+        <span>Đang tải các bộ thẻ học tập...</span>
       </div>
     );
   }
@@ -37,13 +37,13 @@ export const DeckListFeed: React.FC<DeckListFeedProps> = ({
   if (isError) {
     return (
       <div className="deck-feed-error-panel">
-        <p className="deck-feed-error-text">Failed to load deck collections.</p>
+        <p className="deck-feed-error-text">Không thể tải các bộ thẻ.</p>
         <button
           type="button"
           onClick={onRefetch}
           className="deck-feed-error-btn cursor-pointer"
         >
-          Try Again
+          Thử lại
         </button>
       </div>
     );
@@ -52,7 +52,7 @@ export const DeckListFeed: React.FC<DeckListFeedProps> = ({
   if (decks.length === 0) {
     return (
       <div className="deck-feed-empty-panel">
-        No matching collections found.
+        Không tìm thấy bộ sưu tập phù hợp.
       </div>
     );
   }

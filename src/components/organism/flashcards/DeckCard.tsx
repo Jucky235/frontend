@@ -139,14 +139,14 @@ export const DeckCard: React.FC<DeckCardProps> = ({
       <div className="flex items-center justify-between md:justify-end gap-6 border-t md:border-t-0 border-border pt-4 md:pt-0">
         <div className="flex items-center space-x-4">
           <div className="deckcard-stats-pill">
-            <div className="deckcard-stat-item" title="New cards to learn">
+            <div className="deckcard-stat-item" title="Thẻ mới cần học">
               <Sparkles className="deckcard-stat-icon variant-new w-3.5 h-3.5" />
               <span className="deckcard-stat-value variant-new">{newCount}</span>
             </div>
 
             <div
               className="deckcard-stat-item"
-              title="Cards currently in learning phase"
+              title="Thẻ đang trong giai đoạn học"
             >
               <RotateCcw className="deckcard-stat-icon variant-learning w-3.5 h-3.5" />
               <span className="deckcard-stat-value variant-learning">
@@ -154,7 +154,7 @@ export const DeckCard: React.FC<DeckCardProps> = ({
               </span>
             </div>
 
-            <div className="deckcard-stat-item" title="Cards due for review">
+            <div className="deckcard-stat-item" title="Thẻ cần ôn tập">
               <BookOpen className="deckcard-stat-icon variant-review w-3.5 h-3.5" />
               <span className="deckcard-stat-value variant-review">
                 {reviewCount}
@@ -165,10 +165,10 @@ export const DeckCard: React.FC<DeckCardProps> = ({
           <div className="deckcard-meta hidden lg:block">
             <p className="deckcard-meta-label">
               <Clock className="w-3 h-3" />
-              <span>Studied</span>
+              <span>Đã học</span>
             </p>
             <p className="deckcard-meta-value">{lastStudied}</p>
-            <p className="deckcard-meta-sub">{cardCount} total cards</p>
+            <p className="deckcard-meta-sub">Tổng cộng {cardCount} thẻ</p>
           </div>
         </div>
 
@@ -176,7 +176,7 @@ export const DeckCard: React.FC<DeckCardProps> = ({
           <div className="relative">
             <button
               type="button"
-              title="Deck options"
+              title="Tùy chọn bộ thẻ"
               onClick={(event) => {
                 event.stopPropagation();
                 setMenuOpen((prev) => !prev);
@@ -194,7 +194,7 @@ export const DeckCard: React.FC<DeckCardProps> = ({
                   className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-foreground hover:bg-background-hover"
                 >
                   <Pencil className="w-3.5 h-3.5" />
-                  Edit
+                  Chỉnh sửa
                 </button>
                 <button
                   type="button"
@@ -202,7 +202,7 @@ export const DeckCard: React.FC<DeckCardProps> = ({
                   className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-foreground hover:bg-background-hover"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
-                  Delete
+                  Xóa
                 </button>
                 <button
                   type="button"
@@ -210,7 +210,7 @@ export const DeckCard: React.FC<DeckCardProps> = ({
                   className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-foreground hover:bg-background-hover"
                 >
                   <FileUp className="w-3.5 h-3.5" />
-                  Export
+                  Xuất
                 </button>
               </div>
             )}

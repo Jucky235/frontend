@@ -23,17 +23,17 @@ export const ScoreCard: React.FC<ScoreCardProps> = ({
         </div>
         <div>
           <h3 className="font-extrabold text-foreground text-lg">
-            Test Complete!
+            Hoàn thành bài thi!
           </h3>
           <p className="text-xs text-foreground-subtle font-medium mt-0.5">
-            You answered {score} out of {totalQuestions} correctly.
+            Bạn trả lời đúng {score} trên tổng số {totalQuestions} câu.
           </p>
         </div>
       </div>
       <div className="flex items-center space-x-4 w-full sm:w-auto">
         <div className="bg-background px-5 py-2.5 rounded-xl border border-border text-center flex-1 sm:flex-initial">
           <span className="text-xs font-bold text-foreground-subtle block uppercase tracking-wider">
-            Score
+            Điểm
           </span>
           <span className="text-xl font-black text-foreground">
             {percentage}%

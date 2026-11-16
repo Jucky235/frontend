@@ -146,7 +146,7 @@ export default function ForumPage() {
               <div className="flex flex-col items-center justify-center py-16 space-y-3 bg-background-card rounded-2xl border border-border shadow-xs">
                 <Loader2 className="w-8 h-8 text-primary animate-spin" />
                 <p className="text-xs font-semibold text-foreground-subtle">
-                  Loading discussions...
+                  Đang tải các cuộc thảo luận...
                 </p>
               </div>
             )}
@@ -156,17 +156,16 @@ export default function ForumPage() {
               <div className="flex flex-col items-center justify-center py-12 space-y-3 bg-red-500/10 rounded-2xl border border-red-500/20 text-center p-6">
                 <AlertCircle className="w-8 h-8 text-red-500" />
                 <p className="text-sm font-bold text-foreground">
-                  Failed to load discussions
+                  Không thể tải các cuộc thảo luận
                 </p>
                 <p className="text-xs text-foreground-subtle max-w-xs">
-                  There was a problem fetching the forum posts. Please check
-                  your connection and try again.
+                  Đã xảy ra lỗi khi tải bài đăng diễn đàn. Vui lòng kiểm tra kết nối và thử lại.
                 </p>
                 <button
                   onClick={() => refetch()}
                   className="mt-2 text-xs font-bold text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl transition-all cursor-pointer shadow-xs"
                 >
-                  Retry
+                  Thử lại
                 </button>
               </div>
             )}
@@ -176,10 +175,10 @@ export default function ForumPage() {
               <div className="flex flex-col items-center justify-center py-16 space-y-3 bg-background-card rounded-2xl border border-border text-center p-6 shadow-xs">
                 <MessageSquareX className="w-8 h-8 text-foreground-subtle" />
                 <p className="text-sm font-bold text-foreground">
-                  No discussions found
+                  Không tìm thấy cuộc thảo luận
                 </p>
                 <p className="text-xs text-foreground-subtle">
-                  Try adjusting your search query or switching categories.
+                  Hãy đổi từ khóa tìm kiếm hoặc danh mục.
                 </p>
               </div>
             )}
@@ -209,17 +208,17 @@ export default function ForumPage() {
                       onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
                       className="px-4 py-2 rounded-xl bg-background-card border border-border text-foreground hover:bg-background-hover disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
                     >
-                      Previous
+                      Trước
                     </button>
                     <span className="text-foreground-subtle">
-                      Page {pagination.page} of {pagination.totalPages}
+                      Trang {pagination.page} of {pagination.totalPages}
                     </span>
                     <button
                       disabled={page >= pagination.totalPages}
                       onClick={() => setPage((prev) => prev + 1)}
                       className="px-4 py-2 rounded-xl bg-background-card border border-border text-foreground hover:bg-background-hover disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
                     >
-                      Next
+                      Tiếp
                     </button>
                   </div>
                 )}

@@ -152,10 +152,9 @@ export default function ExamsManagementPage() {
     <div className="w-full space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="deck-header-title">Exams Management</h1>
+          <h1 className="deck-header-title">Quản lý bài thi</h1>
           <p className="deck-header-subtitle">
-            Create, organize, and monitor performance analytics across all
-            examination suites.
+            Tạo, sắp xếp và theo dõi số liệu hiệu suất của các bài thi.
           </p>
         </div>
 
@@ -166,7 +165,7 @@ export default function ExamsManagementPage() {
             className="examsmgmt-btn-outline cursor-pointer active:scale-95"
           >
             <FileSpreadsheet className="examsmgmt-btn-icon-success w-4 h-4" />
-            <span>Import CSV</span>
+            <span>Nhập CSV</span>
           </button>
 
           <button
@@ -175,7 +174,7 @@ export default function ExamsManagementPage() {
             className="examsmgmt-btn-outline cursor-pointer active:scale-95"
           >
             <HelpCircle className="examsmgmt-btn-icon-brand w-4 h-4" />
-            <span>Add Question</span>
+            <span>Thêm câu hỏi</span>
           </button>
 
           <button
@@ -184,7 +183,7 @@ export default function ExamsManagementPage() {
             className="deck-header-create-btn cursor-pointer active:scale-95"
           >
             <Plus className="w-4 h-4" />
-            <span>Create New Exam</span>
+            <span>Tạo bài thi mới</span>
           </button>
         </div>
       </div>

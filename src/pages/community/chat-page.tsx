@@ -271,7 +271,7 @@ export default function ChatPage() {
                   title={`Summarize #${currentChannelName} with AI`}
                 >
                   <Sparkles className="h-3.5 w-3.5" />
-                  <span className="hidden sm:inline">AI summary</span>
+                  <span className="hidden sm:inline">Tóm tắt bằng AI</span>
                 </button>
               )
             }
@@ -286,7 +286,7 @@ export default function ChatPage() {
               <div className="flex items-center gap-2 overflow-hidden">
                 <Sparkles className="h-4 w-4 shrink-0 text-brand" />
                 <h3 className="truncate text-sm font-semibold text-foreground">
-                  AI summary · #{currentChannelName}
+                  Tóm tắt bằng AI · #{currentChannelName}
                 </h3>
               </div>
               <div className="flex items-center gap-1 shrink-0">
@@ -294,7 +294,7 @@ export default function ChatPage() {
                   onClick={handleFetchSummary}
                   disabled={isGeneratingSummary}
                   className="p-1.5 text-foreground-muted hover:text-foreground rounded-md hover:bg-background-hover transition-colors disabled:opacity-50"
-                  title="Refresh summary"
+                  title="Làm mới bản tóm tắt"
                 >
                   <RefreshCw
                     className={`w-4 h-4 ${
@@ -304,7 +304,7 @@ export default function ChatPage() {
                 </button>
                 <button
                   onClick={() => setIsSummaryPanelOpen(false)}
-                  aria-label="Close summary"
+                  aria-label="Đóng phần tóm tắt"
                   className="rounded-md p-1.5 text-foreground-muted transition-colors hover:bg-background-hover hover:text-foreground"
                 >
                   <X className="w-4 h-4" />
@@ -318,7 +318,7 @@ export default function ChatPage() {
                 <div className="h-full flex flex-col items-center justify-center gap-3 text-foreground-subtle py-12">
                   <RefreshCw className="h-6 w-6 animate-spin text-brand" />
                   <p className="text-xs font-medium text-foreground-muted">
-                    Reading recent messages in #{currentChannelName}…
+                    Đọc tin nhắn gần đây trong #{currentChannelName}…
                   </p>
                 </div>
               ) : isSummaryError ? (
@@ -335,7 +335,7 @@ export default function ChatPage() {
                 </div>
               ) : (
                 <div className="py-12 text-center text-xs text-foreground-subtle">
-                  Select AI summary to get the main points from this channel.
+                  Chọn tóm tắt AI để xem các ý chính của kênh này.
                 </div>
               )}
             </div>

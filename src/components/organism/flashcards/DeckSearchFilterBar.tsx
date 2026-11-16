@@ -25,7 +25,7 @@ export const DeckSearchFilterBar: React.FC<DeckSearchFilterBarProps> = ({
         <Search className="deck-filter-search-icon w-4 h-4" />
         <input
           type="text"
-          placeholder="Search collections..."
+          placeholder="Tìm bộ sưu tập..."
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           className="deck-filter-search-input"

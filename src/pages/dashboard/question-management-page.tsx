@@ -153,10 +153,10 @@ export default function QuestionManagementPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-background-card p-6 rounded-2xl border border-border/80 shadow-xs">
         <div>
           <h1 className="text-2xl font-black text-foreground tracking-tight">
-            Question Management
+            Quản lý câu hỏi
           </h1>
           <p className="text-sm font-medium text-foreground-subtle mt-0.5">
-            Create, edit, and organize exam questions by TOEIC/IELTS parts.
+            Tạo, chỉnh sửa và sắp xếp câu hỏi theo từng phần TOEIC/IELTS.
           </p>
         </div>
 
@@ -168,7 +168,7 @@ export default function QuestionManagementPage() {
             className="flex items-center justify-center space-x-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-sm px-4 py-2.5 rounded-xl border border-emerald-200 transition-all cursor-pointer"
           >
             <Upload className="w-4 h-4 stroke-[2.5]" />
-            <span>Import CSV</span>
+            <span>Nhập CSV</span>
           </button>
 
           {/* Add New Question Button */}
@@ -178,7 +178,7 @@ export default function QuestionManagementPage() {
             className="flex items-center justify-center space-x-2 bg-brand hover:bg-brand-hover active:scale-95 text-brand-foreground font-bold text-sm px-5 py-2.5 rounded-xl transition-all shadow-xs cursor-pointer"
           >
             <Plus className="w-4 h-4 stroke-[2.5]" />
-            <span>Add New Question</span>
+            <span>Thêm câu hỏi mới</span>
           </button>
         </div>
       </div>
@@ -196,20 +196,20 @@ export default function QuestionManagementPage() {
         <div className="bg-background-card p-16 text-center rounded-2xl border border-border/80 shadow-xs flex flex-col items-center justify-center space-y-3">
           <Loader2 className="w-8 h-8 text-brand animate-spin" />
           <p className="text-sm font-semibold text-foreground-muted">
-            Loading questions...
+            Đang tải câu hỏi...
           </p>
         </div>
       ) : isError ? (
         <div className="bg-background-card p-12 text-center rounded-2xl border border-rose-200 shadow-xs space-y-3">
           <AlertCircle className="w-10 h-10 text-rose-500 mx-auto" />
           <p className="text-base font-bold text-foreground">
-            Failed to load questions
+            Không thể tải câu hỏi
           </p>
           <button
             onClick={() => refetch()}
             className="px-4 py-2 bg-background-hover hover:bg-border text-foreground-muted text-xs font-bold rounded-xl transition-all cursor-pointer"
           >
-            Retry
+            Thử lại
           </button>
         </div>
       ) : (

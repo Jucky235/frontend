@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo } from "react";
+import { useEffect, useRef, useMemo, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import {
   Search,
@@ -22,6 +22,8 @@ import {
   ArrowRight,
   Clock,
   Compass,
+  Menu,
+  X,
 } from "lucide-react";
 import Dropdown, {
   DropdownProvider,
@@ -44,6 +46,7 @@ import {
   clearRecentSearches,
 } from "@/redux/navigation/navigationSlice";
 import { useSearchRouteMutation } from "@/redux/navigation/navigationApiSlice";
+import i18n from "@/lib/i18n";
 
 interface NavItem {
   label: string;
@@ -72,73 +75,73 @@ interface QuickRouteOption {
 
 const QUICK_ROUTES: QuickRouteOption[] = [
   {
-    title: "News & Updates",
-    description: "Read the latest announcements and educational news",
+    title: "Tin tức & cập nhật",
+    description: "Đọc thông báo và tin tức giáo dục mới nhất",
     path: "/news",
-    category: "Home",
+    category: "Trang chủ",
     icon: <BookOpen className="w-4 h-4 text-brand" />,
   },
   {
-    title: "Teams",
-    description: "Collaborate with your study groups and peers",
+    title: "Nhóm học tập",
+    description: "Cùng học và trao đổi với bạn bè",
     path: "/teams",
-    category: "Home",
+    category: "Trang chủ",
     icon: <FileText className="w-4 h-4 text-brand" />,
   },
   {
-    title: "Exam Listing",
-    description: "Browse and take available English exams",
+    title: "Danh sách bài thi",
+    description: "Khám phá và làm các bài thi tiếng Anh",
     path: "/test",
-    category: "Exams",
+    category: "Bài thi",
     icon: <BookOpen className="w-4 h-4 text-brand" />,
   },
   {
-    title: "Course Listing",
-    description: "Explore mock exams and structured courses",
+    title: "Danh sách khóa học",
+    description: "Khám phá đề thi thử và khóa học có lộ trình",
     path: "/exams/mock",
-    category: "Exams",
+    category: "Bài thi",
     icon: <FileText className="w-4 h-4 text-brand" />,
   },
   {
-    title: "Flashcard Listing",
-    description: "Practice vocabulary with flashcard decks",
+    title: "Danh sách thẻ ghi nhớ",
+    description: "Luyện từ vựng với các bộ thẻ ghi nhớ",
     path: "/flashcards-list",
-    category: "Exams",
+    category: "Bài thi",
     icon: <FileText className="w-4 h-4 text-brand" />,
   },
   {
-    title: "Global Leaderboard",
-    description: "Check your rank against students worldwide",
+    title: "Bảng xếp hạng toàn cầu",
+    description: "Xem thứ hạng của bạn cùng học viên khắp thế giới",
     path: "/rankings/global",
-    category: "Rankings",
+    category: "Xếp hạng",
     icon: <Award className="w-4 h-4 text-brand" />,
   },
   {
-    title: "Monthly League",
-    description: "Compete in this month's leaderboard league",
+    title: "Giải đấu tháng",
+    description: "Tham gia giải đấu trên bảng xếp hạng tháng này",
     path: "/rankings/monthly",
-    category: "Rankings",
+    category: "Xếp hạng",
     icon: <Award className="w-4 h-4 text-brand" />,
   },
   {
-    title: "Forums",
-    description: "Discuss questions and share tips with the community",
+    title: "Diễn đàn",
+    description: "Thảo luận và chia sẻ mẹo học cùng cộng đồng",
     path: "/forum",
-    category: "Community",
+    category: "Cộng đồng",
     icon: <Users className="w-4 h-4 text-brand" />,
   },
   {
-    title: "Chat",
-    description: "Chat live with other learners",
+    title: "Trò chuyện",
+    description: "Trò chuyện trực tiếp với học viên khác",
     path: "/chat",
-    category: "Community",
+    category: "Cộng đồng",
     icon: <MessageSquare className="w-4 h-4 text-brand" />,
   },
   {
-    title: "FAQ & Docs",
-    description: "Find answers to frequently asked questions",
+    title: "Câu hỏi thường gặp",
+    description: "Tìm câu trả lời cho những thắc mắc phổ biến",
     path: "/faq",
-    category: "Help",
+    category: "Trợ giúp",
     icon: <HelpCircle className="w-4 h-4 text-brand" />,
   },
 ];
@@ -184,6 +187,7 @@ export default function Header({
 
   const [searchRoute, { isLoading: isSearching }] = useSearchRouteMutation();
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   useEffect(() => {
     if (isSearchModalOpen) {
@@ -221,15 +225,15 @@ export default function Header({
 
   const defaultNavItems: NavItem[] = [
     {
-      label: "home",
+      label: "Trang chủ",
       children: [
         {
-          label: "News",
+          label: "Tin tức",
           icon: <BookOpen className="w-3.5 h-3.5" />,
           onClick: () => navigate("/news"),
         },
         {
-          label: "Teams",
+          label: "Nhóm học tập",
           icon: <FileText className="w-3.5 h-3.5" />,
           onClick: () => navigate("/teams"),
         },
@@ -238,70 +242,70 @@ export default function Header({
       href: "/",
     },
     {
-      label: "exams",
+      label: "Bài thi",
       children: [
         {
-          label: "Exam Listing",
+          label: "Danh sách bài thi",
           icon: <BookOpen className="w-3.5 h-3.5" />,
           onClick: () => navigate("/test"),
         },
         {
-          label: "Course Listing",
+          label: "Danh sách khóa học",
           icon: <FileText className="w-3.5 h-3.5" />,
           onClick: () => navigate("/exams/mock"),
         },
         {
-          label: "Flashcard Listing",
+          label: "Danh sách thẻ ghi nhớ",
           icon: <FileText className="w-3.5 h-3.5" />,
           onClick: () => navigate("/flashcards-list"),
         },
       ],
     },
     {
-      label: "rankings",
+      label: "Xếp hạng",
       children: [
         {
-          label: "Global Leaderboard",
+          label: "Bảng xếp hạng toàn cầu",
           icon: <Award className="w-3.5 h-3.5" />,
           onClick: () => navigate("/rankings/global"),
         },
         {
-          label: "Monthly League",
+          label: "Giải đấu tháng",
           icon: <Award className="w-3.5 h-3.5" />,
           onClick: () => navigate("/rankings/monthly"),
         },
       ],
     },
     {
-      label: "community",
+      label: "Cộng đồng",
       children: [
         {
-          label: "Forums",
+          label: "Diễn đàn",
           icon: <Users className="w-3.5 h-3.5" />,
           onClick: () => navigate("/forum"),
         },
         {
-          label: "Chat",
+          label: "Trò chuyện",
           icon: <MessageSquare className="w-3.5 h-3.5" />,
           onClick: () => navigate("/chat"),
         },
       ],
     },
     {
-      label: "help",
+      label: "Trợ giúp",
       children: [
         {
-          label: "FAQ & Docs",
+          label: "Câu hỏi thường gặp",
           icon: <HelpCircle className="w-3.5 h-3.5" />,
           onClick: () => navigate("/faq"),
         },
         {
-          label: "Report",
+          label: "Báo cáo",
           icon: <HelpCircle className="w-3.5 h-3.5" />,
           onClick: () => navigate("/help/faq"),
         },
         {
-          label: "Rules",
+          label: "Quy định",
           icon: <HelpCircle className="w-3.5 h-3.5" />,
           onClick: () => navigate("/help/faq"),
         },
@@ -313,7 +317,7 @@ export default function Header({
 
   const profileMenuItems: DropdownItem[] = [
     {
-      label: "My Profile",
+      label: "Hồ sơ của tôi",
       icon: <User className="w-3.5 h-3.5" />,
       onClick: () => {
         if (!userId) {
@@ -324,12 +328,12 @@ export default function Header({
       },
     },
     {
-      label: "Settings",
+      label: "Cài đặt",
       icon: <Settings className="w-3.5 h-3.5" />,
       onClick: onSettingsClick ?? (() => undefined),
     },
     {
-      label: "Logout",
+      label: "Đăng xuất",
       icon: <LogOut className="w-3.5 h-3.5" />,
       danger: true,
       divider: true,
@@ -344,19 +348,9 @@ export default function Header({
 
   const languageMenuItems: DropdownItem[] = [
     {
-      label: "English (US)",
+      label: "Tiếng Việt",
       icon: <Languages className="w-3.5 h-3.5" />,
-      onClick: () => onLanguageSelect?.("en"),
-    },
-    {
-      label: "Español",
-      icon: <Languages className="w-3.5 h-3.5" />,
-      onClick: () => onLanguageSelect?.("es"),
-    },
-    {
-      label: "日本語",
-      icon: <Languages className="w-3.5 h-3.5" />,
-      onClick: () => onLanguageSelect?.("ja"),
+      onClick: () => { i18n.changeLanguage("vi"); onLanguageSelect?.("vi"); },
     },
   ];
 
@@ -369,7 +363,7 @@ export default function Header({
           <div className="flex items-center space-x-6">
             <Link
               to="/"
-              aria-label="S English home"
+              aria-label="Trang chủ S English"
               className="group flex items-center gap-2.5"
             >
               <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-pink-500 to-violet-600 text-lg font-black tracking-tight text-white shadow-md shadow-pink-950/25 transition-transform group-hover:scale-105">
@@ -429,21 +423,30 @@ export default function Header({
               <button
                 onClick={() => dispatch(toggleSearchModal())}
                 className="text-foreground-subtle hover:text-foreground transition-colors p-1 flex items-center space-x-1 bg-background-hover px-2 py-1 rounded-md border border-border"
-                aria-label="Search"
+                aria-label="Tìm kiếm"
               >
                 <Search className="w-3.5 h-3.5" />
                 <span className="text-[10px] opacity-75 font-normal">
-                  Quick Navigation...
+                  Điều hướng nhanh...
                 </span>
               </button>
             </nav>
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            <button
+              type="button"
+              className="lg:hidden rounded-lg p-2 text-foreground-subtle hover:bg-background-hover hover:text-foreground"
+              aria-label={isMobileNavOpen ? "Đóng điều hướng" : "Mở điều hướng"}
+              aria-expanded={isMobileNavOpen}
+              onClick={() => setIsMobileNavOpen((open) => !open)}
+            >
+              {isMobileNavOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
             <button
               onClick={() => dispatch(toggleSearchModal())}
               className="lg:hidden text-foreground-subtle hover:text-foreground transition-colors p-1.5"
-              aria-label="Search"
+              aria-label="Tìm kiếm"
             >
               <Search className="w-4 h-4" />
             </button>
@@ -452,8 +455,8 @@ export default function Header({
               type="button"
               onClick={toggleTheme}
               className="p-1.5 text-foreground-subtle transition-colors hover:text-brand md:hidden"
-              aria-label="Toggle theme"
-              title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              aria-label="Đổi giao diện"
+              title={isDark ? "Chuyển sang giao diện sáng" : "Chuyển sang giao diện tối"}
             >
               {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
@@ -467,8 +470,8 @@ export default function Header({
                 type="button"
                 onClick={toggleTheme}
                 className="hover:text-foreground transition-colors p-1"
-                aria-label="Toggle theme"
-                title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                aria-label="Đổi giao diện"
+                title={isDark ? "Chuyển sang giao diện sáng" : "Chuyển sang giao diện tối"}
               >
                 {isDark ? (
                   <Sun className="w-4 h-4 text-amber-400 hover:rotate-45 transition-transform" />
@@ -492,7 +495,7 @@ export default function Header({
               />
             </div>
 
-            <div className="flex items-center space-x-3 bg-background-hover border border-border/80 rounded-full px-3.5 py-1 text-xs font-bold text-foreground">
+            <div className="hidden sm:flex items-center space-x-3 bg-background-hover border border-border/80 rounded-full px-3.5 py-1 text-xs font-bold text-foreground">
               <button className="flex items-center space-x-1.5 hover:text-brand transition-colors">
                 <MessageSquare className="w-3.5 h-3.5 text-foreground-subtle fill-current" />
                 <span>{chatCount}</span>
@@ -527,6 +530,26 @@ export default function Header({
             />
           </div>
         </div>
+        {isMobileNavOpen && (
+          <nav className="lg:hidden border-t border-border bg-background-card px-4 py-3 shadow-lg">
+            <div className="mx-auto max-w-7xl space-y-1">
+              {activeNavItems.map((item) => (
+                <div key={item.label} className="rounded-lg px-3 py-2">
+                  {item.href ? (
+                    <Link to={item.href} onClick={() => setIsMobileNavOpen(false)} className="block text-sm font-bold text-foreground">{item.label}</Link>
+                  ) : (
+                    <p className="mb-1 text-xs font-bold uppercase tracking-wide text-foreground-subtle">{item.label}</p>
+                  )}
+                  {item.children?.map((child) => (
+                    <button key={child.label} type="button" onClick={() => { child.onClick(); setIsMobileNavOpen(false); }} className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-foreground hover:bg-background-hover">
+                      {child.icon}<span>{child.label}</span>
+                    </button>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </nav>
+        )}
       </header>
 
       {/* Navigation Search & Options Modal */}
@@ -549,7 +572,7 @@ export default function Header({
                     handleAiSearchSubmit(searchQuery);
                   }
                 }}
-                placeholder="Type to filter options or press Enter for AI search..."
+                placeholder="Nhập để lọc hoặc nhấn Enter để tìm kiếm bằng AI..."
                 className="w-full bg-transparent border-none outline-none text-foreground text-sm placeholder:text-foreground-subtle"
               />
               {isSearching && (
@@ -563,12 +586,12 @@ export default function Header({
                 !lastRecommendation && (
                   <div>
                     <div className="flex items-center justify-between text-[11px] font-bold text-foreground-subtle uppercase tracking-wider mb-2">
-                      <span>Recent Selects</span>
+                      <span>Lựa chọn gần đây</span>
                       <button
                         onClick={() => dispatch(clearRecentSearches())}
                         className="hover:text-foreground transition-colors"
                       >
-                        Clear
+                        Xóa
                       </button>
                     </div>
                     <div className="flex flex-wrap gap-1.5">
@@ -590,10 +613,10 @@ export default function Header({
                 <div className="p-4 rounded-xl bg-brand/5 border border-brand/20 space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-brand uppercase tracking-wider">
-                      AI Navigation Match
+                      Gợi ý điều hướng AI
                     </span>
                     <span className="text-[10px] px-2 py-0.5 rounded-full bg-brand/10 text-brand font-bold">
-                      {Math.round(lastRecommendation.confidence * 100)}% Match
+                      {Math.round(lastRecommendation.confidence * 100)}% khớp
                     </span>
                   </div>
                   <p className="text-sm font-medium text-foreground">
@@ -611,7 +634,7 @@ export default function Header({
                         }}
                         className="flex items-center space-x-1 px-3 py-1.5 rounded-lg bg-brand text-brand-foreground text-xs font-bold hover:opacity-90 transition-opacity"
                       >
-                        <span>Go Now</span>
+                        <span>Đi ngay</span>
                         <ArrowRight className="w-3.5 h-3.5" />
                       </button>
                     )}
@@ -655,7 +678,7 @@ export default function Header({
                     ))
                   ) : (
                     <div className="py-6 text-center text-xs text-foreground-subtle">
-                      No matching option found. Press Enter to search with AI.
+                      Không tìm thấy lựa chọn phù hợp. Nhấn Enter để tìm bằng AI.
                     </div>
                   )}
                 </div>
@@ -663,12 +686,12 @@ export default function Header({
             </div>
 
             <div className="px-4 py-2.5 bg-background-hover border-t border-border flex items-center justify-between text-[11px] text-foreground-subtle">
-              <span>Click any option to go instantly</span>
+              <span>Chọn mục bất kỳ để mở ngay</span>
               <button
                 onClick={() => dispatch(setSearchModalOpen(false))}
                 className="hover:text-foreground transition-colors font-bold"
               >
-                Esc to close
+                Nhấn Esc để đóng
               </button>
             </div>
           </div>

@@ -30,12 +30,12 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
         {isPlaying ? (
           <>
             <Square className="w-4 h-4 fill-current" />
-            <span>Stop Audio</span>
+            <span>Dừng âm thanh</span>
           </>
         ) : (
           <>
             <Volume2 className="w-4 h-4" />
-            <span>Play Audio</span>
+            <span>Phát âm thanh</span>
           </>
         )}
       </button>

@@ -45,7 +45,7 @@ export const CreateExamModal: React.FC<CreateExamModalProps> = ({
 
   const [sections, setSections] = useState<ExamSectionInput[]>([
     {
-      title: "Listening - Part 1",
+      title: "Nghe - Phần 1",
       partNumber: 1,
       description: "",
     },
@@ -81,7 +81,7 @@ export const CreateExamModal: React.FC<CreateExamModalProps> = ({
     setDescription("");
     setSections([
       {
-        title: "Listening - Part 1",
+        title: "Nghe - Phần 1",
         partNumber: 1,
         description: "",
       },
@@ -241,19 +241,19 @@ export const CreateExamModal: React.FC<CreateExamModalProps> = ({
                   >
                     <option value="TOEIC">TOEIC</option>
                     <option value="IELTS">IELTS</option>
-                    <option value="GENERAL">General English</option>
+                    <option value="GENERAL">Tiếng Anh tổng quát</option>
                   </select>
                 </div>
 
                 <div className="modal-field">
-                  <label className="exam-modal-input-label">Loại đề thi</label>
+                  <label className="exam-modal-input-label">Dạng bài thi</label>
                   <select
                     value={type}
                     onChange={(e) => setType(e.target.value as any)}
                     className="exam-modal-select"
                   >
-                    <option value="FULL_TEST">Full Test</option>
-                    <option value="MINI_TEST">Mini Test</option>
+                    <option value="FULL_TEST">Bài thi đầy đủ</option>
+                    <option value="MINI_TEST">Bài kiểm tra ngắn</option>
                     <option value="PRACTICE">Luyện tập</option>
                   </select>
                 </div>
@@ -261,7 +261,7 @@ export const CreateExamModal: React.FC<CreateExamModalProps> = ({
                 <div className="modal-field">
                   <label className="exam-modal-input-label">
                     <Clock className="exam-modal-input-label-icon w-3.5 h-3.5" />
-                    Thời gian (Phút){" "}
+                    Thời lượng (phút){" "}
                     <span className="exam-modal-required">*</span>
                   </label>
                   <input
@@ -320,11 +320,10 @@ export const CreateExamModal: React.FC<CreateExamModalProps> = ({
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="exam-modal-section-heading">
-                    Cấu trúc đề thi (Sections)
+                    Cấu trúc đề thi (các phần)
                   </h3>
                   <p className="exam-modal-section-subtext">
-                    Chia đề thi thành các phần nhỏ (Listening Part 1, Reading
-                    Part 5...)
+                    Chia đề thi thành các phần nhỏ (Nghe phần 1, Đọc phần 5...)
                   </p>
                 </div>
                 <button

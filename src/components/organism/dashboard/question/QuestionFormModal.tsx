@@ -66,7 +66,7 @@ export const QuestionFormModal: React.FC<QuestionFormModalProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold text-foreground-muted uppercase tracking-wider mb-1.5">
-                Exam Part
+                Phần thi
               </label>
               <select
                 value={formData.partNumber || 1}
@@ -80,7 +80,7 @@ export const QuestionFormModal: React.FC<QuestionFormModalProps> = ({
               >
                 {[1, 2, 3, 4, 5, 6, 7].map((num) => (
                   <option key={num} value={num}>
-                    Part {num}
+                    Phần {num}
                   </option>
                 ))}
               </select>
@@ -88,7 +88,7 @@ export const QuestionFormModal: React.FC<QuestionFormModalProps> = ({
 
             <div>
               <label className="block text-xs font-bold text-foreground-muted uppercase tracking-wider mb-1.5">
-                Correct Answer
+                Đáp án đúng
               </label>
               <select
                 value={formData.right_answer}
@@ -102,7 +102,7 @@ export const QuestionFormModal: React.FC<QuestionFormModalProps> = ({
               >
                 {(["A", "B", "C", "D"] as const).map((opt) => (
                   <option key={opt} value={opt}>
-                    Option {opt}
+                    Lựa chọn {opt}
                   </option>
                 ))}
               </select>
@@ -112,11 +112,11 @@ export const QuestionFormModal: React.FC<QuestionFormModalProps> = ({
           {/* Question Content */}
           <div>
             <label className="block text-xs font-bold text-foreground-muted uppercase tracking-wider mb-1.5">
-              Question Content *
+              Nội dung câu hỏi *
             </label>
             <textarea
               rows={3}
-              placeholder="Type question prompt here..."
+              placeholder="Nhập câu hỏi tại đây..."
               value={formData.content}
               onChange={(e) => {
                 onClearError();
@@ -129,7 +129,7 @@ export const QuestionFormModal: React.FC<QuestionFormModalProps> = ({
           {/* Options Input */}
           <div className="space-y-3">
             <label className="block text-xs font-bold text-foreground-muted uppercase tracking-wider">
-              Answer Options *
+              Các lựa chọn trả lời *
             </label>
 
             {(["A", "B", "C", "D"] as const).map((key) => (
@@ -166,11 +166,11 @@ export const QuestionFormModal: React.FC<QuestionFormModalProps> = ({
           {/* Explanation */}
           <div>
             <label className="block text-xs font-bold text-foreground-muted mb-1">
-              Explanation (Optional)
+              Giải thích (không bắt buộc)
             </label>
             <textarea
               rows={2}
-              placeholder="Provide reason for the correct answer..."
+              placeholder="Nhập lời giải cho đáp án đúng..."
               value={formData.explanation || ""}
               onChange={(e) =>
                 onFormDataChange({ ...formData, explanation: e.target.value })
@@ -187,7 +187,7 @@ export const QuestionFormModal: React.FC<QuestionFormModalProps> = ({
               disabled={isSaving}
               className="px-4 py-2.5 bg-background-hover hover:bg-border text-foreground-muted font-bold text-xs rounded-xl transition-all cursor-pointer disabled:opacity-50"
             >
-              Cancel
+              Hủy
             </button>
             <button
               type="submit"

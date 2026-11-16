@@ -31,21 +31,21 @@ const renderStatusBadge = (status: NewsData["status"]) => {
       return (
         <span className="bg-emerald-100 text-emerald-700 text-[10px] font-extrabold px-2.5 py-1 rounded-md inline-flex items-center space-x-1">
           <CheckCircle2 className="w-3 h-3" />
-          <span>Published</span>
+          <span>Đã đăng</span>
         </span>
       );
     case "DRAFT":
       return (
         <span className="bg-amber-100 text-amber-700 text-[10px] font-extrabold px-2.5 py-1 rounded-md inline-flex items-center space-x-1">
           <Clock className="w-3 h-3" />
-          <span>Draft</span>
+          <span>Bản nháp</span>
         </span>
       );
     case "ARCHIVED":
       return (
         <span className="bg-background-hover text-foreground-muted text-[10px] font-extrabold px-2.5 py-1 rounded-md inline-flex items-center space-x-1">
           <Archive className="w-3 h-3" />
-          <span>Archived</span>
+          <span>Đã lưu trữ</span>
         </span>
       );
   }
@@ -88,12 +88,12 @@ export const NewsTable: React.FC<NewsTableProps> = ({
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-background/80 border-b border-border-subtle text-[11px] font-bold text-foreground-subtle uppercase tracking-wider">
-                <th className="py-3.5 px-4">Article</th>
-                <th className="py-3.5 px-4">Category</th>
-                <th className="py-3.5 px-4">Status</th>
-                <th className="py-3.5 px-4">Views</th>
-                <th className="py-3.5 px-4">Published Date</th>
-                <th className="py-3.5 px-4 text-right">Actions</th>
+                <th className="py-3.5 px-4">Bài viết</th>
+                <th className="py-3.5 px-4">Danh mục</th>
+                <th className="py-3.5 px-4">Trạng thái</th>
+                <th className="py-3.5 px-4">Lượt xem</th>
+                <th className="py-3.5 px-4">Ngày đăng</th>
+                <th className="py-3.5 px-4 text-right">Thao tác</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-100 text-xs font-medium">
@@ -106,7 +106,7 @@ export const NewsTable: React.FC<NewsTableProps> = ({
                     <div className="flex items-center justify-center space-x-2">
                       <Loader2 className="w-5 h-5 animate-spin text-brand" />
                       <span className="font-bold">
-                        Loading news articles...
+                        Đang tải tin tức...
                       </span>
                     </div>
                   </td>
@@ -165,7 +165,7 @@ export const NewsTable: React.FC<NewsTableProps> = ({
                             onClick={() => onEdit(item)}
                             disabled={isItemDeleting}
                             className="p-1.5 hover:text-brand hover:bg-pink-50 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
-                            title="Edit Article"
+                            title="Chỉnh sửa bài viết"
                           >
                             <Edit2 className="w-4 h-4" />
                           </button>
@@ -173,7 +173,7 @@ export const NewsTable: React.FC<NewsTableProps> = ({
                             onClick={() => setSelectedForDelete(item)}
                             disabled={isItemDeleting}
                             className="p-1.5 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
-                            title="Delete Article"
+                            title="Xóa bài viết"
                           >
                             {isItemDeleting ? (
                               <Loader2 className="w-4 h-4 animate-spin text-rose-600" />
@@ -192,7 +192,7 @@ export const NewsTable: React.FC<NewsTableProps> = ({
                     colSpan={6}
                     className="py-12 text-center text-foreground-subtle font-bold"
                   >
-                    No articles found.
+                    Không tìm thấy bài viết.
                   </td>
                 </tr>
               )}
@@ -212,18 +212,18 @@ export const NewsTable: React.FC<NewsTableProps> = ({
         isOpen={Boolean(selectedForDelete)}
         onClose={() => setSelectedForDelete(null)}
         onConfirm={handleConfirmDelete}
-        title="Delete News Article"
+        title="Xóa bài viết tin tức"
         variant="danger"
-        confirmText="Delete Article"
-        cancelText="Cancel"
+              confirmText="Xóa bài viết"
+        cancelText="Hủy"
         isLoading={isDeletingCurrentItem}
         description={
           <span>
-            Are you sure you want to delete{" "}
+            Bạn có chắc muốn xóa{" "}
             <strong className="text-foreground">
               "{selectedForDelete?.title}"
             </strong>
-            ? This action cannot be undone.
+            ? Thao tác này không thể hoàn tác.
           </span>
         }
       />

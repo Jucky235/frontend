@@ -13,13 +13,13 @@ export const NewsHeaderBanner: React.FC<NewsHeaderBannerProps> = ({
       <div>
         <div className="inline-flex items-center space-x-1.5 bg-pink-50 text-brand text-xs font-bold px-3 py-1 rounded-full mb-2">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>Admin Dashboard</span>
+          <span>Bảng quản trị</span>
         </div>
         <h1 className="text-2xl font-black text-foreground tracking-tight">
-          News & Announcements
+          Tin tức và thông báo
         </h1>
         <p className="text-xs text-foreground-subtle font-medium mt-1">
-          Create, edit, and publish platform news and study tips for members.
+          Tạo, chỉnh sửa và đăng tin tức cùng mẹo học tập cho thành viên.
         </p>
       </div>
 
@@ -28,7 +28,7 @@ export const NewsHeaderBanner: React.FC<NewsHeaderBannerProps> = ({
         className="bg-brand hover:bg-brand-hover text-brand-foreground font-bold text-xs px-5 py-3 rounded-xl shadow-xs transition-all flex items-center space-x-2 cursor-pointer active:scale-95 shrink-0"
       >
         <Plus className="w-4 h-4" />
-        <span>Create Article</span>
+        <span>Tạo bài viết</span>
       </button>
     </div>
   );

@@ -134,7 +134,7 @@ export const NewsFormModal: React.FC<NewsFormModalProps> = ({
         <form onSubmit={handleSubmitForm} className="space-y-4 text-xs">
           <div className="space-y-1">
             <label className="font-extrabold text-foreground-muted">
-              Article Title
+              Tiêu đề bài viết
             </label>
             <input
               type="text"
@@ -149,7 +149,7 @@ export const NewsFormModal: React.FC<NewsFormModalProps> = ({
           <div className="space-y-1">
             <label className="font-extrabold text-foreground-muted flex items-center space-x-1">
               <Globe className="w-3.5 h-3.5 text-foreground-subtle" />
-              <span>URL Slug</span>
+              <span>Đường dẫn URL</span>
             </label>
             <input
               type="text"
@@ -166,7 +166,7 @@ export const NewsFormModal: React.FC<NewsFormModalProps> = ({
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
               <label className="font-extrabold text-foreground-muted">
-                Category
+                Danh mục
               </label>
               <select
                 value={formData.category}
@@ -178,17 +178,17 @@ export const NewsFormModal: React.FC<NewsFormModalProps> = ({
                 }
                 className="w-full px-4 py-2.5 bg-background-hover border border-transparent rounded-xl font-bold text-foreground focus:outline-none focus:bg-background-card focus:border-brand"
               >
-                <option value="GENERAL">General</option>
-                <option value="EXAM_TIPS">Exam Tips</option>
-                <option value="ANNOUNCEMENT">Announcement</option>
-                <option value="SYSTEM_UPDATE">System Update</option>
-                <option value="FEATURED">Featured</option>
+                <option value="GENERAL">Chung</option>
+                <option value="EXAM_TIPS">Mẹo ôn thi</option>
+                <option value="ANNOUNCEMENT">Thông báo</option>
+                <option value="SYSTEM_UPDATE">Cập nhật hệ thống</option>
+                <option value="FEATURED">Nổi bật</option>
               </select>
             </div>
 
             <div className="space-y-1">
               <label className="font-extrabold text-foreground-muted">
-                Publish Status
+                Trạng thái đăng
               </label>
               <select
                 value={formData.status}
@@ -200,16 +200,16 @@ export const NewsFormModal: React.FC<NewsFormModalProps> = ({
                 }
                 className="w-full px-4 py-2.5 bg-background-hover border border-transparent rounded-xl font-bold text-foreground focus:outline-none focus:bg-background-card focus:border-brand"
               >
-                <option value="DRAFT">Draft</option>
-                <option value="PUBLISHED">Published</option>
-                <option value="ARCHIVED">Archived</option>
+                <option value="DRAFT">Bản nháp</option>
+                <option value="PUBLISHED">Đã đăng</option>
+                <option value="ARCHIVED">Đã lưu trữ</option>
               </select>
             </div>
           </div>
 
           <div className="space-y-1">
             <label className="font-extrabold text-foreground-muted">
-              Cover Thumbnail URL
+              Đường dẫn ảnh bìa
             </label>
             <input
               type="url"
@@ -227,11 +227,11 @@ export const NewsFormModal: React.FC<NewsFormModalProps> = ({
 
           <div className="space-y-1">
             <label className="font-extrabold text-foreground-muted">
-              Summary / Preview Snippet
+              Tóm tắt / Nội dung xem trước
             </label>
             <textarea
               rows={2}
-              placeholder="Short excerpt shown in post feed previews..."
+              placeholder="Đoạn trích ngắn hiển thị trong danh sách bài đăng..."
               value={formData.summary}
               onChange={(e) =>
                 setFormData((prev) => ({
@@ -245,12 +245,12 @@ export const NewsFormModal: React.FC<NewsFormModalProps> = ({
 
           <div className="space-y-1">
             <label className="font-extrabold text-foreground-muted">
-              Full Content
+              Toàn bộ nội dung
             </label>
             <textarea
               rows={6}
               required
-              placeholder="Write complete article details here..."
+              placeholder="Nhập đầy đủ nội dung bài viết tại đây..."
               value={formData.content}
               onChange={(e) =>
                 setFormData((prev) => ({
@@ -265,11 +265,11 @@ export const NewsFormModal: React.FC<NewsFormModalProps> = ({
           <div className="space-y-2">
             <label className="font-extrabold text-foreground-muted flex items-center space-x-1">
               <Tag className="w-3.5 h-3.5 text-foreground-subtle" />
-              <span>Tags (Press Enter to Add)</span>
+              <span>Thẻ (nhấn Enter để thêm)</span>
             </label>
             <input
               type="text"
-              placeholder="Type a tag and press Enter..."
+              placeholder="Nhập thẻ rồi nhấn Enter..."
               value={formData.tagInput}
               onChange={(e) =>
                 setFormData((prev) => ({
@@ -305,7 +305,7 @@ export const NewsFormModal: React.FC<NewsFormModalProps> = ({
               onClick={onClose}
               className="px-5 py-2.5 bg-background-hover hover:bg-border text-foreground-muted rounded-xl font-bold text-xs transition-colors cursor-pointer"
             >
-              Cancel
+              Hủy
             </button>
             <button
               type="submit"
@@ -318,7 +318,7 @@ export const NewsFormModal: React.FC<NewsFormModalProps> = ({
                   : "Creating..."
                 : editingNews
                   ? "Save Changes"
-                  : "Create Article"}
+                  : "Tạo bài viết"}
             </button>
           </div>
         </form>

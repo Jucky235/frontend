@@ -68,21 +68,21 @@ export default function ExamsTable({
         return (
           <span className="examstable-badge variant-success">
             <CheckCircle2 className="w-3 h-3" />
-            <span>Active</span>
+            <span>Đang hoạt động</span>
           </span>
         );
       case "INACTIVE":
         return (
           <span className="examstable-badge variant-warning">
             <AlertCircle className="w-3 h-3" />
-            <span>Inactive</span>
+            <span>Không hoạt động</span>
           </span>
         );
       case "OUTDATED":
         return (
           <span className="examstable-badge variant-neutral">
             <Archive className="w-3 h-3" />
-            <span>Outdated</span>
+            <span>Hết hạn</span>
           </span>
         );
       default:
@@ -149,7 +149,7 @@ export default function ExamsTable({
     return (
       <div className="examstable-state-panel">
         <RefreshCw className="examstable-state-spinner w-6 h-6 animate-spin" />
-        <p>Loading exams from server...</p>
+        <p>Đang tải bài thi từ máy chủ...</p>
       </div>
     );
   }
@@ -158,14 +158,14 @@ export default function ExamsTable({
     return (
       <div className="examstable-state-panel">
         <p className="examstable-state-error-text">
-          Failed to load exams list.
+          Không thể tải danh sách bài thi.
         </p>
         <button
           type="button"
           onClick={onRefetch}
           className="examstable-state-retry-btn cursor-pointer"
         >
-          Try Again
+          Thử lại
         </button>
       </div>
     );
@@ -178,12 +178,12 @@ export default function ExamsTable({
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="examstable-head-row">
-                <th className="examstable-head-cell">Exam Name</th>
-                <th className="examstable-head-cell">Category</th>
-                <th className="examstable-head-cell">Duration & Qs</th>
-                <th className="examstable-head-cell">Parts</th>
-                <th className="examstable-head-cell">Status</th>
-                <th className="examstable-head-cell text-right">Actions</th>
+                <th className="examstable-head-cell">Tên bài thi</th>
+                <th className="examstable-head-cell">Danh mục</th>
+                <th className="examstable-head-cell">Thời lượng và số câu</th>
+                <th className="examstable-head-cell">Các phần</th>
+                <th className="examstable-head-cell">Trạng thái</th>
+                <th className="examstable-head-cell text-right">Thao tác</th>
               </tr>
             </thead>
             <tbody className="examstable-body text-xs font-medium">
@@ -194,22 +194,22 @@ export default function ExamsTable({
 
                   const rowActions: DropdownItem[] = [
                     {
-                      label: "View Details",
+                      label: "Xem chi tiết",
                       icon: <Eye className="w-3.5 h-3.5" />,
                       onClick: () => onView(exam),
                     },
                     {
-                      label: "Edit Exam",
+                      label: "Chỉnh sửa bài thi",
                       icon: <Edit className="w-3.5 h-3.5" />,
                       onClick: () => onEdit(exam),
                     },
                     {
-                      label: "Add Questions",
+                      label: "Thêm câu hỏi",
                       icon: <PlusCircle className="w-3.5 h-3.5" />,
                       onClick: () => handleOpenAddQuestionsModal(exam),
                     },
                     {
-                      label: "Delete",
+                      label: "Xóa",
                       icon: <Trash2 className="w-3.5 h-3.5" />,
                       danger: true,
                       divider: true,
@@ -235,7 +235,7 @@ export default function ExamsTable({
                       <td className="examstable-cell">
                         <div className="examstable-duration">
                           <span className="examstable-duration-strong">
-                            {exam.time} mins
+                            {exam.time} phút
                           </span>
                           <span className="examstable-duration-divider">•</span>
                           <span>{totalQs} Qs</span>
@@ -273,7 +273,7 @@ export default function ExamsTable({
               ) : (
                 <tr>
                   <td colSpan={6} className="examstable-empty-cell">
-                    No exams match your search criteria.
+                    Không có bài thi phù hợp với tìm kiếm.
                   </td>
                 </tr>
               )}

@@ -18,10 +18,10 @@ export const QuestionList: React.FC<QuestionListProps> = ({
       <div className="bg-background-card p-12 text-center rounded-2xl border border-border/80 shadow-xs space-y-3">
         <HelpCircle className="w-10 h-10 text-neutral-300 mx-auto" />
         <p className="text-base font-bold text-foreground-muted">
-          No questions found
+          Không tìm thấy câu hỏi
         </p>
         <p className="text-xs text-foreground-subtle max-w-sm mx-auto">
-          Try adjusting your search keywords or part filter, or create a new
+          Hãy đổi từ khóa tìm kiếm hoặc bộ lọc phần thi, hoặc tạo một câu hỏi mới
           question.
         </p>
       </div>

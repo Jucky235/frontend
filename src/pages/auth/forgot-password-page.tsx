@@ -42,13 +42,13 @@ export default function ForgotPasswordPage() {
             className="inline-flex items-center gap-2 text-sm font-medium text-white/90 hover:text-white transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to login
+            Quay lại đăng nhập
           </Link>
           <h1 className="mt-6 text-4xl md:text-5xl font-extrabold tracking-tight">
-            Forgot your password?
+            Bạn quên mật khẩu?
           </h1>
           <p className="mt-3 text-sm md:text-base text-white/80 max-w-md">
-            Enter your email and we'll send a secure reset link to help you get back in.
+            Nhập email để nhận liên kết đặt lại mật khẩu an toàn.
           </p>
         </div>
       </div>
@@ -64,7 +64,7 @@ export default function ForgotPasswordPage() {
                   htmlFor="email"
                   className="text-xs font-bold uppercase tracking-[0.18em] text-foreground-subtle"
                 >
-                  Email address
+                  Địa chỉ email
                 </label>
 
                 <div className="flex items-center gap-3 rounded-2xl border border-border bg-background-hover px-4 py-3.5 transition-all focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
@@ -89,7 +89,7 @@ export default function ForgotPasswordPage() {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="h-5 w-5 animate-spin" />
-                    Sending...
+                    Đang gửi...
                   </>
                 ) : (
                   "Send reset link"
@@ -105,10 +105,10 @@ export default function ForgotPasswordPage() {
 
                 <div className="space-y-2">
                   <h2 className="text-2xl font-extrabold text-foreground">
-                    Check your inbox
+                    Kiểm tra hộp thư đến
                   </h2>
                   <p className="text-sm text-foreground-muted">
-                    We sent a password reset link to <span className="font-semibold text-foreground">{email}</span>.
+                    Chúng tôi đã gửi liên kết đặt lại mật khẩu đến <span className="font-semibold text-foreground">{email}</span>.
                   </p>
                 </div>
               </div>
@@ -120,7 +120,7 @@ export default function ForgotPasswordPage() {
                       htmlFor="otp"
                       className="text-xs font-bold uppercase tracking-[0.18em] text-foreground-subtle"
                     >
-                      OTP code
+                      Mã OTP
                     </label>
 
                     <div className="flex items-center gap-3 rounded-2xl border border-border bg-background-hover px-4 py-3.5 transition-all focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
@@ -130,7 +130,7 @@ export default function ForgotPasswordPage() {
                         type="text"
                         value={otpCode}
                         onChange={(e) => setOtpCode(e.target.value)}
-                        placeholder="Enter 6-digit code"
+                        placeholder="Nhập mã gồm 6 chữ số"
                         maxLength={6}
                         inputMode="numeric"
                         className="w-full bg-transparent text-base text-foreground placeholder:text-foreground-subtle outline-none appearance-none border-none shadow-none ring-0 focus:outline-none focus:ring-0 focus-visible:outline-none pl-1"
@@ -143,14 +143,14 @@ export default function ForgotPasswordPage() {
                     disabled={!otpCode.trim()}
                     className="flex w-full items-center justify-center gap-3 rounded-full bg-primary px-5 py-3.5 text-base font-bold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
                   >
-                    Verify OTP
+                    Xác minh OTP
                   </button>
                 </form>
               )}
 
               <div className="rounded-2xl border border-border bg-background-hover px-4 py-3 text-left">
                 <p className="text-xs font-medium text-foreground-subtle">
-                  Didn’t get it? Try again in a few minutes or check your spam folder.
+                  Chưa nhận được email? Hãy thử lại sau vài phút hoặc kiểm tra thư mục thư rác.
                 </p>
               </div>
 
@@ -164,7 +164,7 @@ export default function ForgotPasswordPage() {
                 }}
                 className="w-full rounded-full border border-border bg-background-hover px-5 py-3 text-sm font-bold text-foreground transition-colors hover:bg-background-subtle-hover"
               >
-                Try another email
+                Thử email khác
               </button>
             </div>
           )}

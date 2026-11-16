@@ -229,10 +229,10 @@ export default function ImportCsvModal({
             </div>
             <div>
               <h2 className="text-base font-extrabold text-foreground">
-                Import Questions from CSV
+                Nhập câu hỏi từ CSV
               </h2>
               <p className="text-[11px] text-foreground-subtle font-medium">
-                Bulk import multiple choice questions into your exam suite
+                Nhập hàng loạt câu hỏi trắc nghiệm vào bộ đề thi
               </p>
             </div>
           </div>
@@ -258,7 +258,7 @@ export default function ImportCsvModal({
           {/* Download CSV Template Bar */}
           <div className="flex items-center justify-between p-3.5 bg-pink-50/50 border border-pink-100 rounded-xl">
             <div className="text-xs text-pink-900 font-medium">
-              Need the correct format? Download our sample CSV template.
+              Cần đúng định dạng? Hãy tải tệp CSV mẫu.
             </div>
             <button
               type="button"
@@ -266,7 +266,7 @@ export default function ImportCsvModal({
               className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-pink-600 hover:bg-pink-700 text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
             >
               <Download className="w-3.5 h-3.5" />
-              <span>Sample CSV</span>
+              <span>Tệp CSV mẫu</span>
             </button>
           </div>
 
@@ -305,10 +305,10 @@ export default function ImportCsvModal({
                 </div>
                 <div>
                   <p className="text-xs font-extrabold text-foreground">
-                    Click to upload or drag and drop
+                    Nhấn để tải lên hoặc kéo thả tệp vào đây
                   </p>
                   <p className="text-[11px] text-foreground-subtle font-medium mt-0.5">
-                    CSV files only (max 5MB)
+                    Chỉ nhận tệp CSV (tối đa 5 MB)
                   </p>
                 </div>
               </label>
@@ -325,7 +325,7 @@ export default function ImportCsvModal({
                     </p>
                     <p className="text-[10px] text-foreground-subtle font-medium">
                       {(file.size / 1024).toFixed(1)} KB •{" "}
-                      {parsedQuestions.length} questions parsed
+                      {parsedQuestions.length} câu hỏi đã được phân tích
                     </p>
                   </div>
                 </div>
@@ -345,11 +345,11 @@ export default function ImportCsvModal({
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-foreground-muted">
-                      Parsed Questions Preview
+                      Xem trước câu hỏi đã phân tích
                     </span>
                     <span className="inline-flex items-center space-x-1 text-[11px] text-emerald-600 font-bold">
                       <CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>Ready for import</span>
+                      <span>Sẵn sàng nhập</span>
                     </span>
                   </div>
 
@@ -361,7 +361,7 @@ export default function ImportCsvModal({
                             {idx + 1}. {q.content}
                           </span>
                           <span className="px-2 py-0.5 bg-pink-50 text-pink-700 font-bold rounded text-[10px]">
-                            Part {q.partNumber} • Answer: {q.right_answer}
+                            Phần {q.partNumber} • Đáp án: {q.right_answer}
                           </span>
                         </div>
                         <div className="grid grid-cols-2 gap-2 text-[11px] text-foreground-subtle font-medium pt-1">
@@ -387,7 +387,7 @@ export default function ImportCsvModal({
             disabled={isSubmitting}
             className="px-4 py-2.5 rounded-xl text-xs font-bold text-foreground-muted hover:bg-background-hover transition-colors cursor-pointer disabled:opacity-50"
           >
-            Cancel
+            Hủy
           </button>
           <button
             type="button"

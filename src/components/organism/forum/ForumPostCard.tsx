@@ -81,12 +81,12 @@ export const ForumPostCard: React.FC<ForumPostCardProps> = ({
             {post.isPinned && (
               <span className="bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 text-[10px] font-extrabold px-2.5 py-1 rounded-md flex items-center space-x-1">
                 <Pin className="w-3 h-3 fill-current" />
-                <span>Pinned</span>
+                <span>Đã ghim</span>
               </span>
             )}
             {post.isSolved && (
               <span className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 text-[10px] font-extrabold px-2.5 py-1 rounded-md">
-                Solved
+                Đã giải
               </span>
             )}
           </div>
@@ -132,12 +132,12 @@ export const ForumPostCard: React.FC<ForumPostCardProps> = ({
 
           <div className="flex items-center space-x-1.5">
             <MessageCircle className="w-3.5 h-3.5" />
-            <span>{post.replies} replies</span>
+            <span>{post.replies} phản hồi</span>
           </div>
 
           <div className="flex items-center space-x-1.5 hidden sm:flex">
             <Eye className="w-3.5 h-3.5" />
-            <span>{post.views} views</span>
+            <span>{post.views} lượt xem</span>
           </div>
         </div>
 

@@ -30,35 +30,35 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
         {/* CHANNELS SECTION */}
         <div className="min-w-0 lg:space-y-1">
           <div className="mb-2 flex items-center justify-between px-4 text-[9px] font-bold uppercase tracking-[0.14em] text-foreground-subtle lg:px-5 lg:text-[10px]">
-            <span>Community channels</span>
+            <span>Các kênh cộng đồng</span>
             <div className="flex items-center gap-2"><MessageSquare className="h-3.5 w-3.5"/><Search className="hidden h-3.5 w-3.5 lg:block"/></div>
           </div>
 
           <div className="flex gap-1.5 overflow-x-auto px-2 pb-1 lg:flex-col lg:gap-1 lg:overflow-x-visible lg:overflow-y-auto lg:px-0 lg:pb-0">
             {channels.map((ch) => <ChannelButton key={ch.id} id={ch.id} name={ch.name} activeIndicator={ch.active} isSelected={selectedChannel === ch.id} onSelect={onSelectChannel} />)}
-            {!channels.length && <p className="px-3 py-2 text-[10px] text-foreground-subtle lg:px-5">No channels available.</p>}
+            {!channels.length && <p className="px-3 py-2 text-[10px] text-foreground-subtle lg:px-5">Không có kênh nào.</p>}
           </div>
 
           <button type="button" className="hidden w-full cursor-pointer items-center gap-3 px-5 py-2 text-foreground-subtle transition-colors hover:text-brand lg:flex">
-            <span className="grid h-6 w-6 place-items-center rounded-md bg-background-hover"><Plus className="h-3.5 w-3.5"/></span><span className="text-xs font-bold">Join a channel</span>
+            <span className="grid h-6 w-6 place-items-center rounded-md bg-background-hover"><Plus className="h-3.5 w-3.5"/></span><span className="text-xs font-bold">Tham gia kênh</span>
           </button>
         </div>
 
         {/* TEAM SECTION */}
         <div className="hidden space-y-1 lg:block">
           <div className="mb-2 flex items-center gap-2 px-5 text-[10px] font-bold uppercase tracking-[0.14em] text-foreground-subtle">
-            <span>Study group</span><Users className="h-3.5 w-3.5"/>
+            <span>Nhóm học tập</span><Users className="h-3.5 w-3.5"/>
           </div>
 
           <button type="button" className="flex w-full cursor-pointer items-center gap-3 px-5 py-2 text-foreground transition-colors hover:bg-background-hover">
-            <span className="grid h-6 w-6 place-items-center rounded-md bg-background-hover text-foreground-muted"><Hash className="h-3.5 w-3.5"/></span><span className="text-xs font-bold">Maesre</span>
+            <span className="grid h-6 w-6 place-items-center rounded-md bg-background-hover text-foreground-muted"><Hash className="h-3.5 w-3.5"/></span><span className="text-xs font-bold">Thành viên</span>
           </button>
         </div>
 
         {/* DIRECT MESSAGES SECTION */}
         <div className="hidden space-y-1 lg:block">
           <div className="mb-2 flex items-center gap-2 px-5 text-[10px] font-bold uppercase tracking-[0.14em] text-foreground-subtle">
-            <span>Direct messages</span><Mail className="h-3.5 w-3.5"/>
+            <span>Tin nhắn riêng</span><Mail className="h-3.5 w-3.5"/>
           </div>
 
           {directMessages.map((user) => (

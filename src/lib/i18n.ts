@@ -3,12 +3,7 @@ import { initReactI18next } from "react-i18next";
 import translationVI from "./translations/vi.json";
 import translationEN from "./translations/en.json";
 
-// Read and sanitize the saved language string from localStorage
-const savedLang = localStorage.getItem("lang");
-const initialLang =
-  savedLang && savedLang !== "null" && savedLang !== "undefined"
-    ? savedLang
-    : "vi";
+const initialLang = "vi";
 
 const resources = {
   en: { translation: translationEN },
@@ -18,7 +13,7 @@ const resources = {
 i18n.use(initReactI18next).init({
   resources,
   lng: initialLang,
-  fallbackLng: "en",
+  fallbackLng: "vi",
   interpolation: {
     escapeValue: false,
   },

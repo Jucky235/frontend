@@ -158,7 +158,7 @@ export default function RankingPage() {
           <div className="relative z-10 max-w-xl space-y-3">
             <div className="inline-flex items-center space-x-2 bg-background-card/10 dark:bg-black/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-pink-100 border border-white/10">
               <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-              <span>Community Leaderboard</span>
+              <span>Bảng xếp hạng cộng đồng</span>
             </div>
             <h1 className="text-2xl sm:text-4xl font-black tracking-tight">
               Bảng Xếp Hạng Học Viên
@@ -207,7 +207,7 @@ export default function RankingPage() {
                 <div className="bg-background-card dark:bg-background-card border border-border/80 dark:border-border rounded-2xl p-6 shadow-xs flex flex-col items-center text-center relative order-2 md:order-1 transition-colors">
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-black text-xs px-3 py-0.5 rounded-full shadow-xs flex items-center space-x-1">
                     <Medal className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
-                    <span>TOP 2</span>
+                    <span>HẠNG 2</span>
                   </div>
                   <img
                     src={top3[1].avatar}
@@ -223,7 +223,7 @@ export default function RankingPage() {
                   <div className="mt-4 pt-4 border-t border-border-subtle dark:border-border w-full flex justify-around text-xs">
                     <div>
                       <span className="text-foreground-subtle dark:text-foreground-subtle block font-medium text-[10px] uppercase">
-                        Points
+                        Điểm
                       </span>
                       <span className="font-black text-pink-600 dark:text-pink-400 text-sm">
                         {top3[1].points.toLocaleString()}
@@ -231,7 +231,7 @@ export default function RankingPage() {
                     </div>
                     <div>
                       <span className="text-foreground-subtle dark:text-foreground-subtle block font-medium text-[10px] uppercase">
-                        Streak
+                        Chuỗi ngày học
                       </span>
                       <span className="font-black text-amber-500 text-sm flex items-center justify-center space-x-0.5">
                         <Flame className="w-3.5 h-3.5 fill-amber-500" />
@@ -245,7 +245,7 @@ export default function RankingPage() {
                 <div className="bg-gradient-to-b from-amber-50/50 via-white to-white dark:from-amber-950/20 dark:via-neutral-900 dark:to-neutral-900 border-2 border-amber-300 dark:border-amber-500/50 rounded-2xl p-6 shadow-sm flex flex-col items-center text-center relative order-1 md:order-2 md:-translate-y-2 transition-colors">
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-amber-400 text-amber-950 font-black text-xs px-4 py-1 rounded-full shadow-xs flex items-center space-x-1">
                     <Crown className="w-4 h-4 fill-amber-950" />
-                    <span>CHAMPION</span>
+                    <span>VÔ ĐỊCH</span>
                   </div>
                   <img
                     src={top3[0].avatar}
@@ -261,7 +261,7 @@ export default function RankingPage() {
                   <div className="mt-4 pt-4 border-t border-amber-100 dark:border-border w-full flex justify-around text-xs">
                     <div>
                       <span className="text-foreground-subtle dark:text-foreground-subtle block font-medium text-[10px] uppercase">
-                        Points
+                        Điểm
                       </span>
                       <span className="font-black text-pink-600 dark:text-pink-400 text-base">
                         {top3[0].points.toLocaleString()}
@@ -269,7 +269,7 @@ export default function RankingPage() {
                     </div>
                     <div>
                       <span className="text-foreground-subtle dark:text-foreground-subtle block font-medium text-[10px] uppercase">
-                        Streak
+                        Chuỗi ngày học
                       </span>
                       <span className="font-black text-amber-500 text-base flex items-center justify-center space-x-0.5">
                         <Flame className="w-4 h-4 fill-amber-500" />
@@ -283,7 +283,7 @@ export default function RankingPage() {
                 <div className="bg-background-card dark:bg-background-card border border-border/80 dark:border-border rounded-2xl p-6 shadow-xs flex flex-col items-center text-center relative order-3 transition-colors">
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-700 dark:bg-amber-900/80 text-amber-50 font-black text-xs px-3 py-0.5 rounded-full shadow-xs flex items-center space-x-1">
                     <Medal className="w-3.5 h-3.5 text-amber-200" />
-                    <span>TOP 3</span>
+                    <span>HẠNG 3</span>
                   </div>
                   <img
                     src={top3[2].avatar}
@@ -299,7 +299,7 @@ export default function RankingPage() {
                   <div className="mt-4 pt-4 border-t border-border-subtle dark:border-border w-full flex justify-around text-xs">
                     <div>
                       <span className="text-foreground-subtle dark:text-foreground-subtle block font-medium text-[10px] uppercase">
-                        Points
+                        Điểm
                       </span>
                       <span className="font-black text-pink-600 dark:text-pink-400 text-sm">
                         {top3[2].points.toLocaleString()}
@@ -307,7 +307,7 @@ export default function RankingPage() {
                     </div>
                     <div>
                       <span className="text-foreground-subtle dark:text-foreground-subtle block font-medium text-[10px] uppercase">
-                        Streak
+                        Chuỗi ngày học
                       </span>
                       <span className="font-black text-amber-500 text-sm flex items-center justify-center space-x-0.5">
                         <Flame className="w-3.5 h-3.5 fill-amber-500" />
@@ -375,7 +375,7 @@ export default function RankingPage() {
                           Số đề đã thi
                         </th>
                         <th className="py-3.5 px-6 text-center">
-                          Chuỗi học (Streak)
+                          Chuỗi ngày học
                         </th>
                         <th className="py-3.5 px-6 text-right">Tổng điểm</th>
                       </tr>
@@ -443,7 +443,7 @@ export default function RankingPage() {
                             </span>
                           </td>
                           <td className="py-4 px-6 text-right font-black text-pink-600 dark:text-pink-400 text-sm">
-                            {user.points.toLocaleString()} pts
+                            {user.points.toLocaleString()} điểm
                           </td>
                         </tr>
                       ))}
@@ -499,7 +499,7 @@ export default function RankingPage() {
                 Điểm tích lũy
               </span>
               <span className="font-black text-sm text-pink-100">
-                {currentUser.points.toLocaleString()} pts
+                {currentUser.points.toLocaleString()} điểm
               </span>
             </div>
           </div>

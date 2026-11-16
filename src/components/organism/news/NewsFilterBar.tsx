@@ -25,7 +25,7 @@ export const NewsFilterBar: React.FC<NewsFilterBarProps> = ({ isFetching }) => {
         <Search className="w-4 h-4 text-foreground-subtle absolute left-3.5 top-1/2 -translate-y-1/2" />
         <input
           type="text"
-          placeholder="Search news title or summary..."
+          placeholder="Tìm tiêu đề hoặc tóm tắt tin tức..."
           value={search}
           onChange={(e) => dispatch(setSearch(e.target.value))}
           className="w-full pl-9 pr-4 py-2 bg-background-hover border border-transparent rounded-xl text-xs font-medium text-foreground focus:outline-none focus:bg-background-card focus:border-brand transition-all"
@@ -44,12 +44,12 @@ export const NewsFilterBar: React.FC<NewsFilterBarProps> = ({ isFetching }) => {
           }
           className="px-3 py-2 bg-background-hover border border-transparent rounded-xl text-xs font-bold text-foreground-muted focus:outline-none focus:bg-background-card focus:border-brand cursor-pointer"
         >
-          <option value="ALL">All Categories</option>
-          <option value="GENERAL">General</option>
-          <option value="EXAM_TIPS">Exam Tips</option>
-          <option value="ANNOUNCEMENT">Announcement</option>
-          <option value="SYSTEM_UPDATE">System Update</option>
-          <option value="FEATURED">Featured</option>
+          <option value="ALL">Tất cả danh mục</option>
+          <option value="GENERAL">Chung</option>
+          <option value="EXAM_TIPS">Mẹo ôn thi</option>
+          <option value="ANNOUNCEMENT">Thông báo</option>
+          <option value="SYSTEM_UPDATE">Cập nhật hệ thống</option>
+          <option value="FEATURED">Nổi bật</option>
         </select>
 
         <select
@@ -59,10 +59,10 @@ export const NewsFilterBar: React.FC<NewsFilterBarProps> = ({ isFetching }) => {
           }
           className="px-3 py-2 bg-background-hover border border-transparent rounded-xl text-xs font-bold text-foreground-muted focus:outline-none focus:bg-background-card focus:border-brand cursor-pointer"
         >
-          <option value="ALL">All Statuses</option>
-          <option value="PUBLISHED">Published</option>
-          <option value="DRAFT">Draft</option>
-          <option value="ARCHIVED">Archived</option>
+          <option value="ALL">Mọi trạng thái</option>
+          <option value="PUBLISHED">Đã đăng</option>
+          <option value="DRAFT">Bản nháp</option>
+          <option value="ARCHIVED">Đã lưu trữ</option>
         </select>
       </div>
     </div>

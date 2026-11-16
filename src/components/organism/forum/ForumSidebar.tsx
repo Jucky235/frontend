@@ -16,19 +16,19 @@ export interface CategoryOption {
 export const CATEGORIES: CategoryOption[] = [
   {
     id: "all",
-    name: "All Topics",
+    name: "Tất cả chủ đề",
     icon: <MessageSquare className="w-4 h-4" />,
   },
-  { id: "exams", name: "Exam Strategy", icon: <Award className="w-4 h-4" /> },
+  { id: "exams", name: "Chiến lược làm bài thi", icon: <Award className="w-4 h-4" /> },
   {
     id: "grammar",
-    name: "Vocabulary & Grammar",
+    name: "Từ vựng và ngữ pháp",
     icon: <BookOpen className="w-4 h-4" />,
   },
-  { id: "qa", name: "Q&A Help", icon: <HelpCircle className="w-4 h-4" /> },
+  { id: "qa", name: "Hỏi đáp và trợ giúp", icon: <HelpCircle className="w-4 h-4" /> },
   {
     id: "resources",
-    name: "Study Resources",
+    name: "Tài liệu học tập",
     icon: <Sparkles className="w-4 h-4" />,
   },
 ];
@@ -53,7 +53,7 @@ export const ForumSidebar: React.FC<ForumSidebarProps> = ({
       {/* Category List */}
       <div className="bg-background-card border border-border/80 rounded-2xl p-4 shadow-xs space-y-3">
         <h2 className="text-xs font-bold text-foreground-subtle uppercase tracking-wider px-2">
-          Categories
+          Danh mục
         </h2>
         <nav className="space-y-1">
           {categories.map((cat) => {
@@ -81,7 +81,7 @@ export const ForumSidebar: React.FC<ForumSidebarProps> = ({
       {/* Community Stats Widget */}
       <div className="bg-background-card border border-border/80 rounded-2xl p-5 shadow-xs space-y-4">
         <h3 className="text-xs font-extrabold text-foreground uppercase tracking-wider">
-          Community Stats
+          Thống kê cộng đồng
         </h3>
         <div className="grid grid-cols-2 gap-3 text-center">
           <div className="bg-background-hover p-3 rounded-xl border border-border-subtle">
@@ -89,7 +89,7 @@ export const ForumSidebar: React.FC<ForumSidebarProps> = ({
               {discussionsCount.toLocaleString()}
             </div>
             <div className="text-[10px] font-bold text-foreground-subtle">
-              Discussions
+              Thảo luận
             </div>
           </div>
           <div className="bg-background-hover p-3 rounded-xl border border-border-subtle">
@@ -97,7 +97,7 @@ export const ForumSidebar: React.FC<ForumSidebarProps> = ({
               {membersCount.toLocaleString()}
             </div>
             <div className="text-[10px] font-bold text-foreground-subtle">
-              Members
+              Thành viên
             </div>
           </div>
         </div>

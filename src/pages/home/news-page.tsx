@@ -8,24 +8,28 @@ import {
   BookOpen,
   Loader2,
   Eye,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import Header from "@/components/organism/common/Header";
 import Footer from "@/components/organism/common/Footer";
 import { useGetNewsQuery, type NewsData } from "@/redux/news/newsApiSlice";
 
 const CATEGORIES = [
-  { label: "All", value: "ALL" },
-  { label: "Updates", value: "SYSTEM_UPDATE" },
-  { label: "Exams", value: "EXAM_TIPS" },
-  { label: "Community", value: "ANNOUNCEMENT" },
-  { label: "Tips", value: "GENERAL" },
-  { label: "Featured", value: "FEATURED" },
+  { label: "Tất cả", value: "ALL" },
+  { label: "Cập nhật", value: "SYSTEM_UPDATE" },
+  { label: "Kỳ thi", value: "EXAM_TIPS" },
+  { label: "Cộng đồng", value: "ANNOUNCEMENT" },
+  { label: "Mẹo học", value: "GENERAL" },
+  { label: "Nổi bật", value: "FEATURED" },
 ];
 
 export default function NewsPage() {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = React.useState("ALL");
   const [searchQuery, setSearchQuery] = React.useState("");
+  const [page, setPage] = React.useState(1);
+  const [dateOrder, setDateOrder] = React.useState<"desc" | "asc">("desc");
 
   // Fetch published news articles dynamically from backend API
   const {
@@ -33,9 +37,11 @@ export default function NewsPage() {
     isLoading,
     isError,
   } = useGetNewsQuery({
-    page: 1,
-    limit: 20,
+    page,
+    limit: page === 1 ? 10 : 9,
+    status: "PUBLISHED",
     search: searchQuery.trim() ? searchQuery : undefined,
+    category: selectedCategory === "ALL" ? undefined : selectedCategory,
   });
 
   const allArticles: NewsData[] = newsResponse?.data ?? [];
@@ -46,17 +52,24 @@ export default function NewsPage() {
   );
 
   // Identify featured article (fallback to first article if no explicitly marked featured post exists)
-  const featuredArticle =
-    publishedArticles.find((item) => item.category === "FEATURED") ||
-    publishedArticles[0];
+  const featuredArticle = page === 1
+    ? publishedArticles.find((item) => item.category === "FEATURED") || publishedArticles[0]
+    : undefined;
 
   // Filter remaining articles by category and ensure featured article isn't duplicated in grid
-  const filteredArticles = publishedArticles.filter((article) => {
-    const matchesCategory =
-      selectedCategory === "ALL" || article.category === selectedCategory;
+  const filteredArticles = publishedArticles
+    .filter((article) => article.id !== featuredArticle?.id)
+    .sort((a, b) => {
+      const difference = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      return dateOrder === "asc" ? difference : -difference;
+    });
+  const totalArticles = newsResponse?.pagination.total ?? 0;
+  const totalPages = totalArticles <= 10 ? 1 : 1 + Math.ceil((totalArticles - 10) / 9);
 
-    return matchesCategory && article.id !== featuredArticle?.id;
-  });
+  const changeCategory = (category: string) => {
+    setSelectedCategory(category);
+    setPage(1);
+  };
 
   return (
     <div className="min-h-screen w-full bg-background dark:bg-background font-inter flex flex-col justify-between select-none transition-colors duration-200">
@@ -67,10 +80,10 @@ export default function NewsPage() {
         <div className="space-y-3">
           <div className="inline-flex items-center space-x-2 bg-pink-50 dark:bg-pink-950/50 border border-pink-100 dark:border-pink-800/50 text-brand dark:text-pink-400 text-xs font-bold px-3 py-1 rounded-full">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Latest Updates & Articles</span>
+            <span>Tin tức và bài viết mới nhất</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-foreground dark:text-neutral-100 tracking-tight">
-            News & Announcement Center
+            Trung tâm tin tức và thông báo
           </h1>
           <p className="text-sm text-foreground-subtle dark:text-foreground-subtle max-w-2xl font-medium leading-relaxed">
             Stay tuned with our latest product releases, exam preparation
@@ -82,15 +95,14 @@ export default function NewsPage() {
         {isLoading && (
           <div className="py-20 flex flex-col items-center justify-center space-y-3 text-foreground-subtle dark:text-foreground-subtle">
             <Loader2 className="w-8 h-8 animate-spin text-brand" />
-            <p className="text-xs font-bold">Loading news & articles...</p>
+            <p className="text-xs font-bold">Đang tải tin tức và bài viết...</p>
           </div>
         )}
 
         {/* Error Fallback */}
         {isError && (
           <div className="bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 rounded-2xl p-6 text-center text-rose-700 dark:text-rose-400 text-xs font-bold">
-            Failed to load news articles. Please check your network connection
-            or backend server.
+            Không thể tải tin tức. Vui lòng kiểm tra kết nối mạng hoặc máy chủ.
           </div>
         )}
 
@@ -125,7 +137,7 @@ export default function NewsPage() {
                         </span>
                         <span className="text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2.5 py-1 rounded-full flex items-center space-x-1 border border-transparent dark:border-amber-900/30">
                           <Sparkles className="w-3 h-3" />
-                          <span>Featured Post</span>
+                          <span>Bài viết nổi bật</span>
                         </span>
                       </div>
 
@@ -147,12 +159,12 @@ export default function NewsPage() {
                               ? new Date(
                                   featuredArticle.publishedAt,
                                 ).toLocaleDateString()
-                              : "Recently"}
+                              : "Gần đây"}
                           </span>
                         </span>
                         <span className="flex items-center space-x-1">
                           <Eye className="w-3.5 h-3.5" />
-                          <span>{featuredArticle.viewsCount} views</span>
+                          <span>{featuredArticle.viewsCount} lượt xem</span>
                         </span>
                       </div>
 
@@ -163,7 +175,7 @@ export default function NewsPage() {
                         }}
                         className="text-brand dark:text-pink-400 font-bold flex items-center space-x-1 hover:underline cursor-pointer"
                       >
-                        <span>Read Article</span>
+                        <span>Đọc bài viết</span>
                         <ArrowRight className="w-3.5 h-3.5" />
                       </button>
                     </div>
@@ -179,7 +191,7 @@ export default function NewsPage() {
                 {CATEGORIES.map((cat) => (
                   <button
                     key={cat.value}
-                    onClick={() => setSelectedCategory(cat.value)}
+                    onClick={() => changeCategory(cat.value)}
                     className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
                       selectedCategory === cat.value
                         ? "bg-brand text-brand-foreground shadow-xs"
@@ -192,15 +204,22 @@ export default function NewsPage() {
               </div>
 
               {/* Search Input */}
-              <div className="relative w-full sm:w-64 shrink-0">
+              <div className="flex w-full shrink-0 flex-col gap-2 sm:w-64">
+                <label className="sr-only" htmlFor="news-date-order">Sắp xếp theo ngày tạo</label>
+                <select id="news-date-order" value={dateOrder} onChange={(event) => setDateOrder(event.target.value as "asc" | "desc")} className="w-full rounded-xl border border-border/80 bg-background-card px-3 py-2 text-xs font-semibold text-foreground outline-none focus:border-brand">
+                  <option value="desc">Mới nhất</option>
+                  <option value="asc">Cũ nhất</option>
+                </select>
+              <div className="relative">
                 <Search className="w-4 h-4 text-foreground-subtle dark:text-foreground-subtle absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
-                  placeholder="Search news..."
+                  placeholder="Tìm tin tức..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
                   className="w-full pl-9 pr-4 py-2 bg-background-card dark:bg-background-card border border-border/80 dark:border-border rounded-xl text-xs font-medium text-foreground dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none focus:border-brand dark:focus:border-pink-500 transition-colors"
                 />
+              </div>
               </div>
             </section>
 
@@ -253,12 +272,12 @@ export default function NewsPage() {
                               ? new Date(
                                   article.publishedAt,
                                 ).toLocaleDateString()
-                              : "Recently"}
+                              : "Gần đây"}
                           </span>
                         </span>
                         <span className="flex items-center space-x-1">
                           <Eye className="w-3 h-3" />
-                          <span>{article.viewsCount} views</span>
+                          <span>{article.viewsCount} lượt xem</span>
                         </span>
                       </div>
                     </article>
@@ -268,13 +287,19 @@ export default function NewsPage() {
                 <div className="bg-background-card dark:bg-background-card border border-border/80 dark:border-border rounded-2xl p-12 text-center space-y-3">
                   <BookOpen className="w-8 h-8 text-neutral-300 dark:text-foreground-muted mx-auto" />
                   <h3 className="text-base font-bold text-foreground-muted dark:text-neutral-300">
-                    No articles found
+                    Không tìm thấy bài viết
                   </h3>
                   <p className="text-xs text-foreground-subtle dark:text-foreground-subtle">
-                    Try adjusting your search query or selecting a different
-                    category.
+                    Hãy đổi từ khóa tìm kiếm hoặc chọn danh mục khác.
                   </p>
                 </div>
+              )}
+              {totalPages > 1 && (
+                <nav aria-label="Phân trang tin tức" className="flex flex-wrap items-center justify-center gap-2 pt-4">
+                  <button type="button" onClick={() => setPage((current) => Math.max(1, current - 1))} disabled={page === 1} className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-xs font-semibold disabled:opacity-40"><ChevronLeft className="h-4 w-4"/>Trước</button>
+                  {Array.from({ length: totalPages }, (_, index) => index + 1).map((number) => <button key={number} type="button" onClick={() => setPage(number)} aria-current={page === number ? "page" : undefined} className={`h-9 min-w-9 rounded-lg border px-3 text-xs font-bold ${page === number ? "border-brand bg-brand text-white" : "border-border bg-background-card text-foreground hover:bg-background-hover"}`}>{number}</button>)}
+                  <button type="button" onClick={() => setPage((current) => Math.min(totalPages, current + 1))} disabled={page === totalPages} className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-xs font-semibold disabled:opacity-40">Tiếp<ChevronRight className="h-4 w-4"/></button>
+                </nav>
               )}
             </section>
           </>
@@ -284,22 +309,21 @@ export default function NewsPage() {
         <section className="w-full bg-gradient-to-br from-blue-600 to-pink-600 dark:from-pink-900 dark:to-blue-950 rounded-3xl p-8 text-white relative overflow-hidden shadow-lg flex flex-col md:flex-row items-center justify-between gap-6 border border-transparent dark:border-pink-800/40">
           <div className="space-y-2 z-10 max-w-md">
             <h3 className="text-xl sm:text-2xl font-extrabold tracking-tight">
-              Stay ahead of product updates
+              Luôn cập nhật tin tức sản phẩm
             </h3>
             <p className="text-xs sm:text-sm opacity-90 leading-relaxed font-medium">
-              Get key announcements, test preparation tips, and weekly learning
-              insights delivered right to your inbox.
+              Nhận thông báo quan trọng, mẹo ôn thi và nội dung học tập hàng tuần qua email.
             </p>
           </div>
 
           <div className="z-10 w-full md:w-auto flex items-center space-x-2">
             <input
               type="email"
-              placeholder="Enter your email"
+              placeholder="Nhập email của bạn"
               className="bg-background-card/10 dark:bg-black/20 text-white placeholder-white/60 border border-white/20 text-xs px-4 py-3 rounded-xl focus:outline-none focus:bg-background-card/20 transition-all w-full md:w-64"
             />
             <button className="bg-brand text-brand-foreground hover:bg-brand-hover text-xs font-bold px-5 py-3 rounded-xl transition-all shrink-0 cursor-pointer active:scale-95 shadow-md">
-              Subscribe
+              Đăng ký nhận tin
             </button>
           </div>
 

@@ -4,7 +4,13 @@ export const baseApiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
     baseUrl: "/api", // Matches your local Vite dev proxy routing
-    prepareHeaders: (headers, { getState }) => {
+    prepareHeaders: (headers, { getState, endpoint }) => {
+      // Authentication endpoints must not inherit a token from a previous session.
+      if (endpoint === "login" || endpoint === "signup") {
+        headers.delete("authorization");
+        return headers;
+      }
+
       // 1. Grab the token dynamic path out of the active auth slice state
       const token = (getState() as any).auth?.token;
 

@@ -105,7 +105,7 @@ export default function SignupPage() {
 
       // 2. Success! Redirect to login page with state message for toast/banner
       navigate("/login", {
-        state: { message: "Please login with your registered account" },
+        state: { message: "Vui lòng đăng nhập bằng tài khoản bạn đã đăng ký" },
       });
     } catch (err: any) {
       console.error("Backend Signup Error Raw Payload:", err);
@@ -134,21 +134,22 @@ export default function SignupPage() {
   return (
     <div className="relative min-h-screen w-full bg-background font-inter overflow-x-hidden flex flex-col justify-between pb-12">
       {/* 1. Top Decorative Blob Backdrop */}
-      <div className="absolute top-0 right-0 left-0 h-[40vh] bg-gradient-to-br from-banner-from to-banner-to rounded-b-[40%] md:rounded-b-[50%] flex flex-col justify-center px-12 md:px-16 text-white shadow-xl">
-        <p className="text-xl md:text-2xl font-medium tracking-wide opacity-90">
-          Hello,
+      <div className="absolute top-0 right-0 left-0 h-[34vh] min-h-64 bg-gradient-to-br from-banner-from to-banner-to rounded-b-[12%] sm:rounded-b-[24%] flex flex-col justify-center px-6 sm:px-10 md:px-16 text-white shadow-xl">
+        <p className="text-sm sm:text-xl md:text-2xl font-medium tracking-wide opacity-90">
+          Xây dựng thói quen luyện tập bền vững
         </p>
-        <h1 className="text-5xl md:text-6xl font-extrabold mt-1 tracking-tight">
-          Sign Up!
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mt-1 tracking-tight">
+          Tạo tài khoản
         </h1>
+        <p className="mt-2 max-w-md text-xs sm:text-sm text-white/80">Tham gia S English để luyện tập với bài học thực tế và lưu lại tiến độ học.</p>
         <div className="absolute top-0 right-0 w-40 h-28 bg-brand rounded-bl-full opacity-40 blur-md pointer-events-none" />
       </div>
 
       {/* Spacer to push content below absolute header */}
-      <div className="h-[44vh]" />
+      <div className="h-[36vh] min-h-64" />
 
       {/* 2. Main Input Form Container */}
-      <div className="flex-1 w-full max-w-lg mx-auto px-8 md:px-0 flex flex-col justify-start">
+      <div className="flex-1 w-full max-w-lg mx-auto px-4 sm:px-8 md:px-0 flex flex-col justify-start">
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="w-full flex flex-col space-y-6"
@@ -163,9 +164,9 @@ export default function SignupPage() {
           {/* User Name Input Field */}
           <FloatingInput
             id="name"
-            label="USER NAME"
+            label="TÊN NGƯỜI DÙNG"
             type="text"
-            placeholder="Jacob josef"
+            placeholder="Nguyễn Văn An"
             register={register("name")}
             error={errors.name?.message}
             disabled={isLoading}
@@ -175,9 +176,9 @@ export default function SignupPage() {
           {/* Email Address Input Field */}
           <FloatingInput
             id="email"
-            label="EMAIL ADDRESS"
+            label="ĐỊA CHỈ EMAIL"
             type="email"
-            placeholder="Jacob@gmail.com"
+            placeholder="email@example.com"
             register={register("email")}
             error={errors.email?.message}
             disabled={isLoading}
@@ -187,9 +188,9 @@ export default function SignupPage() {
           {/* Password Input Field */}
           <FloatingInput
             id="password"
-            label="PASSWORD"
+            label="MẬT KHẨU"
             type={showPassword ? "text" : "password"}
-            placeholder="Enter password"
+            placeholder="Nhập mật khẩu"
             register={register("password")}
             error={errors.password?.message}
             disabled={isLoading}
@@ -222,7 +223,7 @@ export default function SignupPage() {
               <div className="w-10 h-6 bg-border rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-background-card after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand relative" />
             </label>
             <span className="text-sm text-muted-foreground font-medium">
-              I accept the policy and terms
+              Tôi đồng ý với chính sách và điều khoản
             </span>
           </div>
 
@@ -236,10 +237,10 @@ export default function SignupPage() {
               {isLoading ? (
                 <>
                   <Loader2 className="w-6 h-6 animate-spin" />
-                  <span>Signing up...</span>
+                  <span>Đang đăng ký...</span>
                 </>
               ) : (
-                <span>Sign up</span>
+                <span>Đăng ký</span>
               )}
             </button>
           </div>
@@ -248,14 +249,21 @@ export default function SignupPage() {
         {/* Login Navigation Prompt */}
         <div className="text-center pt-8">
           <p className="text-sm text-muted-foreground font-medium">
-            Already have an account?{" "}
+            Bạn đã có tài khoản?{" "}
             <Link
               to="/login"
               className="font-bold text-brand hover:underline transition-all"
             >
-              Log in
+              Đăng nhập
             </Link>
           </p>
+        </div>
+        <div className="mt-8 rounded-2xl border border-border bg-background-card p-4 sm:p-5">
+          <p className="text-xs font-bold text-foreground">Tài khoản miễn phí bao gồm</p>
+          <div className="mt-3 grid grid-cols-2 gap-2 text-[11px] text-foreground-muted">
+            <span>✓ Bài luyện nghe có hướng dẫn</span><span>✓ Thẻ ghi nhớ từ vựng</span>
+            <span>✓ Lịch sử tiến độ cá nhân</span><span>✓ Thảo luận cộng đồng</span>
+          </div>
         </div>
       </div>
     </div>

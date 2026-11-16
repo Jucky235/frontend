@@ -23,7 +23,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
           className="flex items-center space-x-1.5 text-sm font-semibold text-foreground-subtle hover:text-foreground transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span className="hidden sm:inline">Back</span>
+          <span className="hidden sm:inline">Quay lại</span>
         </button>
         <div className="h-4 w-px bg-border hidden sm:block" />
         <div className="flex items-center space-x-2">
@@ -31,7 +31,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
             {userInitial}
           </div>
           <span className="font-bold text-lg text-foreground tracking-tight">
-            Collections
+            Bộ sưu tập
           </span>
         </div>
       </div>
@@ -50,7 +50,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
           className="flex items-center space-x-1.5 text-sm font-semibold text-foreground-subtle hover:text-red-500 transition-colors px-2 py-1"
         >
           <LogOut className="w-4 h-4" />
-          <span className="hidden sm:inline">Logout</span>
+          <span className="hidden sm:inline">Đăng xuất</span>
         </button>
       </div>
     </header>

@@ -31,7 +31,7 @@ export default function ExamsFilterBar({
         <Search className="deck-filter-search-icon w-4 h-4" />
         <input
           type="text"
-          placeholder="Search by exam name..."
+          placeholder="Tìm theo tên bài thi..."
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           className="deck-filter-search-input"
@@ -47,7 +47,7 @@ export default function ExamsFilterBar({
           >
             {categories.map((cat) => (
               <option key={cat} value={cat}>
-                Category: {cat}
+                Danh mục: {cat}
               </option>
             ))}
           </select>

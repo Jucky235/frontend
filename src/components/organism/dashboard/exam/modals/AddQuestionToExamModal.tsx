@@ -229,7 +229,7 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
                 Thêm câu hỏi vào đề thi
               </h2>
               <p className="text-xs text-foreground-subtle dark:text-foreground-subtle">
-                Lựa chọn danh sách câu hỏi và chọn Part để chèn vào.
+                Chọn danh sách câu hỏi và phần thi để chèn.
               </p>
             </div>
           </div>
@@ -322,7 +322,7 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
               <div className="flex items-center rounded-xl border border-pink-200 bg-pink-50 px-3 py-2 dark:border-pink-800 dark:bg-pink-950/40">
                 <Layers className="mr-2 h-4 w-4 text-pink-600 dark:text-pink-400 shrink-0" />
                 <span className="mr-2 text-xs font-semibold text-pink-900 dark:text-pink-200 shrink-0">
-                  Chèn vào Part:
+                  Chèn vào phần thi:
                 </span>
                 <select
                   value={targetPart}
@@ -451,7 +451,7 @@ export const AddQuestionToExamModal: React.FC<AddQuestionToExamModalProps> = ({
                             value={num}
                             className="bg-background-card text-foreground dark:bg-background-hover dark:text-white"
                           >
-                            Part {num}
+                            Phần {num}
                           </option>
                         ))}
                       </select>

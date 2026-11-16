@@ -16,7 +16,7 @@ export default function CourseManagementPage() {
   const [courses] = React.useState([
     {
       id: "crs-1",
-      title: "Full-Stack Web Engineering",
+      title: "Kỹ thuật phát triển web toàn diện",
       code: "CS-ENG-01",
       associatedDecks: 5,
       totalStudents: 142,
@@ -25,7 +25,7 @@ export default function CourseManagementPage() {
     },
     {
       id: "crs-2",
-      title: "Advanced Systems Architecture",
+      title: "Kiến trúc hệ thống nâng cao",
       code: "CS-ARCH-04",
       associatedDecks: 3,
       totalStudents: 89,
@@ -34,7 +34,7 @@ export default function CourseManagementPage() {
     },
     {
       id: "crs-3",
-      title: "UI/UX Design Systems Blueprint",
+      title: "Thiết kế hệ thống UI/UX",
       code: "CS-DSGN-02",
       associatedDecks: 4,
       totalStudents: 0,
@@ -57,11 +57,10 @@ export default function CourseManagementPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold text-foreground tracking-tight">
-            Course Curations
+            Danh sách khóa học
           </h1>
           <p className="text-xs text-foreground-subtle font-medium mt-0.5">
-            Construct course parameters, map flashcard collection arrays, and
-            inspect enrollment metrics.
+            Thiết lập thông tin khóa học, liên kết bộ thẻ và theo dõi số liệu đăng ký.
           </p>
         </div>
 
@@ -70,7 +69,7 @@ export default function CourseManagementPage() {
           className="bg-pink-600 hover:bg-pink-700 text-white font-bold text-sm px-4 py-2.5 rounded-xl tracking-wide shadow-md transition-all flex items-center justify-center space-x-2 cursor-pointer active:scale-95 self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
-          <span>Create Course</span>
+          <span>Tạo khóa học</span>
         </button>
       </div>
 
@@ -82,7 +81,7 @@ export default function CourseManagementPage() {
           </div>
           <div>
             <p className="text-[10px] font-bold text-foreground-subtle uppercase tracking-wider">
-              Active Courses
+              Khóa học đang hoạt động
             </p>
             <p className="text-xl font-black text-foreground mt-0.5">
               {courses.length}
@@ -96,10 +95,10 @@ export default function CourseManagementPage() {
           </div>
           <div>
             <p className="text-[10px] font-bold text-foreground-subtle uppercase tracking-wider">
-              Mapped Card Decks
+              Các bộ thẻ được liên kết
             </p>
             <p className="text-xl font-black text-foreground mt-0.5">
-              12 Arrays
+              12 mảng dữ liệu
             </p>
           </div>
         </div>
@@ -110,10 +109,10 @@ export default function CourseManagementPage() {
           </div>
           <div>
             <p className="text-[10px] font-bold text-foreground-subtle uppercase tracking-wider">
-              Total Enrolled
+              Tổng số học viên đăng ký
             </p>
             <p className="text-xl font-black text-foreground mt-0.5">
-              231 Users
+              231 người dùng
             </p>
           </div>
         </div>
@@ -125,7 +124,7 @@ export default function CourseManagementPage() {
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground-subtle" />
           <input
             type="text"
-            placeholder="Search by course title or database code..."
+            placeholder="Tìm theo tên khóa học hoặc mã dữ liệu..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2 rounded-xl border border-border text-xs font-medium text-foreground focus:outline-none focus:border-brand transition-all"
@@ -139,11 +138,11 @@ export default function CourseManagementPage() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-background border-b border-border text-[10px] font-bold text-foreground-subtle uppercase tracking-wider">
-                <th className="px-6 py-4">Course Parameters</th>
-                <th className="px-6 py-4">Deck Frameworks</th>
-                <th className="px-6 py-4">Active Seats</th>
-                <th className="px-6 py-4">Deploy Status</th>
-                <th className="px-6 py-4 text-center">Action</th>
+                <th className="px-6 py-4">Thông tin khóa học</th>
+                <th className="px-6 py-4">Cấu trúc bộ thẻ</th>
+                <th className="px-6 py-4">Số lượt đang sử dụng</th>
+                <th className="px-6 py-4">Trạng thái triển khai</th>
+                <th className="px-6 py-4 text-center">Thao tác</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-200/80 text-xs font-medium text-foreground-muted">
@@ -174,10 +173,10 @@ export default function CourseManagementPage() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-1.5">
                         <span className="font-bold text-foreground">
-                          {course.associatedDecks} Decks
+                          {course.associatedDecks} Bộ thẻ
                         </span>
                         <span className="text-foreground-subtle font-normal">
-                          in array
+                          trong mảng
                         </span>
                       </div>
                     </td>
@@ -186,7 +185,7 @@ export default function CourseManagementPage() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-1.5">
                         <span className="font-bold text-foreground">
-                          {course.totalStudents} Students
+                          {course.totalStudents} Học viên
                         </span>
                       </div>
                     </td>
@@ -205,7 +204,7 @@ export default function CourseManagementPage() {
                         ) : (
                           <AlertCircle className="w-3 h-3 text-amber-600" />
                         )}
-                        <span>{course.status}</span>
+                        <span>{course.status === "Published" ? "Đã xuất bản" : course.status === "Draft" ? "Bản nháp" : course.status}</span>
                       </span>
                     </td>
 
@@ -226,8 +225,7 @@ export default function CourseManagementPage() {
                     colSpan={5}
                     className="px-6 py-10 text-center font-semibold text-foreground-subtle"
                   >
-                    No matching course curations found in current dataset
-                    arrays.
+                    Không tìm thấy khóa học phù hợp.
                   </td>
                 </tr>
               )}

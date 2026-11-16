@@ -228,7 +228,7 @@ export default function TestPage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground-subtle">
         <RefreshCw className="w-8 h-8 animate-spin text-brand mb-4" />
-        <p className="font-medium animate-pulse">Loading exam parts...</p>
+        <p className="font-medium animate-pulse">Đang tải các phần thi...</p>
       </div>
     );
   }
@@ -236,7 +236,7 @@ export default function TestPage() {
   if (error || !exam) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background text-rose-500 font-bold">
-        Failed to load exam data.
+        Không thể tải dữ liệu bài thi.
       </div>
     );
   }
@@ -282,7 +282,7 @@ export default function TestPage() {
                   {currentPart.name || `Part ${currentPartIndex + 1}`}
                 </h2>
                 <span className="text-xs font-semibold text-foreground-subtle bg-background-hover px-3 py-1 rounded-full">
-                  {currentPart.questions?.length || 0} Questions
+                  {currentPart.questions?.length || 0} Câu hỏi
                 </span>
               </div>
               {currentPart.instructions && (
@@ -324,7 +324,7 @@ export default function TestPage() {
                 className="flex items-center space-x-1.5 px-4 py-2.5 bg-background-card border border-border hover:bg-background-hover disabled:opacity-40 disabled:cursor-not-allowed text-foreground-muted font-bold text-sm rounded-xl transition-all cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4" />
-                <span>Previous Part</span>
+                <span>Phần trước</span>
               </button>
 
               {currentPartIndex < partsList.length - 1 ? (
@@ -336,7 +336,7 @@ export default function TestPage() {
                   }}
                   className="flex items-center space-x-1.5 px-5 py-2.5 bg-brand hover:bg-brand-hover text-brand-foreground font-bold text-sm rounded-xl transition-all shadow-xs cursor-pointer"
                 >
-                  <span>Next Part</span>
+                  <span>Phần tiếp theo</span>
                   <ChevronRight className="w-4 h-4" />
                 </button>
               ) : (
@@ -350,11 +350,11 @@ export default function TestPage() {
                     {isSubmitting ? (
                       <>
                         <RefreshCw className="w-4 h-4 animate-spin mr-2" />
-                        Submitting...
+                        Đang nộp...
                       </>
                     ) : (
                       <>
-                        Submit Exam ({answeredQuestionsCount}/{totalQuestions})
+                        Nộp bài thi ({answeredQuestionsCount}/{totalQuestions})
                       </>
                     )}
                   </button>
@@ -376,7 +376,7 @@ export default function TestPage() {
               >
                 <div className="flex items-center space-x-2">
                   <Clock className="w-5 h-5 text-brand" />
-                  <span className="font-bold text-sm">Time Remaining</span>
+                  <span className="font-bold text-sm">Thời gian còn lại</span>
                 </div>
                 <span className="font-black text-lg tracking-wider font-mono">
                   {formatTime(timeLeft)}
@@ -388,10 +388,10 @@ export default function TestPage() {
             <div className="bg-background-card p-5 rounded-2xl border border-border shadow-xs space-y-4">
               <div className="flex items-center justify-between border-b border-border-subtle pb-3">
                 <h3 className="font-extrabold text-foreground text-base">
-                  Parts & Navigation
+                  Các phần và điều hướng
                 </h3>
                 <span className="text-xs font-bold text-brand bg-pink-50 px-2.5 py-1 rounded-lg">
-                  {answeredQuestionsCount} / {totalQuestions} Done
+                  {answeredQuestionsCount} / {totalQuestions} Xong
                 </span>
               </div>
 
@@ -443,7 +443,7 @@ export default function TestPage() {
               {/* Active Part Question Grid */}
               <div className="pt-2 border-t border-border-subtle space-y-2">
                 <span className="text-xs font-bold text-foreground-subtle uppercase tracking-wider block">
-                  Quick Jump (
+                  Chuyển nhanh (
                   {currentPart.name || `Part ${currentPartIndex + 1}`})
                 </span>
                 <div className="grid grid-cols-5 gap-2 max-h-48 overflow-y-auto pr-1">
@@ -482,10 +482,10 @@ export default function TestPage() {
                   {isSubmitting ? (
                     <>
                       <RefreshCw className="w-4 h-4 animate-spin mr-2" />
-                      Submitting...
+                      Đang nộp...
                     </>
                   ) : (
-                    "Submit Exam"
+                    "Nộp bài thi"
                   )}
                 </button>
               )}

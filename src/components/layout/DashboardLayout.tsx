@@ -20,27 +20,27 @@ interface SidebarItem {
 
 const DASHBOARD_ITEMS: SidebarItem[] = [
   {
-    label: "User Management",
+    label: "Quản lý người dùng",
     path: "/dashboard/user",
     icon: <Users className="w-5 h-5" />,
   },
   {
-    label: "Course Management",
+    label: "Quản lý khóa học",
     path: "/dashboard/course",
     icon: <BookOpen className="w-5 h-5" />,
   },
   {
-    label: "Exams Management",
+    label: "Quản lý bài thi",
     path: "/dashboard/exam",
     icon: <FileSpreadsheet className="w-5 h-5" />,
   },
   {
-    label: "Question Management",
+    label: "Quản lý câu hỏi",
     path: "/dashboard/question",
     icon: <HelpCircle className="w-5 h-5" />,
   },
   {
-    label: "News Management",
+    label: "Quản lý tin tức",
     path: "/dashboard/news",
     icon: <Newspaper className="w-5 h-5" />,
   },
@@ -49,14 +49,14 @@ const DASHBOARD_ITEMS: SidebarItem[] = [
 export default function DashboardLayout() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(() => window.innerWidth < 768);
 
   return (
     <div className="min-h-screen flex bg-background text-foreground">
       {/* Sidebar */}
       <aside
         className={`relative flex flex-col h-screen sticky top-0 bg-background-card border-r border-border transition-all duration-300 z-30 ${
-          isCollapsed ? "w-24" : "w-80"
+          isCollapsed ? "w-16 md:w-24" : "w-72 md:w-80"
         }`}
       >
         {/* Sidebar Header / Logo (Fixed at Top) */}
@@ -70,7 +70,7 @@ export default function DashboardLayout() {
                 <LayoutDashboard className="w-5 h-5" />
               </div>
               <span className="text-foreground text-sm font-extrabold">
-                Admin Console
+                Bảng điều khiển quản trị
               </span>
             </Link>
           )}
@@ -78,7 +78,7 @@ export default function DashboardLayout() {
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
             className="p-2 rounded-xl bg-background-hover text-foreground-subtle hover:text-foreground transition-colors mx-auto"
-            title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+            title={isCollapsed ? "Mở rộng thanh bên" : "Thu gọn thanh bên"}
           >
             {isCollapsed ? (
               <ChevronRight className="w-5 h-5" />
@@ -92,7 +92,7 @@ export default function DashboardLayout() {
         <div className="flex-1 py-6 px-4 space-y-3 overflow-y-auto">
           {!isCollapsed && (
             <div className="px-3 pb-2 text-[11px] font-extrabold uppercase text-foreground-subtle tracking-wider">
-              Management
+              Quản lý
             </div>
           )}
           {DASHBOARD_ITEMS.map((item) => {
@@ -135,7 +135,7 @@ export default function DashboardLayout() {
                           : "text-foreground-subtle"
                       }`}
                     >
-                      Configure & view
+                      Cấu hình và xem
                     </span>
                   </div>
                 )}
@@ -158,7 +158,7 @@ export default function DashboardLayout() {
             className={`w-full flex items-center p-3.5 rounded-2xl border border-border/60 bg-background/60 text-foreground-subtle hover:bg-background-hover hover:text-foreground hover:border-border transition-all shadow-xs ${
               isCollapsed ? "justify-center p-4" : "space-x-3.5"
             }`}
-            title="Exit to Main App"
+            title="Quay lại ứng dụng chính"
           >
             <div className="w-10 h-10 rounded-xl bg-background-hover text-foreground-subtle flex items-center justify-center shrink-0">
               <LogOut className="w-5 h-5" />
@@ -166,10 +166,10 @@ export default function DashboardLayout() {
             {!isCollapsed && (
               <div className="flex flex-col text-left truncate">
                 <span className="text-xs font-black text-foreground truncate tracking-tight">
-                  Exit Dashboard
+                  Thoát bảng điều khiển
                 </span>
                 <span className="text-[10px] font-semibold text-foreground-subtle truncate">
-                  Return to client app
+                  Quay lại ứng dụng
                 </span>
               </div>
             )}
@@ -179,17 +179,17 @@ export default function DashboardLayout() {
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-w-0 overflow-y-auto bg-background">
-        <header className="h-20 border-b border-border bg-background-card px-8 flex items-center justify-between sticky top-0 z-20">
+        <header className="h-16 md:h-20 border-b border-border bg-background-card px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-20">
           <h1 className="text-base font-extrabold text-foreground capitalize">
             {location.pathname.split("/").pop()?.replace("-", " ") ||
               "Dashboard"}
           </h1>
           <span className="text-xs font-bold px-3.5 py-1.5 rounded-full bg-brand/10 text-brand border border-brand/20">
-            Admin Mode
+            Chế độ quản trị
           </span>
         </header>
 
-        <div className="p-6 sm:p-8 flex-1">
+        <div className="p-4 sm:p-6 md:p-8 flex-1">
           <Outlet />
         </div>
       </main>

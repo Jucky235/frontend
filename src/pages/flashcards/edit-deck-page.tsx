@@ -165,12 +165,12 @@ export default function EditDeckPage() {
   if (isError || !deckId) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center space-y-4">
-        <p className="text-status-error">Failed to load deck data.</p>
+        <p className="text-status-error">Không thể tải dữ liệu bộ thẻ.</p>
         <button
           onClick={() => navigate(-1)}
           className="editdeck-addcard-cancel-btn cursor-pointer"
         >
-          Go Back
+          Quay lại
         </button>
       </div>
     );
@@ -187,7 +187,7 @@ export default function EditDeckPage() {
             className="study-header-back-btn cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span className="hidden sm:inline">Back to Decks</span>
+            <span className="hidden sm:inline">Quay lại danh sách bộ thẻ</span>
           </button>
           <div className="study-header-divider hidden sm:block" />
           <div className="flex items-center space-x-2">
@@ -195,7 +195,7 @@ export default function EditDeckPage() {
               <Folder className="w-4 h-4" />
             </div>
             <span className="editdeck-header-title truncate max-w-[200px] sm:max-w-xs">
-              Edit: {deckData.name}
+              Chỉnh sửa: {deckData.name}
             </span>
           </div>
         </div>
@@ -228,9 +228,9 @@ export default function EditDeckPage() {
         <div className="lg:col-span-5 space-y-6">
           <div className="editdeck-panel">
             <div>
-              <h2 className="editdeck-panel-title">Deck Settings</h2>
+              <h2 className="editdeck-panel-title">Cài đặt bộ thẻ</h2>
               <p className="editdeck-panel-subtitle">
-                Manage metadata & privacy options.
+                Quản lý thông tin và tùy chọn quyền riêng tư.
               </p>
             </div>
 
@@ -238,7 +238,7 @@ export default function EditDeckPage() {
 
             <form onSubmit={handleSaveDeck} className="space-y-4">
               <div className="modal-field">
-                <label className="modal-field-label">Deck Title</label>
+                <label className="modal-field-label">Tên bộ thẻ</label>
                 <input
                   type="text"
                   name="name"
@@ -250,7 +250,7 @@ export default function EditDeckPage() {
               </div>
 
               <div className="modal-field">
-                <label className="modal-field-label">Description</label>
+                <label className="modal-field-label">Mô tả</label>
                 <textarea
                   name="description"
                   rows={4}
@@ -261,12 +261,12 @@ export default function EditDeckPage() {
               </div>
 
               <div className="modal-field">
-                <label className="modal-field-label">Category</label>
+                <label className="modal-field-label">Danh mục</label>
                 <div className="deck-modal-readonly">{deckData.category}</div>
               </div>
 
               <div className="modal-field">
-                <label className="modal-field-label">Visibility</label>
+                <label className="modal-field-label">Quyền hiển thị</label>
                 <div className="deck-visibility-grid">
                   <button
                     type="button"
@@ -286,9 +286,9 @@ export default function EditDeckPage() {
                           deckData.visibility === "PRIVATE" ? "is-selected" : ""
                         }`}
                       />
-                      <span className="deck-visibility-label">Private</span>
+                      <span className="deck-visibility-label">Riêng tư</span>
                     </div>
-                    <p className="deck-visibility-desc">Only visible to you.</p>
+                    <p className="deck-visibility-desc">Chỉ bạn mới thấy nội dung này.</p>
                   </button>
 
                   <button
@@ -306,10 +306,10 @@ export default function EditDeckPage() {
                           deckData.visibility === "PUBLIC" ? "is-selected" : ""
                         }`}
                       />
-                      <span className="deck-visibility-label">Public</span>
+                      <span className="deck-visibility-label">Công khai</span>
                     </div>
                     <p className="deck-visibility-desc">
-                      Shared across workspace.
+                      Được chia sẻ trong không gian làm việc.
                     </p>
                   </button>
                 </div>
@@ -323,7 +323,7 @@ export default function EditDeckPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Layers className="editdeck-cards-icon w-5 h-5" />
-              <h2 className="editdeck-cards-title">Cards ({cards.length})</h2>
+              <h2 className="editdeck-cards-title">Thẻ ({cards.length})</h2>
             </div>
 
             <button
@@ -332,19 +332,19 @@ export default function EditDeckPage() {
               className="editdeck-add-card-btn cursor-pointer active:scale-95"
             >
               <Plus className="w-4 h-4" />
-              <span>Add Flashcard</span>
+              <span>Thêm thẻ ghi nhớ</span>
             </button>
           </div>
 
           {/* Add New Card Inline Form Box */}
           {showAddCard && (
             <div className="editdeck-addcard-panel animate-in fade-in duration-200">
-              <h3 className="editdeck-addcard-heading">Create New Flashcard</h3>
+              <h3 className="editdeck-addcard-heading">Tạo thẻ ghi nhớ mới</h3>
 
               <div className="space-y-3">
                 <input
                   type="text"
-                  placeholder="Front Content (Question/Prompt)"
+                  placeholder="Nội dung mặt trước (câu hỏi/gợi ý)"
                   value={newCard.frontContent}
                   onChange={(e) =>
                     setNewCard({ ...newCard, frontContent: e.target.value })
@@ -353,7 +353,7 @@ export default function EditDeckPage() {
                 />
 
                 <textarea
-                  placeholder="Back Content (Answer/Definition)"
+                  placeholder="Nội dung mặt sau (đáp án/định nghĩa)"
                   rows={2}
                   value={newCard.backContent}
                   onChange={(e) =>
@@ -364,7 +364,7 @@ export default function EditDeckPage() {
 
                 <input
                   type="text"
-                  placeholder="Explanation (Optional notes)"
+                  placeholder="Giải thích (ghi chú không bắt buộc)"
                   value={newCard.explanation}
                   onChange={(e) =>
                     setNewCard({ ...newCard, explanation: e.target.value })
@@ -379,7 +379,7 @@ export default function EditDeckPage() {
                   onClick={() => setShowAddCard(false)}
                   className="editdeck-addcard-cancel-btn cursor-pointer"
                 >
-                  Cancel
+                  Hủy
                 </button>
                 <button
                   type="button"
@@ -441,7 +441,7 @@ export default function EditDeckPage() {
                     {isExpanded && (
                       <div className="editdeck-card-detail">
                         <div>
-                          <p className="editdeck-card-detail-label">Answer</p>
+                          <p className="editdeck-card-detail-label">Câu trả lời</p>
                           <p className="editdeck-card-detail-answer">
                             {card.backContent}
                           </p>
@@ -460,8 +460,7 @@ export default function EditDeckPage() {
               })
             ) : (
               <div className="deck-feed-empty-panel border-dashed">
-                No flashcards in this deck yet. Click "Add Flashcard" to get
-                started.
+                Bộ thẻ này chưa có thẻ nào. Nhấn "Thêm thẻ ghi nhớ" để bắt đầu.
               </div>
             )}
           </div>
@@ -470,7 +469,7 @@ export default function EditDeckPage() {
 
       {/* 3. Footer */}
       <footer className="deck-footer">
-        &copy; 2026 Workspace System. All rights reserved.
+        &copy; 2026 Hệ thống Workspace. Bảo lưu mọi quyền.
       </footer>
     </div>
   );

@@ -21,7 +21,7 @@ export const QuestionFilterBar: React.FC<QuestionFilterBarProps> = ({
         <Search className="w-4 h-4 text-foreground-subtle absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
         <input
           type="text"
-          placeholder="Search question content or options..."
+          placeholder="Tìm nội dung câu hỏi hoặc lựa chọn..."
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           className="w-full pl-10 pr-4 py-2 bg-background border border-border rounded-xl text-sm font-medium text-foreground placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all"
@@ -32,7 +32,7 @@ export const QuestionFilterBar: React.FC<QuestionFilterBarProps> = ({
       <div className="flex items-center space-x-2 w-full sm:w-auto justify-end">
         <Filter className="w-4 h-4 text-foreground-subtle shrink-0" />
         <span className="text-xs font-bold text-foreground-subtle uppercase tracking-wider shrink-0">
-          Part:
+          Phần thi:
         </span>
         <select
           value={selectedPartFilter}
@@ -43,10 +43,10 @@ export const QuestionFilterBar: React.FC<QuestionFilterBarProps> = ({
           }
           className="w-full sm:w-auto px-3 py-2 bg-background border border-border rounded-xl text-sm font-bold text-foreground-muted focus:outline-none focus:border-brand cursor-pointer"
         >
-          <option value="ALL">All Parts</option>
+          <option value="ALL">Tất cả phần</option>
           {[1, 2, 3, 4, 5, 6, 7].map((num) => (
             <option key={num} value={num}>
-              Part {num}
+              Phần {num}
             </option>
           ))}
         </select>

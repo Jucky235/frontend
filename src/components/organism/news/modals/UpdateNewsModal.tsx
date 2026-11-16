@@ -70,7 +70,7 @@ export const UpdateNewsModal: React.FC<UpdateNewsModalProps> = ({
       <div className="w-full max-w-2xl rounded-lg bg-background-card p-6 shadow-xl dark:bg-gray-800">
         <div className="mb-4 flex items-center justify-between border-b pb-3 dark:border-gray-700">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-            Edit News Article
+            Chỉnh sửa bài viết
           </h2>
           <button
             onClick={onClose}
@@ -83,14 +83,14 @@ export const UpdateNewsModal: React.FC<UpdateNewsModalProps> = ({
 
         {isFetching ? (
           <div className="flex h-48 items-center justify-center">
-            <span className="text-gray-500">Loading article details...</span>
+            <span className="text-gray-500">Đang tải thông tin bài viết...</span>
           </div>
         ) : (
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {/* Title */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                Title <span className="text-red-500">*</span>
+                Tiêu đề <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -108,7 +108,7 @@ export const UpdateNewsModal: React.FC<UpdateNewsModalProps> = ({
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                  Category <span className="text-red-500">*</span>
+                  Danh mục <span className="text-red-500">*</span>
                 </label>
                 <select
                   {...register("category", {
@@ -116,11 +116,11 @@ export const UpdateNewsModal: React.FC<UpdateNewsModalProps> = ({
                   })}
                   className="mt-1 w-full rounded-md border border-gray-300 p-2 text-sm focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                 >
-                  <option value="GENERAL">General</option>
-                  <option value="EXAM_TIPS">Exam Tips</option>
-                  <option value="ANNOUNCEMENT">Announcement</option>
-                  <option value="SYSTEM_UPDATE">System Update</option>
-                  <option value="FEATURED">Featured</option>
+                  <option value="GENERAL">Chung</option>
+                  <option value="EXAM_TIPS">Mẹo ôn thi</option>
+                  <option value="ANNOUNCEMENT">Thông báo</option>
+                  <option value="SYSTEM_UPDATE">Cập nhật hệ thống</option>
+                  <option value="FEATURED">Nổi bật</option>
                 </select>
                 {errors.category && (
                   <p className="mt-1 text-xs text-red-500">
@@ -131,14 +131,14 @@ export const UpdateNewsModal: React.FC<UpdateNewsModalProps> = ({
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                  Status
+                  Trạng thái
                 </label>
                 <select
                   {...register("status")}
                   className="mt-1 w-full rounded-md border border-gray-300 p-2 text-sm focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                 >
-                  <option value="DRAFT">Draft</option>
-                  <option value="PUBLISHED">Published</option>
+                  <option value="DRAFT">Bản nháp</option>
+                  <option value="PUBLISHED">Đã đăng</option>
                 </select>
               </div>
             </div>
@@ -146,7 +146,7 @@ export const UpdateNewsModal: React.FC<UpdateNewsModalProps> = ({
             {/* Thumbnail URL */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                Thumbnail Image URL
+                Đường dẫn ảnh thu nhỏ
               </label>
               <input
                 type="text"
@@ -159,7 +159,7 @@ export const UpdateNewsModal: React.FC<UpdateNewsModalProps> = ({
             {/* Summary */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                Summary
+                Tóm tắt
               </label>
               <textarea
                 rows={2}
@@ -171,7 +171,7 @@ export const UpdateNewsModal: React.FC<UpdateNewsModalProps> = ({
             {/* Content */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                Content <span className="text-red-500">*</span>
+                Nội dung <span className="text-red-500">*</span>
               </label>
               <textarea
                 rows={5}
@@ -192,7 +192,7 @@ export const UpdateNewsModal: React.FC<UpdateNewsModalProps> = ({
                 onClick={onClose}
                 className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
               >
-                Cancel
+                Hủy
               </button>
               <button
                 type="submit"

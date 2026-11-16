@@ -146,16 +146,16 @@ export default function ChangePasswordModal({
               <KeyRound className="h-5 w-5" />
             </span>
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-brand">Account security</p>
-              <h2 id="change-password-title" className="mt-1 text-lg font-extrabold tracking-tight text-foreground">Change password</h2>
-              <p className="mt-1 text-xs leading-5 text-foreground-subtle">Choose a new password to keep your account secure.</p>
+              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-brand">Bảo mật tài khoản</p>
+              <h2 id="change-password-title" className="mt-1 text-lg font-extrabold tracking-tight text-foreground">Đổi mật khẩu</h2>
+              <p className="mt-1 text-xs leading-5 text-foreground-subtle">Hãy chọn mật khẩu mới để bảo vệ tài khoản.</p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
             disabled={isUpdating}
-            aria-label="Close dialog"
+            aria-label="Đóng hộp thoại"
             className="rounded-xl p-2 text-foreground-subtle transition hover:bg-background-hover hover:text-foreground disabled:opacity-50"
           >
             <X className="h-4 w-4" />
@@ -166,18 +166,18 @@ export default function ChangePasswordModal({
           {errorMessage && <div role="alert" className="flex items-start gap-2.5 rounded-xl border border-rose-500/20 bg-rose-500/10 px-3.5 py-3 text-xs leading-5 text-rose-600 dark:text-rose-300"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />{errorMessage}</div>}
 
           {passwordField("current-password", "Current password", formData.currentPassword, showCurrent, setShowCurrent, "Enter your current password", "currentPassword", "current-password")}
-          {passwordField("new-password", "New password", formData.newPassword, showNew, setShowNew, "At least 8 characters", "newPassword", "new-password")}
+          {passwordField("new-password", "New password", formData.newPassword, showNew, setShowNew, "Ít nhất 8 ký tự", "newPassword", "new-password")}
           {passwordField("confirm-password", "Confirm new password", formData.confirmPassword, showConfirm, setShowConfirm, "Enter the new password again", "confirmPassword", "new-password")}
 
           <div className="rounded-2xl border border-border bg-background-hover/50 p-3.5">
-            <p className="mb-2.5 text-[10px] font-bold uppercase tracking-wider text-foreground-subtle">Password checks</p>
+            <p className="mb-2.5 text-[10px] font-bold uppercase tracking-wider text-foreground-subtle">Kiểm tra mật khẩu</p>
             <div className="grid gap-2 sm:grid-cols-2">
-              {[{ label: "At least 8 characters", met: hasMinimumLength }, { label: "Passwords match", met: passwordsMatch }].map(({ label, met }) => <div key={label} className={`flex items-center gap-2 text-[10px] font-medium ${met ? "text-emerald-600 dark:text-emerald-400" : "text-foreground-subtle"}`}><span className={`grid h-4 w-4 place-items-center rounded-full ${met ? "bg-emerald-500/15" : "bg-background-hover"}`}>{met && <Check className="h-3 w-3"/>}</span>{label}</div>)}
+              {[{ label: "Ít nhất 8 ký tự", met: hasMinimumLength }, { label: "Mật khẩu trùng khớp", met: passwordsMatch }].map(({ label, met }) => <div key={label} className={`flex items-center gap-2 text-[10px] font-medium ${met ? "text-emerald-600 dark:text-emerald-400" : "text-foreground-subtle"}`}><span className={`grid h-4 w-4 place-items-center rounded-full ${met ? "bg-emerald-500/15" : "bg-background-hover"}`}>{met && <Check className="h-3 w-3"/>}</span>{label}</div>)}
             </div>
           </div>
 
           <footer className="flex flex-col-reverse gap-2 border-t border-border pt-4 sm:flex-row sm:justify-end">
-            <button type="button" onClick={onClose} disabled={isUpdating} className="rounded-xl border border-border px-4 py-2.5 text-xs font-semibold text-foreground-muted transition hover:bg-background-hover disabled:opacity-50">Cancel</button>
+            <button type="button" onClick={onClose} disabled={isUpdating} className="rounded-xl border border-border px-4 py-2.5 text-xs font-semibold text-foreground-muted transition hover:bg-background-hover disabled:opacity-50">Hủy</button>
             <button type="submit" disabled={!canSubmit} className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-xs font-bold text-brand-foreground shadow-sm shadow-brand/20 transition hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-45">
               {isUpdating ? <Loader2 className="h-4 w-4 animate-spin"/> : <ShieldCheck className="h-4 w-4"/>}
               {isUpdating ? "Updating password…" : "Update password"}

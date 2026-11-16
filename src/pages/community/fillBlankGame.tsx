@@ -87,17 +87,17 @@ export default function FillBlankGame({
         </div>
         <div>
           <h2 className="text-2xl font-black text-foreground">
-            {exercise.title} Completed!
+            {exercise.title} Đã hoàn thành!
           </h2>
           <p className="text-foreground-subtle mt-1 text-sm">
-            Great job working through your practice set.
+            Bạn đã hoàn thành rất tốt phần luyện tập.
           </p>
         </div>
 
         <div className="bg-background-hover p-4 rounded-2xl border border-border/60 flex justify-around items-center">
           <div>
             <span className="text-xs text-foreground-subtle font-bold uppercase tracking-wider block">
-              Score
+              Điểm
             </span>
             <span className="text-2xl font-black text-foreground">
               {score} / {exercise.questions.length}
@@ -106,7 +106,7 @@ export default function FillBlankGame({
           <div className="h-8 w-px bg-border" />
           <div>
             <span className="text-xs text-foreground-subtle font-bold uppercase tracking-wider block">
-              Accuracy
+              Độ chính xác
             </span>
             <span className="text-2xl font-black text-brand">
               {percentage}%
@@ -120,7 +120,7 @@ export default function FillBlankGame({
           className="w-full py-3.5 rounded-2xl bg-brand text-white font-extrabold flex items-center justify-center space-x-2 shadow-lg shadow-brand/20 hover:bg-brand-hover transition-all active:scale-98"
         >
           <RotateCcw className="w-5 h-5" />
-          <span>Try Again</span>
+          <span>Thử lại</span>
         </button>
       </div>
     );
@@ -136,7 +136,7 @@ export default function FillBlankGame({
         <div className="flex justify-between items-center text-xs font-black uppercase text-foreground-subtle tracking-wider">
           <span>{exercise.title}</span>
           <span>
-            Question {currentIndex + 1} of {exercise.questions.length}
+            Câu hỏi {currentIndex + 1} of {exercise.questions.length}
           </span>
         </div>
         <div className="w-full bg-border dark:bg-background-hover h-2.5 rounded-full overflow-hidden">
@@ -210,7 +210,7 @@ export default function FillBlankGame({
           onClick={handleCheckAnswer}
           className="w-full py-4 rounded-2xl bg-brand text-white font-black text-base shadow-xl shadow-brand/20 hover:bg-brand-hover disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-98"
         >
-          Check Answer
+          Kiểm tra đáp án
         </button>
       ) : (
         <button

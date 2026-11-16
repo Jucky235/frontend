@@ -118,7 +118,7 @@ export default function NewsContentPage({
             className="inline-flex items-center space-x-2 text-muted-foreground hover:text-foreground text-xs font-bold transition-colors cursor-pointer group"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            <span>Back to News Center</span>
+            <span>Quay lại trung tâm tin tức</span>
           </button>
 
           <div className="flex items-center space-x-2">
@@ -136,7 +136,7 @@ export default function NewsContentPage({
             <button
               onClick={handleShare}
               className="p-2.5 rounded-xl bg-background-card border border-border text-muted-foreground hover:bg-background-hover transition-all cursor-pointer"
-              title="Share article"
+              title="Chia sẻ bài viết"
             >
               {copied ? (
                 <Check className="w-4 h-4 text-status-success" />
@@ -150,22 +150,22 @@ export default function NewsContentPage({
         {isLoading && (
           <div className="py-24 flex flex-col items-center justify-center space-y-3 text-muted-foreground">
             <Loader2 className="w-8 h-8 animate-spin text-brand" />
-            <p className="text-xs font-bold">Loading article content...</p>
+            <p className="text-xs font-bold">Đang tải nội dung bài viết...</p>
           </div>
         )}
 
         {(isError || (!isLoading && resolvedArticleId && !article)) && (
           <div className="bg-status-danger-bg border border-status-danger/20 rounded-2xl p-8 text-center space-y-3 text-status-danger">
-            <h3 className="text-sm font-extrabold">Article Not Found</h3>
+            <h3 className="text-sm font-extrabold">Không tìm thấy bài viết</h3>
             <p className="text-xs font-medium">
-              We couldn't load this news article or it may have been removed.
+              Không thể tải bài viết này hoặc bài viết đã bị xóa.
             </p>
             <button
               onClick={handleBack}
               className="inline-flex items-center space-x-2 bg-status-danger text-white text-xs font-bold px-4 py-2 rounded-xl hover:opacity-90 transition-colors cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Return to News</span>
+              <span>Quay lại tin tức</span>
             </button>
           </div>
         )}
@@ -180,7 +180,7 @@ export default function NewsContentPage({
                 {article.category === "FEATURED" && (
                   <span className="text-amber-600 bg-amber-50 dark:bg-amber-950/30 dark:text-amber-400 text-[11px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1.5 border border-amber-200 dark:border-amber-900/50">
                     <Sparkles className="w-3 h-3" />
-                    <span>Featured</span>
+                    <span>Nổi bật</span>
                   </span>
                 )}
               </div>
@@ -195,7 +195,7 @@ export default function NewsContentPage({
                     <div className="w-7 h-7 rounded-full bg-brand/10 text-brand flex items-center justify-center font-bold text-xs">
                       <User className="w-4 h-4" />
                     </div>
-                    <span className="text-foreground font-bold">Admin Desk</span>
+                    <span className="text-foreground font-bold">Bảng quản trị</span>
                   </div>
                   <span className="flex items-center gap-1.5">
                     <Calendar className="w-3.5 h-3.5" />
@@ -206,18 +206,18 @@ export default function NewsContentPage({
                             month: "short",
                             day: "numeric",
                           })
-                        : "Recently"}
+                        : "Gần đây"}
                     </span>
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Clock className="w-3.5 h-3.5" />
-                    <span>{readingTime} min read</span>
+                    <span>{readingTime} phút đọc</span>
                   </span>
                 </div>
 
                 <span className="flex items-center gap-1.5">
                   <Eye className="w-3.5 h-3.5" />
-                  <span>{article.viewsCount} views</span>
+                  <span>{article.viewsCount} lượt xem</span>
                 </span>
               </div>
             </div>
@@ -248,7 +248,7 @@ export default function NewsContentPage({
 
             {article.tags && article.tags.length > 0 && (
               <div className="pt-4 border-t border-border flex flex-wrap items-center gap-2">
-                <span className="text-xs font-bold text-muted-foreground">Tags:</span>
+                <span className="text-xs font-bold text-muted-foreground">Thẻ:</span>
                 <div className="flex flex-wrap gap-2">
                   {article.tags.map((tag) => (
                     <span
@@ -274,12 +274,12 @@ export default function NewsContentPage({
                     }`}
                   >
                     <ThumbsUp className="w-3.5 h-3.5" />
-                    <span>{likes} Helpful</span>
+                    <span>{likes} Hữu ích</span>
                   </button>
                 </div>
 
                 <p className="text-xs text-muted-foreground font-medium text-center sm:text-right">
-                  Found this update useful? Share it with your study group!
+                  Thấy thông tin này hữu ích? Hãy chia sẻ với nhóm học tập!
                 </p>
               </div>
             </div>
@@ -290,13 +290,13 @@ export default function NewsContentPage({
           <section className="pt-10 space-y-5 border-t border-border">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-extrabold text-foreground tracking-tight">
-                Related Updates & News
+                Tin tức và cập nhật liên quan
               </h3>
               <button
                 onClick={handleBack}
                 className="text-brand text-xs font-bold hover:underline cursor-pointer"
               >
-                View all
+                Xem tất cả
               </button>
             </div>
 
@@ -336,9 +336,9 @@ export default function NewsContentPage({
                     <span>
                       {relItem.publishedAt
                         ? new Date(relItem.publishedAt).toLocaleDateString()
-                        : "Recently"}
+                        : "Gần đây"}
                     </span>
-                    <span>{relItem.viewsCount} views</span>
+                    <span>{relItem.viewsCount} lượt xem</span>
                   </div>
                 </article>
               ))}

@@ -23,65 +23,65 @@ export interface FAQItem {
 const CATEGORIES = [
   {
     id: "all",
-    name: "All Questions",
+    name: "Tất cả câu hỏi",
     icon: <HelpCircle className="w-4 h-4" />,
   },
   {
     id: "courses",
-    name: "Courses & Prep",
+    name: "Khóa học và ôn tập",
     icon: <BookOpen className="w-4 h-4" />,
   },
-  { id: "exams", name: "Mock Exams", icon: <Sparkles className="w-4 h-4" /> },
+  { id: "exams", name: "Bài thi thử", icon: <Sparkles className="w-4 h-4" /> },
   {
     id: "billing",
-    name: "Account & Billing",
+    name: "Tài khoản và thanh toán",
     icon: <CreditCard className="w-4 h-4" />,
   },
-  { id: "general", name: "General", icon: <UserCheck className="w-4 h-4" /> },
+  { id: "general", name: "Chung", icon: <UserCheck className="w-4 h-4" /> },
 ];
 
 const FAQ_DATA: FAQItem[] = [
   {
     id: "faq-1",
     category: "courses",
-    question: "How do the AI-scored practice tests work?",
+    question: "Bài luyện tập chấm điểm bằng AI hoạt động như thế nào?",
     answer:
-      "Our AI engine analyzes your written essays and spoken recordings against official TOEFL/IELTS scoring rubrics. Within seconds, you receive a detailed score breakdown, grammar/pronunciation feedback, and actionable improvement tips.",
+      "AI phân tích bài viết và bản ghi âm của bạn theo tiêu chí chấm điểm TOEFL/IELTS chính thức. Chỉ trong vài giây, bạn sẽ nhận được bảng điểm chi tiết, góp ý về ngữ pháp, phát âm và gợi ý cải thiện.",
   },
   {
     id: "faq-2",
     category: "exams",
-    question: "Are the mock exams timed like the actual tests?",
+    question: "Bài thi thử có giới hạn thời gian như bài thi thật không?",
     answer:
-      "Yes! All simulated mock exams strictly follow official test formats and time limits (including reading, listening, speaking, and writing sections) to recreate authentic exam conditions.",
+      "Có. Tất cả bài thi thử đều tuân theo cấu trúc và thời gian của bài thi chính thức, gồm các phần đọc, nghe, nói và viết.",
   },
   {
     id: "faq-3",
     category: "courses",
-    question: "Can I access course materials offline?",
+    question: "Tôi có thể xem tài liệu khóa học khi ngoại tuyến không?",
     answer:
-      "You can download lesson notes, vocabulary flashcards, and audio transcripts via our mobile app for offline study. Interactive quizzes and AI scoring require an active internet connection.",
+      "Bạn có thể tải ghi chú bài học, thẻ từ vựng và bản chép lời âm thanh để học ngoại tuyến. Bài kiểm tra tương tác và chấm điểm AI cần kết nối internet.",
   },
   {
     id: "faq-4",
     category: "billing",
-    question: "What is your refund policy?",
+    question: "Chính sách hoàn tiền của bạn như thế nào?",
     answer:
-      "We offer a 7-day money-back guarantee for all premium subscriptions. If you are not satisfied with your progress or platform tools, simply reach out to support within 7 days for a full refund.",
+      "Chúng tôi hoàn tiền trong vòng 7 ngày cho mọi gói cao cấp. Nếu chưa hài lòng với tiến độ hoặc công cụ, hãy liên hệ bộ phận hỗ trợ trong 7 ngày để được hoàn tiền đầy đủ.",
   },
   {
     id: "faq-5",
     category: "general",
-    question: "How can I connect with study groups and tutors?",
+    question: "Làm cách nào để kết nối với nhóm học và gia sư?",
     answer:
-      "You can join live discussion channels in our Community Chat and Forum pages. Premium members can also book 1-on-1 feedback sessions with certified language tutors directly from their dashboard.",
+      "Bạn có thể tham gia các kênh thảo luận trực tiếp trong mục Trò chuyện và Diễn đàn. Thành viên cao cấp cũng có thể đặt buổi góp ý riêng với gia sư ngôn ngữ ngay trên bảng điều khiển.",
   },
   {
     id: "faq-6",
     category: "billing",
-    question: "Can I change or cancel my plan anytime?",
+    question: "Tôi có thể đổi hoặc hủy gói bất cứ lúc nào không?",
     answer:
-      "Absolutely. You can upgrade, downgrade, or cancel your subscription at any time from your Account Settings. Your access will remain active until the end of your current billing period.",
+      "Có. Bạn có thể nâng cấp, hạ cấp hoặc hủy gói bất cứ lúc nào trong phần Cài đặt tài khoản. Quyền truy cập vẫn duy trì đến hết chu kỳ thanh toán hiện tại.",
   },
 ];
 
@@ -116,15 +116,15 @@ export default function FAQPage() {
 
           <div className="faq-hero-badge">
             <HelpCircle className="w-3.5 h-3.5" />
-            <span>Help Center</span>
+            <span>Trung tâm trợ giúp</span>
           </div>
 
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-            Frequently Asked Questions
+            Câu hỏi thường gặp
           </h1>
           <p className="text-xs sm:text-sm opacity-90 max-w-xl mx-auto font-medium leading-relaxed">
-            Have questions about our platform, mock exams, or subscriptions?
-            Find quick answers below or search your topic.
+            Bạn có thắc mắc về nền tảng, bài thi thử hoặc các gói đăng ký?
+            Xem câu trả lời bên dưới hoặc tìm kiếm chủ đề bạn cần.
           </p>
 
           {/* Search Input Bar */}
@@ -132,7 +132,7 @@ export default function FAQPage() {
             <Search className="faq-search-icon w-4 h-4" />
             <input
               type="text"
-              placeholder="Search keywords or questions..."
+              placeholder="Tìm từ khóa hoặc câu hỏi..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="faq-search-input"
@@ -188,7 +188,7 @@ export default function FAQPage() {
             <div className="faq-empty-state">
               <HelpCircle className="faq-empty-state-icon w-8 h-8" />
               <p className="faq-empty-state-text">
-                No matching questions found for "{searchQuery}".
+                Không tìm thấy câu hỏi phù hợp với "{searchQuery}".
               </p>
             </div>
           )}
@@ -201,17 +201,16 @@ export default function FAQPage() {
               <MessageSquare className="w-6 h-6" />
             </div>
             <div className="space-y-1">
-              <h3 className="faq-support-title">Still have questions?</h3>
+              <h3 className="faq-support-title">Bạn còn thắc mắc?</h3>
               <p className="faq-support-text">
-                Can't find the answer you're looking for? Reach out to our
-                support team.
+                Không tìm thấy câu trả lời phù hợp? Hãy liên hệ với đội ngũ hỗ trợ.
               </p>
             </div>
           </div>
 
           <button className="faq-support-btn cursor-pointer active:scale-95">
             <Mail className="w-4 h-4" />
-            <span>Contact Support</span>
+            <span>Liên hệ hỗ trợ</span>
           </button>
         </div>
       </main>

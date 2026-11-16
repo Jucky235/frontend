@@ -20,7 +20,7 @@ export const ForumFilterBar: React.FC<ForumFilterBarProps> = ({
         <Search className="w-4 h-4 text-foreground-subtle absolute left-3.5 top-1/2 -translate-y-1/2" />
         <input
           type="text"
-          placeholder="Search discussions or tags..."
+          placeholder="Tìm thảo luận hoặc thẻ..."
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           className="w-full pl-9 pr-4 py-2 bg-background-hover border border-transparent rounded-xl text-xs font-medium text-foreground placeholder:text-foreground-subtle focus:outline-none focus:bg-background-card focus:border-primary transition-all"
@@ -38,7 +38,7 @@ export const ForumFilterBar: React.FC<ForumFilterBarProps> = ({
                 : "text-foreground-subtle hover:text-foreground"
             }`}
           >
-            Latest
+            Mới nhất
           </button>
           <button
             onClick={() => onSortChange("popular")}
@@ -48,7 +48,7 @@ export const ForumFilterBar: React.FC<ForumFilterBarProps> = ({
                 : "text-foreground-subtle hover:text-foreground"
             }`}
           >
-            Top
+            Cao nhất
           </button>
         </div>
       </div>

@@ -92,9 +92,9 @@ export default function CreateDeckModal({
               <FolderPlus className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="deck-modal-header-title">Create Study Deck</h3>
+              <h3 className="deck-modal-header-title">Tạo bộ thẻ học tập</h3>
               <p className="deck-modal-header-subtitle">
-                Flashcard Workspace Management
+                Quản lý bộ thẻ học tập
               </p>
             </div>
           </div>
@@ -121,7 +121,7 @@ export default function CreateDeckModal({
           {/* Title Input */}
           <div className="modal-field">
             <label htmlFor="name" className="modal-field-label">
-              Deck Title
+              Tên bộ thẻ
             </label>
             <input
               type="text"
@@ -140,14 +140,14 @@ export default function CreateDeckModal({
           {/* Description Input */}
           <div className="modal-field">
             <label htmlFor="description" className="modal-field-label">
-              Short Summary Description
+              Mô tả tóm tắt
             </label>
             <textarea
               id="description"
               name="description"
               maxLength={200}
               rows={3}
-              placeholder="Provide a context outline summarizing this flashcard learning track."
+              placeholder="Nhập dàn ý ngữ cảnh tóm tắt lộ trình học thẻ ghi nhớ này."
               value={formData.description}
               onChange={handleInputChange}
               disabled={isSubmitting}
@@ -157,15 +157,15 @@ export default function CreateDeckModal({
 
           {/* Category Scope (Read-only) */}
           <div className="modal-field">
-            <label className="modal-field-label">Target Category Scope</label>
+            <label className="modal-field-label">Phạm vi danh mục</label>
             <div className="deck-modal-readonly">
-              {formData.category} Module Baseline
+              {formData.category} Thông tin mô-đun
             </div>
           </div>
 
           {/* Visibility Controls */}
           <div className="modal-field">
-            <label className="modal-field-label">Deck Visibility Privacy</label>
+            <label className="modal-field-label">Quyền riêng tư của bộ thẻ</label>
             <div className="deck-visibility-grid">
               <button
                 type="button"
@@ -181,10 +181,10 @@ export default function CreateDeckModal({
                       formData.visibility === "PRIVATE" ? "is-selected" : ""
                     }`}
                   />
-                  <span className="deck-visibility-label">Private</span>
+                  <span className="deck-visibility-label">Riêng tư</span>
                 </div>
                 <p className="deck-visibility-desc">
-                  Only accessible inside your individual workspace context.
+                  Chỉ truy cập được trong không gian làm việc cá nhân.
                 </p>
               </button>
 
@@ -202,10 +202,10 @@ export default function CreateDeckModal({
                       formData.visibility === "PUBLIC" ? "is-selected" : ""
                     }`}
                   />
-                  <span className="deck-visibility-label">Public Shared</span>
+                  <span className="deck-visibility-label">Chia sẻ với mọi người</span>
                 </div>
                 <p className="deck-visibility-desc">
-                  Discoverable and shareable across all system account domains.
+                  Có thể tìm thấy và chia sẻ trên toàn hệ thống.
                 </p>
               </button>
             </div>
@@ -221,7 +221,7 @@ export default function CreateDeckModal({
               disabled={isSubmitting}
               className="modal-btn-cancel cursor-pointer"
             >
-              Cancel
+              Hủy
             </button>
             <button
               type="submit"

@@ -223,7 +223,7 @@ export default function GrandHorizontalRoadmapPage({
       <div className="w-full min-h-screen flex flex-col items-center justify-center space-y-4">
         <RefreshCw className="w-8 h-8 text-brand animate-spin" />
         <p className="text-sm font-bold text-foreground-subtle">
-          Building your space roadmap...
+          Đang xây dựng lộ trình học riêng cho bạn...
         </p>
       </div>
     );
@@ -242,10 +242,10 @@ export default function GrandHorizontalRoadmapPage({
             </div>
             <div className="space-y-1">
               <h3 className="text-lg font-black text-foreground">
-                Generating your roadmap
+                Đang tạo lộ trình học
               </h3>
               <p className="text-xs text-foreground-subtle">
-                Please wait while we craft your personalized learning journey...
+                Vui lòng chờ trong khi chúng tôi tạo lộ trình học dành riêng cho bạn...
               </p>
             </div>
           </div>
@@ -261,10 +261,10 @@ export default function GrandHorizontalRoadmapPage({
             </div>
             <div>
               <h2 className="text-xl font-black text-foreground">
-                No Active Roadmap Found
+                Chưa có lộ trình học nào
               </h2>
               <p className="text-xs text-foreground-subtle mt-1">
-                Generate a personalized AI learning path to start practicing.
+                Tạo lộ trình học cá nhân hóa bằng AI để bắt đầu luyện tập.
               </p>
             </div>
             <div className="flex flex-col space-y-2">
@@ -275,7 +275,7 @@ export default function GrandHorizontalRoadmapPage({
                 className="w-full py-3.5 rounded-2xl bg-brand text-white font-extrabold flex items-center justify-center space-x-2 shadow-lg shadow-brand/20 hover:bg-brand-hover transition-all disabled:opacity-50 cursor-pointer"
               >
                 <Sparkles className="w-5 h-5" />
-                <span>Retry Generation</span>
+                <span>Thử tạo lại</span>
               </button>
               <button
                 type="button"
@@ -283,7 +283,7 @@ export default function GrandHorizontalRoadmapPage({
                 className="w-full py-3 rounded-2xl bg-background-hover border border-border text-foreground font-bold hover:bg-border/40 transition-all flex items-center justify-center space-x-2 text-sm cursor-pointer"
               >
                 <ArrowLeft className="w-4 h-4" />
-                <span>Go Back</span>
+                <span>Quay lại</span>
               </button>
             </div>
           </div>
@@ -294,7 +294,7 @@ export default function GrandHorizontalRoadmapPage({
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-background-card p-6 border border-border rounded-3xl shadow-sm w-full relative z-10">
             <div>
               <span className="text-xs font-black uppercase tracking-wider text-brand flex items-center gap-1.5">
-                <Rocket className="w-4 h-4" /> Learning Pathway
+                <Rocket className="w-4 h-4" /> Lộ trình học tập
               </span>
               <h1 className="text-2xl font-black text-foreground">
                 {roadmap?.title || "Your Space Odyssey Roadmap"}
@@ -306,7 +306,7 @@ export default function GrandHorizontalRoadmapPage({
               className="px-5 py-2.5 rounded-xl bg-background-hover border border-border text-foreground font-bold hover:bg-border/40 transition-all flex items-center space-x-2 text-sm cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4" />
-              <span>Go Back</span>
+              <span>Quay lại</span>
             </button>
           </div>
 
@@ -458,7 +458,7 @@ export default function GrandHorizontalRoadmapPage({
                                   `Lesson ${node.order ?? index + 1}`}
                             </p>
                             <p className="text-[11px] font-bold text-foreground-subtle">
-                              {node.content?.exercises?.length || 0} Exercises
+                              {node.content?.exercises?.length || 0} Bài tập
                             </p>
                           </div>
                         </div>
@@ -479,10 +479,10 @@ export default function GrandHorizontalRoadmapPage({
             <div className="flex justify-between items-center pb-4 border-b border-border">
               <div>
                 <span className="text-xs font-black uppercase text-brand tracking-wider">
-                  Step #{selectedNode.order} Practice
+                  Bước số{selectedNode.order} Luyện tập
                 </span>
                 <h2 className="text-lg font-black text-foreground">
-                  Exercise {activeExerciseIndex + 1} of{" "}
+                  Bài tập {activeExerciseIndex + 1} of{" "}
                   {selectedNode.content?.exercises?.length || 1}
                 </h2>
               </div>
@@ -517,7 +517,7 @@ export default function GrandHorizontalRoadmapPage({
                 </div>
               ) : (
                 <div className="text-center py-8 text-foreground-subtle font-bold">
-                  No exercises found in this node.
+                  Không có bài tập nào trong mục này.
                 </div>
               );
             })()}

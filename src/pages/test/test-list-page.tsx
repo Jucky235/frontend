@@ -1,9 +1,6 @@
 import * as React from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
-  LogOut,
-  User,
-  ArrowLeft,
   Search,
   Timer,
   FileText,
@@ -16,14 +13,13 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useGetExamsQuery } from "@/redux/exam/examApiSlice";
+import Header from "@/components/organism/common/Header";
 
 interface ExamListPageProps {
   pageSize?: number; // Optional custom page size, defaults to 6 items per page
 }
 
 export default function ExamListPage({ pageSize = 6 }: ExamListPageProps) {
-  const navigate = useNavigate();
-  const location = useLocation();
   const { data: exams = [], isLoading, isError, error } = useGetExamsQuery();
   const [searchQuery, setSearchQuery] = React.useState("");
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -56,44 +52,14 @@ export default function ExamListPage({ pageSize = 6 }: ExamListPageProps) {
 
   return (
     <div className="study-page font-inter examlist-page">
-      {/* 1. Dynamic Top Navigation Hub Bar */}
-      <header className="study-header">
-        <div className="flex items-center space-x-4">
-          <button
-            type="button"
-            onClick={() =>
-              location.key === "default" ? navigate("/") : navigate(-1)
-            }
-            className="study-header-back-btn"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="hidden sm:inline">Back</span>
-          </button>
-          <div className="study-header-divider hidden sm:block" />
-          <div className="flex items-center space-x-2">
-            <div className="study-header-badge">T</div>
-            <span className="study-header-title">Test Hub</span>
-          </div>
-        </div>
-
-        <div className="flex items-center space-x-4">
-          <button type="button" className="study-header-user-btn">
-            <User className="w-4 h-4" />
-          </button>
-          <button type="button" className="study-header-logout-btn">
-            <LogOut className="w-4 h-4" />
-            <span className="hidden sm:inline">Logout</span>
-          </button>
-        </div>
-      </header>
+      <Header />
 
       {/* 2. Main Layout Container Area */}
       <main className="examlist-main">
         <div>
-          <h1 className="examlist-page-title">Certifications & Exams</h1>
+          <h1 className="examlist-page-title">Chứng chỉ và bài thi</h1>
           <p className="examlist-page-subtitle">
-            Validate your mastery levels across advanced architectural
-            frameworks and runtime languages.
+            Đánh giá trình độ của bạn qua các bài thi và kỹ năng chuyên sâu.
           </p>
         </div>
 
@@ -103,7 +69,7 @@ export default function ExamListPage({ pageSize = 6 }: ExamListPageProps) {
             <Search className="deck-filter-search-icon w-4 h-4" />
             <input
               type="text"
-              placeholder="Filter assessments by title or keywords..."
+              placeholder="Lọc bài thi theo tên hoặc từ khóa..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               disabled={isLoading || isError}
@@ -117,7 +83,7 @@ export default function ExamListPage({ pageSize = 6 }: ExamListPageProps) {
           {isLoading && (
             <div className="examlist-loading-panel">
               <Loader2 className="examlist-loading-spinner w-8 h-8 animate-spin" />
-              <span>Retrieving assessments from server...</span>
+              <span>Đang tải bài thi từ máy chủ...</span>
             </div>
           )}
 
@@ -126,7 +92,7 @@ export default function ExamListPage({ pageSize = 6 }: ExamListPageProps) {
               <AlertCircle className="examlist-error-icon w-5 h-5 mt-0.5" />
               <div className="space-y-1">
                 <h4 className="examlist-error-title">
-                  Failed to connect to Workspace API
+                  Không thể kết nối đến API Workspace
                 </h4>
                 <p className="examlist-error-desc">
                   {error && "status" in error
@@ -176,21 +142,21 @@ export default function ExamListPage({ pageSize = 6 }: ExamListPageProps) {
                       </div>
 
                       <p className="examlist-card-desc">
-                        Category: {exam.category} Assessment Module.
+                        Danh mục: {exam.category} Mô-đun đánh giá.
                       </p>
 
                       <div className="examlist-card-meta">
                         <span className="examlist-card-meta-item">
                           <HelpCircle className="w-3.5 h-3.5" />
-                          <span>{exam.questions?.length ?? 0} items</span>
+                          <span>{exam.questions?.length ?? 0} mục</span>
                         </span>
                         <span className="examlist-card-meta-item">
                           <Timer className="w-3.5 h-3.5" />
-                          <span>{exam.time} min duration</span>
+                          <span>{exam.time} phút</span>
                         </span>
                         <span className="examlist-card-meta-item">
                           <Award className="w-3.5 h-3.5" />
-                          <span>Standard Rating</span>
+                          <span>Đánh giá tiêu chuẩn</span>
                         </span>
                       </div>
                     </div>
@@ -207,14 +173,14 @@ export default function ExamListPage({ pageSize = 6 }: ExamListPageProps) {
                         disabled
                         className="examlist-btn-unavailable"
                       >
-                        Unavailable
+                        Không khả dụng
                       </button>
                     ) : (
                       <Link
                         to={`/test/${exam.id}`}
                         className="examlist-btn-begin cursor-pointer active:scale-95"
                       >
-                        <span>Begin Exam</span>
+                        <span>Bắt đầu bài thi</span>
                         <ArrowRight className="examlist-btn-begin-arrow w-3.5 h-3.5" />
                       </Link>
                     )}
@@ -225,7 +191,7 @@ export default function ExamListPage({ pageSize = 6 }: ExamListPageProps) {
 
           {!isLoading && !isError && filteredExams.length === 0 && (
             <div className="deck-feed-empty-panel">
-              No evaluation tests matched your parameters.
+              Không tìm thấy bài kiểm tra phù hợp với lựa chọn của bạn.
             </div>
           )}
 
@@ -233,7 +199,7 @@ export default function ExamListPage({ pageSize = 6 }: ExamListPageProps) {
           {!isLoading && !isError && filteredExams.length > 0 && (
             <div className="flex flex-col items-center justify-center gap-4 pt-6 pb-2">
               <div className="text-sm text-foreground-subtle text-center">
-                Showing{" "}
+                Đang hiển thị{" "}
                 <span className="font-bold">
                   {(currentPage - 1) * pageSize + 1}
                 </span>{" "}
@@ -242,7 +208,7 @@ export default function ExamListPage({ pageSize = 6 }: ExamListPageProps) {
                   {Math.min(currentPage * pageSize, filteredExams.length)}
                 </span>{" "}
                 of <span className="font-bold">{filteredExams.length}</span>{" "}
-                exams
+                Bài thi
               </div>
 
               <div className="flex items-center space-x-1.5 flex-wrap justify-center">
@@ -254,7 +220,7 @@ export default function ExamListPage({ pageSize = 6 }: ExamListPageProps) {
                   }
                   disabled={currentPage === 1}
                   className="px-3 py-2.5 rounded-xl border border-border bg-background-card text-foreground hover:bg-background-hover disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer flex items-center justify-center font-medium text-sm"
-                  aria-label="Previous page"
+                  aria-label="Trang trước"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
@@ -288,7 +254,7 @@ export default function ExamListPage({ pageSize = 6 }: ExamListPageProps) {
                   }
                   disabled={currentPage === totalPages}
                   className="px-3 py-2.5 rounded-xl border border-border bg-background-card text-foreground hover:bg-background-hover disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer flex items-center justify-center font-medium text-sm"
-                  aria-label="Next page"
+                  aria-label="Trang tiếp theo"
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>
@@ -299,7 +265,7 @@ export default function ExamListPage({ pageSize = 6 }: ExamListPageProps) {
       </main>
 
       <footer className="deck-footer">
-        &copy; 2026 Workspace System. All rights reserved.
+        &copy; 2026 Hệ thống Workspace. Bảo lưu mọi quyền.
       </footer>
     </div>
   );

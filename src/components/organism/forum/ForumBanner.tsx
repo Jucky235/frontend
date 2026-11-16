@@ -13,14 +13,13 @@ export const ForumBanner: React.FC<ForumBannerProps> = ({
       <div className="space-y-2 z-10 max-w-xl">
         <span className="inline-flex items-center space-x-1.5 bg-background-card/20 border border-white/20 text-xs font-bold px-3 py-1 rounded-full backdrop-blur-md uppercase tracking-wider text-white">
           <Flame className="w-3.5 h-3.5 text-amber-300 fill-current" />
-          <span>Community Forum</span>
+          <span>Diễn đàn cộng đồng</span>
         </span>
         <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-          Discuss, Ask & Share Knowledge
+          Thảo luận, hỏi đáp và chia sẻ kiến thức
         </h1>
         <p className="text-xs sm:text-sm opacity-90 text-white/90 font-medium leading-relaxed">
-          Connect with fellow learners, exchange study notes, ask questions, and
-          practice with global peers.
+          Kết nối với học viên khác, trao đổi ghi chú, đặt câu hỏi và luyện tập cùng cộng đồng.
         </p>
       </div>
 
@@ -29,7 +28,7 @@ export const ForumBanner: React.FC<ForumBannerProps> = ({
         className="z-10 bg-background-card text-primary hover:bg-background-hover font-bold text-xs sm:text-sm px-5 py-3 rounded-xl shadow-md transition-all flex items-center space-x-2 cursor-pointer active:scale-95 shrink-0"
       >
         <Plus className="w-4 h-4" />
-        <span>New Discussion</span>
+        <span>Cuộc thảo luận mới</span>
       </button>
 
       <div className="absolute -bottom-10 -right-10 w-48 h-48 bg-pink-500/40 rounded-full opacity-30 blur-2xl pointer-events-none" />

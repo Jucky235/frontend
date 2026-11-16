@@ -81,7 +81,7 @@ export default function FlashcardHubPage() {
     if (isLoading) {
       return (
         <div className="p-12 text-center rounded-2xl bg-background-card border border-border">
-          <p className="text-sm font-semibold text-foreground">Loading public decks...</p>
+          <p className="text-sm font-semibold text-foreground">Đang tải bộ thẻ công khai...</p>
         </div>
       );
     }
@@ -90,13 +90,13 @@ export default function FlashcardHubPage() {
       return (
         <div className="p-12 text-center rounded-2xl bg-background-card border border-border space-y-3">
           <Layers className="w-10 h-10 mx-auto text-foreground-subtle opacity-50" />
-          <p className="text-sm font-semibold text-foreground">Unable to load public decks</p>
+          <p className="text-sm font-semibold text-foreground">Không thể tải các bộ thẻ công khai</p>
           <button
             type="button"
             onClick={() => refetch()}
             className="px-4 py-2 rounded-xl bg-brand text-brand-foreground font-bold text-xs hover:opacity-95 transition-all"
           >
-            Retry
+            Thử lại
           </button>
         </div>
       );
@@ -107,10 +107,10 @@ export default function FlashcardHubPage() {
         <div className="p-12 text-center rounded-2xl bg-background-card border border-border space-y-3">
           <Layers className="w-10 h-10 mx-auto text-foreground-subtle opacity-50" />
           <p className="text-sm font-semibold text-foreground">
-            No flashcard decks found
+            Không tìm thấy bộ thẻ ghi nhớ
           </p>
           <p className="text-xs text-foreground-subtle">
-            Try adjusting your search query or category filter.
+            Hãy đổi từ khóa hoặc bộ lọc danh mục.
           </p>
         </div>
       );
@@ -137,7 +137,7 @@ export default function FlashcardHubPage() {
                       ? "text-rose-500 bg-rose-500/10"
                       : "text-foreground-subtle hover:text-foreground hover:bg-background-hover"
                   }`}
-                  title="Bookmark Deck"
+                  title="Đánh dấu bộ thẻ"
                 >
                   <Bookmark className="w-4 h-4 fill-current" />
                 </button>
@@ -157,10 +157,10 @@ export default function FlashcardHubPage() {
               <div className="flex items-center justify-between text-xs">
                 <span className="flex items-center space-x-1.5 text-foreground-subtle">
                   <Layers className="w-3.5 h-3.5" />
-                  <span>{deck.cardCount} cards</span>
+                  <span>{deck.cardCount} thẻ</span>
                 </span>
                 <span className="font-bold text-brand">
-                  {deck.masteryPercentage}% mastered
+                  {deck.masteryPercentage}% thành thạo
                 </span>
               </div>
 
@@ -174,10 +174,10 @@ export default function FlashcardHubPage() {
               <div className="flex items-center justify-between pt-1">
                 <span className="text-[10px] text-foreground-subtle flex items-center space-x-1">
                   <Clock className="w-3 h-3" />
-                  <span>Studied {deck.lastStudied}</span>
+                  <span>Đã học {deck.lastStudied}</span>
                 </span>
                 <span className="flex items-center space-x-1 text-xs font-bold text-brand group-hover:translate-x-1 transition-transform">
-                  <span>Study Now</span>
+                  <span>Học ngay</span>
                   <ChevronRight className="w-3.5 h-3.5" />
                 </span>
               </div>
@@ -199,10 +199,10 @@ export default function FlashcardHubPage() {
             <div className="space-y-2">
               <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-brand/10 text-brand text-xs font-bold tracking-wide uppercase">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>Interactive Learning</span>
+                <span>Học tập tương tác</span>
               </div>
               <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-                Flashcard Hub
+                Trung tâm thẻ ghi nhớ
               </h1>
               <p className="text-sm sm:text-base text-foreground-subtle max-w-xl">
                 Boost your long-term memory with spaced repetition decks. Review
@@ -217,7 +217,7 @@ export default function FlashcardHubPage() {
                 className="px-5 py-2.5 rounded-xl bg-brand text-brand-foreground font-bold text-xs sm:text-sm hover:opacity-95 transition-all shadow-xs flex items-center space-x-2 cursor-pointer"
               >
                 <Plus className="w-4 h-4" />
-                <span>Create New Deck</span>
+                <span>Tạo bộ thẻ mới</span>
               </button>
             </div>
           </div>
@@ -230,7 +230,7 @@ export default function FlashcardHubPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search flashcard decks..."
+              placeholder="Tìm bộ thẻ ghi nhớ..."
               className="w-full bg-background-card border border-border rounded-xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-foreground placeholder:text-foreground-subtle outline-none focus:border-brand transition-colors"
             />
           </div>
@@ -255,7 +255,7 @@ export default function FlashcardHubPage() {
         <section className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold uppercase tracking-wider text-foreground-subtle">
-              Available Decks ({filteredDecks.length})
+              Bộ thẻ hiện có ({filteredDecks.length})
             </h2>
           </div>
 

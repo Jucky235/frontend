@@ -87,7 +87,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
       {isSubmitted && q.explanation && (
         <div className="mt-4 p-4 bg-blue-50 text-blue-800 text-sm rounded-xl border border-blue-100 font-medium">
           <strong className="block mb-1 text-blue-900 uppercase text-xs tracking-wider">
-            Explanation
+            Giải thích
           </strong>
           {q.explanation}
         </div>

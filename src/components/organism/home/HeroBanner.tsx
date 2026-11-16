@@ -20,9 +20,9 @@ const DEFAULT_SLIDES: BannerSlide[] = [
   {
     id: 1,
     badgeText: "New Released",
-    title: "Master Your Upcoming Exams",
+    title: "Chinh phục các bài thi sắp tới",
     description:
-      "Practice with thousands of verified questions and real-time performance tracking.",
+      "Luyện tập với hàng nghìn câu hỏi đã xác thực và theo dõi kết quả theo thời gian thực.",
     buttonText: "Start Practice",
     imageUrl:
       "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80",
@@ -30,9 +30,9 @@ const DEFAULT_SLIDES: BannerSlide[] = [
   {
     id: 2,
     badgeText: "Community",
-    title: "Join Top Study Groups",
+    title: "Tham gia nhóm học tập hàng đầu",
     description:
-      "Connect with peers worldwide, share resources, and climb the leaderboard together.",
+      "Kết nối với học viên khắp nơi, chia sẻ tài liệu và cùng vươn lên trên bảng xếp hạng.",
     buttonText: "Explore Groups",
     imageUrl:
       "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80",
@@ -40,9 +40,9 @@ const DEFAULT_SLIDES: BannerSlide[] = [
   {
     id: 3,
     badgeText: "Special Offer",
-    title: "Unlock Unlimited Mock Tests",
+    title: "Mở khóa bài thi thử không giới hạn",
     description:
-      "Get complete access to all exam categories with detailed analytical reports.",
+      "Truy cập mọi danh mục bài thi cùng các báo cáo phân tích chi tiết.",
     buttonText: "Upgrade Now",
     imageUrl:
       "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80",
@@ -81,7 +81,7 @@ export default function HeroBanner({
 
   return (
     <section
-      aria-label="Learning highlights"
+      aria-label="Điểm nổi bật trong học tập"
       aria-roledescription="carousel"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -164,7 +164,7 @@ export default function HeroBanner({
             <div className="flex items-center space-x-2">
               <button
                 onClick={prevSlide}
-                aria-label="Previous Slide"
+                aria-label="Trang chiếu trước"
                 className="p-2 rounded-full bg-background-card/10 hover:bg-background-card/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand transition-colors backdrop-blur-md text-white active:scale-90"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -172,7 +172,7 @@ export default function HeroBanner({
 
               <button
                 onClick={nextSlide}
-                aria-label="Next Slide"
+                aria-label="Trang chiếu tiếp theo"
                 className="p-2 rounded-full bg-background-card/10 hover:bg-background-card/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand transition-colors backdrop-blur-md text-white active:scale-90"
               >
                 <ChevronRight className="w-4 h-4" />

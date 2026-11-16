@@ -11,7 +11,7 @@ export interface DropdownItem {
 
 interface DropdownContextType {
   activeId: string | null;
-  setActiveId: (id: string | null) => void;
+  setActiveId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const DropdownContext = React.createContext<DropdownContextType>({
@@ -65,29 +65,43 @@ export default function Dropdown({
     left: 0,
   });
   const triggerRef = React.useRef<HTMLDivElement>(null);
+  const closeTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  React.useEffect(() => () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+  }, []);
+
+  const openDropdown = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    if (triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      const menuWidth = 176;
+      setCoords({
+        top: rect.bottom + window.scrollY + 4,
+        left: align === "right"
+          ? rect.right + window.scrollX - menuWidth
+          : rect.left + window.scrollX,
+      });
+    }
+    setActiveId(uniqueId);
+  };
+
+  const scheduleClose = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    closeTimer.current = setTimeout(() => {
+      setActiveId((current) => current === uniqueId ? null : current);
+    }, 180);
+  };
 
   const toggleDropdown = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!isOpen && triggerRef.current) {
-      const rect = triggerRef.current.getBoundingClientRect();
-      const menuWidth = 176;
-
-      setCoords({
-        top: rect.bottom + window.scrollY + 4,
-        left:
-          align === "right"
-            ? rect.right + window.scrollX - menuWidth
-            : rect.left + window.scrollX,
-      });
-      setActiveId(uniqueId);
-    } else {
-      setActiveId(null);
-    }
+    if (isOpen) setActiveId(null);
+    else openDropdown();
   };
 
   return (
-    <div className="inline-block" ref={triggerRef}>
-      <div onClick={toggleDropdown}>{trigger}</div>
+    <div className="inline-block" ref={triggerRef} onMouseEnter={openDropdown} onMouseLeave={scheduleClose}>
+      <div onClick={toggleDropdown} onFocus={openDropdown}>{trigger}</div>
 
       {isOpen &&
         createPortal(
@@ -97,8 +111,10 @@ export default function Dropdown({
               top: `${coords.top}px`,
               left: `${coords.left}px`,
             }}
-            className={`z-[9999] ${width} bg-background-card rounded-xl shadow-lg border border-border py-1.5 text-xs font-medium text-foreground-muted animate-in fade-in-50 zoom-in-95 duration-100`}
+            className={`z-[9999] ${width} bg-background-card rounded-xl shadow-lg border border-border py-1.5 text-xs font-medium text-foreground-muted animate-in fade-in-0 zoom-in-95 duration-500 ease-out`}
             onClick={(e) => e.stopPropagation()}
+            onMouseEnter={openDropdown}
+            onMouseLeave={scheduleClose}
           >
             {items.map((item, index) => (
               <React.Fragment key={index}>

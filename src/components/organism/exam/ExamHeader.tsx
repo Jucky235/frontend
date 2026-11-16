@@ -15,7 +15,7 @@ export const ExamHeader: React.FC<ExamHeaderProps> = ({ examName, onBack }) => (
       className="flex items-center space-x-1 text-sm font-semibold text-foreground-subtle hover:text-pink-600 transition-colors cursor-pointer"
     >
       <ChevronLeft className="w-4 h-4" />
-      <span>Back</span>
+      <span>Quay lại</span>
     </button>
     <span className="text-xs font-bold uppercase tracking-widest text-foreground-subtle bg-border/60 px-3 py-1 rounded-md">
       {examName}

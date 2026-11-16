@@ -125,9 +125,9 @@ export default function ImportDeckModal({
               <Upload className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="deck-modal-header-title">Import Deck from CSV</h3>
+              <h3 className="deck-modal-header-title">Nhập bộ thẻ từ CSV</h3>
               <p className="deck-modal-header-subtitle">
-                Create a new deck with a custom name
+                Tạo bộ thẻ mới với tên tùy chỉnh
               </p>
             </div>
           </div>
@@ -152,7 +152,7 @@ export default function ImportDeckModal({
 
           <div className="modal-field">
             <label htmlFor="deck-name" className="modal-field-label">
-              New Deck Name
+              Tên bộ thẻ mới
             </label>
             <input
               id="deck-name"
@@ -170,7 +170,7 @@ export default function ImportDeckModal({
 
           <div className="modal-field">
             <label htmlFor="deck-description" className="modal-field-label">
-              Description (optional)
+              Mô tả (không bắt buộc)
             </label>
             <textarea
               id="deck-description"
@@ -181,19 +181,19 @@ export default function ImportDeckModal({
               onChange={handleInputChange}
               disabled={isSubmitting}
               className="modal-input resize-none"
-              placeholder="Short summary for the new deck"
+              placeholder="Tóm tắt ngắn về bộ thẻ mới"
             />
           </div>
 
           <div className="modal-field">
-            <label className="modal-field-label">Target Category</label>
+            <label className="modal-field-label">Danh mục đích</label>
             <div className="deck-modal-readonly">
-              {formData.category} Module Baseline
+              {formData.category} Thông tin mô-đun
             </div>
           </div>
 
           <div className="modal-field">
-            <label className="modal-field-label">Deck Visibility</label>
+            <label className="modal-field-label">Chế độ hiển thị bộ thẻ</label>
             <div className="deck-visibility-grid">
               <button
                 type="button"
@@ -209,10 +209,10 @@ export default function ImportDeckModal({
                       formData.visibility === "PRIVATE" ? "is-selected" : ""
                     }`}
                   />
-                  <span className="deck-visibility-label">Private</span>
+                  <span className="deck-visibility-label">Riêng tư</span>
                 </div>
                 <p className="deck-visibility-desc">
-                  Only visible to your account.
+                  Chỉ tài khoản của bạn mới thấy nội dung này.
                 </p>
               </button>
 
@@ -230,10 +230,10 @@ export default function ImportDeckModal({
                       formData.visibility === "PUBLIC" ? "is-selected" : ""
                     }`}
                   />
-                  <span className="deck-visibility-label">Public</span>
+                  <span className="deck-visibility-label">Công khai</span>
                 </div>
                 <p className="deck-visibility-desc">
-                  Shareable across the platform.
+                  Có thể chia sẻ với mọi người trên nền tảng.
                 </p>
               </button>
             </div>
@@ -241,7 +241,7 @@ export default function ImportDeckModal({
 
           <div className="modal-field">
             <label htmlFor="csv-file-input" className="modal-field-label">
-              CSV File
+              Tệp CSV
             </label>
             <div className="flex flex-col gap-2">
               <input
@@ -255,14 +255,14 @@ export default function ImportDeckModal({
               />
               {selectedFileName && (
                 <div className="rounded-lg border border-border bg-slate-50 px-3 py-2 text-xs text-slate-600 dark:bg-slate-900 dark:text-slate-300">
-                  Selected file: <span className="font-medium">{selectedFileName}</span>
+                  Tệp đã chọn: <span className="font-medium">{selectedFileName}</span>
                 </div>
               )}
             </div>
           </div>
 
           <div className="rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-xs text-blue-700 dark:border-blue-900 dark:bg-blue-950/40 dark:text-blue-300">
-            Expected CSV columns: <strong>frontContent, backContent, explanation</strong>
+            Các cột CSV cần có: <strong>frontContent, backContent, explanation</strong>
           </div>
 
           <div className="modal-actions">
@@ -272,7 +272,7 @@ export default function ImportDeckModal({
               disabled={isSubmitting}
               className="modal-btn-cancel cursor-pointer"
             >
-              Cancel
+              Hủy
             </button>
             <button
               type="submit"
@@ -283,7 +283,7 @@ export default function ImportDeckModal({
                   : "is-enabled"
               }`}
             >
-              {isSubmitting ? "Importing..." : "Import Deck"}
+              {isSubmitting ? "Importing..." : "Nhập bộ thẻ"}
             </button>
           </div>
         </form>

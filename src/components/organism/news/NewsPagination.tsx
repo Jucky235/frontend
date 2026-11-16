@@ -21,7 +21,7 @@ export const NewsPagination: React.FC<NewsPaginationProps> = ({
   return (
     <div className="p-4 border-t border-border-subtle bg-background/50 flex items-center justify-between">
       <span className="text-xs font-medium text-foreground-subtle">
-        Page <span className="font-bold">{currentPage}</span> of{" "}
+        Trang <span className="font-bold">{currentPage}</span> of{" "}
         <span className="font-bold">{totalPages}</span>
       </span>
       <div className="flex items-center space-x-2">

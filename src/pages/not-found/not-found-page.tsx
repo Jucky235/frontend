@@ -14,10 +14,10 @@ export default function NotFoundPage() {
 
           <div className="mt-8 space-y-3">
             <p className="text-xs font-bold uppercase tracking-[0.24em] text-foreground-subtle">
-              404 error
+              Lỗi 404
             </p>
             <h1 className="text-4xl font-black tracking-tight text-foreground md:text-5xl">
-              Page not found
+              Không tìm thấy trang
             </h1>
             <p className="mx-auto max-w-md text-sm leading-6 text-foreground-muted md:text-base">
               The page you are looking for does not exist or may have been moved.
@@ -31,7 +31,7 @@ export default function NotFoundPage() {
               className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground transition-all hover:bg-primary-hover shadow-lg shadow-primary/20"
             >
               <Home className="h-4 w-4" />
-              Go home
+              Về trang chủ
             </Link>
 
             <button
@@ -40,7 +40,7 @@ export default function NotFoundPage() {
               className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-background-hover px-5 py-3 text-sm font-bold text-foreground transition-colors hover:bg-background-subtle-hover"
             >
               <ArrowLeft className="h-4 w-4" />
-              Go back
+              Quay lại
             </button>
           </div>
         </div>

@@ -111,7 +111,7 @@ export default function ForumPostDetailPage() {
             className="flex items-center space-x-2 text-xs font-bold text-foreground-muted hover:text-foreground transition-colors cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>Back to Discussions</span>
+            <span>Quay lại thảo luận</span>
           </button>
 
           {post && (
@@ -138,7 +138,7 @@ export default function ForumPostDetailPage() {
                   navigator.clipboard.writeText(window.location.href)
                 }
                 className="p-2 rounded-xl bg-background-card border border-border text-foreground-muted hover:bg-background-hover transition-all cursor-pointer"
-                title="Share link"
+                title="Chia sẻ liên kết"
               >
                 <Share2 className="w-4 h-4" />
               </button>
@@ -150,7 +150,7 @@ export default function ForumPostDetailPage() {
           <div className="flex flex-col items-center justify-center py-20 bg-background-card rounded-2xl border border-border shadow-xs space-y-3">
             <Loader2 className="w-8 h-8 text-primary animate-spin" />
             <p className="text-xs font-semibold text-foreground-subtle">
-              Loading discussion...
+              Đang tải cuộc thảo luận...
             </p>
           </div>
         )}
@@ -159,17 +159,16 @@ export default function ForumPostDetailPage() {
           <div className="flex flex-col items-center justify-center py-16 bg-red-500/10 rounded-2xl border border-red-500/20 p-6 text-center space-y-3">
             <AlertCircle className="w-8 h-8 text-red-500" />
             <p className="text-sm font-bold text-foreground">
-              Failed to load discussion
+              Không thể tải cuộc thảo luận
             </p>
             <p className="text-xs text-foreground-subtle max-w-xs">
-              The post may have been removed or you don't have permission to
-              view it.
+              Bài đăng có thể đã bị xóa hoặc bạn không có quyền xem.
             </p>
             <button
               onClick={() => refetch()}
               className="mt-2 text-xs font-bold text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl transition-all cursor-pointer shadow-xs"
             >
-              Retry
+              Thử lại
             </button>
           </div>
         )}
@@ -180,7 +179,7 @@ export default function ForumPostDetailPage() {
               <article className="bg-background-card border border-border/80 rounded-2xl p-6 sm:p-8 shadow-xs space-y-6">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="bg-primary/10 text-primary font-bold text-[11px] uppercase px-2.5 py-1 rounded-lg tracking-wide border border-primary/20">
-                    {post.category?.name || "General"}
+                    {post.category?.name || "Chung"}
                   </span>
                   <span className="bg-background-hover text-foreground-subtle font-semibold text-[11px] px-2 py-0.5 rounded-md border border-border-subtle">
                     #{post.category?.slug || "topic"}
@@ -243,7 +242,7 @@ export default function ForumPostDetailPage() {
                   <div className="pt-4 border-t border-border-subtle space-y-2">
                     <span className="text-xs font-bold text-foreground-subtle flex items-center space-x-1">
                       <Paperclip className="w-3.5 h-3.5" />
-                      <span>Attachments ({post.attachments.length})</span>
+                      <span>Tệp đính kèm ({post.attachments.length})</span>
                     </span>
                     <div className="flex flex-wrap gap-2">
                       {post.attachments.map((fileUrl, index) => (
@@ -254,7 +253,7 @@ export default function ForumPostDetailPage() {
                           rel="noreferrer"
                           className="text-xs font-semibold text-primary bg-primary/10 hover:bg-primary/15 px-3 py-1.5 rounded-lg transition-colors truncate max-w-xs border border-primary/20"
                         >
-                          Attachment #{index + 1}
+                          Tệp đính kèm số{index + 1}
                         </a>
                       ))}
                     </div>
@@ -290,14 +289,14 @@ export default function ForumPostDetailPage() {
 
               <div className="bg-background-card border border-border/80 rounded-2xl p-6 shadow-xs space-y-4">
                 <h3 className="text-xs font-extrabold text-foreground uppercase tracking-wider">
-                  Join the Discussion
+                  Tham gia thảo luận
                 </h3>
                 <form onSubmit={handlePostComment} className="space-y-3">
                   <textarea
                     rows={3}
                     value={commentText}
                     onChange={(e) => setCommentText(e.target.value)}
-                    placeholder="Write a thoughtful comment..."
+                    placeholder="Viết bình luận của bạn..."
                     className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-background-hover text-xs font-medium text-foreground placeholder:text-foreground-subtle focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all resize-none"
                   />
                   <div className="flex justify-end">
@@ -311,7 +310,7 @@ export default function ForumPostDetailPage() {
                       ) : (
                         <Send className="w-3.5 h-3.5" />
                       )}
-                      <span>Post Comment</span>
+                      <span>Đăng bình luận</span>
                     </button>
                   </div>
                 </form>
@@ -319,12 +318,12 @@ export default function ForumPostDetailPage() {
 
               <div className="space-y-4">
                 <h3 className="text-sm font-bold text-foreground tracking-tight">
-                  Responses ({post.comments?.length ?? 0})
+                  Phản hồi ({post.comments?.length ?? 0})
                 </h3>
 
                 {(!post.comments || post.comments.length === 0) && (
                   <div className="bg-background-card border border-border/80 rounded-2xl p-8 text-center text-xs text-foreground-subtle font-medium">
-                    No comments yet. Be the first to start the conversation!
+                    Chưa có bình luận nào. Hãy bắt đầu cuộc trò chuyện!
                   </div>
                 )}
 
@@ -349,12 +348,12 @@ export default function ForumPostDetailPage() {
               <div className="bg-background-card border border-border/80 rounded-2xl p-5 shadow-xs space-y-4">
                 <div className="flex items-center space-x-2 text-foreground font-bold text-xs uppercase tracking-wider">
                   <Sparkles className="w-4 h-4 text-primary" />
-                  <span>Forum Rules</span>
+                  <span>Quy định diễn đàn</span>
                 </div>
                 <ul className="text-xs text-foreground-muted space-y-2.5 font-medium leading-relaxed list-disc list-inside">
-                  <li>Be respectful and supportive to other members.</li>
-                  <li>Keep responses constructive and on-topic.</li>
-                  <li>No spam, self-promotion, or duplicate posts.</li>
+                  <li>Hãy tôn trọng và hỗ trợ các thành viên khác.</li>
+                  <li>Hãy trao đổi tích cực và đúng chủ đề.</li>
+                  <li>Không gửi thư rác, quảng cáo hoặc bài đăng trùng lặp.</li>
                 </ul>
               </div>
             </aside>
@@ -426,7 +425,7 @@ function CommentCard({
           onClick={() => onToggleReply(comment.id)}
           className="text-xs font-semibold text-primary hover:underline cursor-pointer"
         >
-          {isReplying ? "Cancel" : "Reply"}
+          {isReplying ? "Hủy" : "Trả lời"}
         </button>
       </div>
 
@@ -451,7 +450,7 @@ function CommentCard({
               className="bg-primary hover:bg-primary-hover disabled:bg-border text-primary-foreground font-bold text-[11px] px-3.5 py-1.5 rounded-lg shadow-xs transition-all flex items-center space-x-1 cursor-pointer"
             >
               {isCommenting && <Loader2 className="w-3 h-3 animate-spin" />}
-              <span>Send Reply</span>
+              <span>Gửi trả lời</span>
             </button>
           </div>
         </div>

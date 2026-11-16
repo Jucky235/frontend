@@ -95,6 +95,7 @@ export default function LoginPage() {
 
   // Local state for toggling password visibility
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberEmail, setRememberEmail] = useState(false);
 
   // Toast stack state
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
@@ -113,7 +114,7 @@ export default function LoginPage() {
     if (location.state?.message) {
       addToast({
         type: "success",
-        title: "Registration Successful",
+        title: "Đăng ký thành công",
         message: location.state.message,
       });
 
@@ -126,6 +127,7 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -135,8 +137,18 @@ export default function LoginPage() {
     },
   });
 
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("rememberedLoginEmail");
+    if (savedEmail) {
+      setValue("email", savedEmail);
+      setRememberEmail(true);
+    }
+  }, [setValue]);
+
   // Handle form submission
   const onSubmit = async (data: LoginFormData) => {
+    if (rememberEmail) localStorage.setItem("rememberedLoginEmail", data.email);
+    else localStorage.removeItem("rememberedLoginEmail");
     try {
       const result = await login(data).unwrap();
       console.log(result);
@@ -152,10 +164,15 @@ export default function LoginPage() {
       // 2. Head directly to workspace hub
       navigate("/");
     } catch (error: any) {
+      const serverMessage =
+        error?.data?.message ||
+        error?.data?.error ||
+        error?.data?.detail ||
+        error?.error;
       addToast({
         type: "error",
-        title: "Login Failed",
-        message: error?.data?.message || "Có lỗi xảy ra",
+        title: "Đăng nhập thất bại",
+        message: serverMessage || `Đăng nhập thất bại (${error?.status ?? "lỗi kết nối"}). Vui lòng kiểm tra email và mật khẩu rồi thử lại.`,
       });
     }
   };
@@ -163,20 +180,21 @@ export default function LoginPage() {
   return (
     <div className="relative min-h-screen w-full bg-background font-inter overflow-x-hidden flex flex-col justify-between pb-12">
       {/* Top Decorative Blob Backdrop */}
-      <div className="absolute top-0 right-0 left-0 h-[40vh] bg-gradient-to-br from-banner-from to-banner-to rounded-b-[40%] md:rounded-b-[50%] flex flex-col justify-center px-12 md:px-16 text-white shadow-xl">
-        <p className="text-xl md:text-2xl font-medium tracking-wide opacity-90">
-          Welcome Back,
+      <div className="absolute top-0 right-0 left-0 h-[34vh] min-h-64 bg-gradient-to-br from-banner-from to-banner-to rounded-b-[12%] sm:rounded-b-[24%] flex flex-col justify-center px-6 sm:px-10 md:px-16 text-white shadow-xl">
+        <p className="text-sm sm:text-xl md:text-2xl font-medium tracking-wide opacity-90">
+          Bắt đầu buổi học tiếp theo của bạn
         </p>
-        <h1 className="text-5xl md:text-6xl font-extrabold mt-1 tracking-tight">
-          Log In!
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mt-1 tracking-tight">
+          Chào mừng bạn trở lại.
         </h1>
+        <p className="mt-2 max-w-md text-xs sm:text-sm text-white/80">Đăng nhập để tiếp tục bài học, theo dõi tiến độ và mở rộng vốn từ.</p>
         <div className="absolute top-0 right-0 w-40 h-28 bg-brand rounded-bl-full opacity-40 blur-md pointer-events-none" />
       </div>
 
-      <div className="h-[44vh]" />
+      <div className="h-[36vh] min-h-64" />
 
       {/* Main Input Form Container */}
-      <div className="flex-1 w-full max-w-lg mx-auto px-8 md:px-0 flex flex-col justify-start">
+      <div className="flex-1 w-full max-w-lg mx-auto px-4 sm:px-8 md:px-0 flex flex-col justify-start">
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="w-full flex flex-col space-y-7"
@@ -184,7 +202,7 @@ export default function LoginPage() {
           {/* Email Address Input Field */}
           <FloatingInput
             id="email"
-            label="EMAIL ADDRESS"
+            label="ĐỊA CHỈ EMAIL"
             type="email"
             placeholder="example@domain.com"
             register={register("email")}
@@ -196,9 +214,9 @@ export default function LoginPage() {
           {/* Password Input Field */}
           <FloatingInput
             id="password"
-            label="PASSWORD"
+            label="MẬT KHẨU"
             type={showPassword ? "text" : "password"}
-            placeholder="Enter password"
+            placeholder="Nhập mật khẩu"
             register={register("password")}
             error={errors.password?.message}
             disabled={isLoading}
@@ -224,12 +242,14 @@ export default function LoginPage() {
             <label className="flex items-center space-x-3 cursor-pointer select-none">
               <input
                 type="checkbox"
+                checked={rememberEmail}
+                onChange={(event) => setRememberEmail(event.target.checked)}
                 disabled={isLoading}
                 className="sr-only peer"
               />
               <div className="w-10 h-6 bg-border rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-background-card after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand relative" />
               <span className="text-sm text-muted-foreground font-medium">
-                Remember me
+                Ghi nhớ email
               </span>
             </label>
 
@@ -237,7 +257,7 @@ export default function LoginPage() {
               to="/forgot-password"
               className="text-sm font-semibold text-brand hover:opacity-80 transition-opacity"
             >
-              Forgot password?
+              Quên mật khẩu?
             </Link>
           </div>
 
@@ -254,7 +274,7 @@ export default function LoginPage() {
                   <span>Đang xử lý...</span>
                 </>
               ) : (
-                <span>Log in</span>
+                <span>Đăng nhập</span>
               )}
             </button>
           </div>
@@ -263,14 +283,19 @@ export default function LoginPage() {
         {/* Sign Up / Register Navigation Prompt */}
         <div className="text-center pt-8">
           <p className="text-sm text-muted-foreground font-medium">
-            Don't have an account yet?{" "}
+            Bạn chưa có tài khoản?{" "}
             <Link
-              to="/signup"
+              to="/register"
               className="font-bold text-brand hover:underline transition-all"
             >
-              Sign up
+              Đăng ký
             </Link>
           </p>
+        </div>
+        <div className="mt-8 grid grid-cols-3 gap-2 border-t border-border pt-5 text-center">
+          <div className="rounded-xl bg-background-card p-3"><span className="text-lg">🎧</span><p className="mt-1 text-[10px] font-semibold text-foreground-muted">Luyện nghe</p></div>
+          <div className="rounded-xl bg-background-card p-3"><span className="text-lg">📈</span><p className="mt-1 text-[10px] font-semibold text-foreground-muted">Theo dõi tiến độ</p></div>
+          <div className="rounded-xl bg-background-card p-3"><span className="text-lg">🧠</span><p className="mt-1 text-[10px] font-semibold text-foreground-muted">Mở rộng vốn từ</p></div>
         </div>
       </div>
 

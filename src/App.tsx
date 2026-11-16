@@ -16,9 +16,9 @@ function App() {
           <img src={viteLogo} className="vite" alt="Vite logo" />
         </div>
         <div>
-          <h1>Get started</h1>
+          <h1>Bắt đầu</h1>
           <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
+            Chỉnh sửa <code>src/App.tsx</code> rồi lưu để kiểm tra <code>HMR</code>
           </p>
         </div>
         <button
@@ -26,7 +26,7 @@ function App() {
           className="counter"
           onClick={() => setCount((count) => count + 1)}
         >
-          Count is {count}
+          Số lượng là {count}
         </button>
       </section>
 
@@ -37,19 +37,19 @@ function App() {
           <svg className="icon" role="presentation" aria-hidden="true">
             <use href="/icons.svg#documentation-icon"></use>
           </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
+          <h2>Tài liệu hướng dẫn</h2>
+          <p>Giải đáp thắc mắc của bạn</p>
           <ul>
             <li>
               <a href="https://vite.dev/" target="_blank">
                 <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
+                Tìm hiểu về Vite
               </a>
             </li>
             <li>
               <a href="https://react.dev/" target="_blank">
                 <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
+                Tìm hiểu thêm
               </a>
             </li>
           </ul>
@@ -58,8 +58,8 @@ function App() {
           <svg className="icon" role="presentation" aria-hidden="true">
             <use href="/icons.svg#social-icon"></use>
           </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
+          <h2>Kết nối với chúng tôi</h2>
+          <p>Tham gia cộng đồng Vite</p>
           <ul>
             <li>
               <a href="https://github.com/vitejs/vite" target="_blank">

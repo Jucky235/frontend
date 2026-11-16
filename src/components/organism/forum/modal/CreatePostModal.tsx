@@ -133,7 +133,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
         {/* Header */}
         <div className="px-6 py-4 border-b border-border-subtle flex items-center justify-between bg-background-hover/70">
           <h2 className="text-base font-extrabold text-foreground">
-            Create New Discussion
+            Tạo cuộc thảo luận mới
           </h2>
           <button
             onClick={onClose}
@@ -159,11 +159,11 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="sm:col-span-2 space-y-1">
               <label className="text-xs font-extrabold text-foreground uppercase tracking-wider">
-                Title <span className="text-red-500">*</span>
+                Tiêu đề <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                placeholder="What's on your mind?"
+                placeholder="Bạn đang nghĩ gì?"
                 value={title}
                 onChange={handleTitleChange}
                 className="w-full px-3.5 py-2.5 bg-background-hover border border-border rounded-xl text-xs font-medium text-foreground placeholder:text-foreground-subtle focus:bg-background-card focus:border-primary focus:outline-none transition-all"
@@ -172,7 +172,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
 
             <div className="space-y-1">
               <label className="text-xs font-extrabold text-foreground uppercase tracking-wider">
-                Category <span className="text-red-500">*</span>
+                Danh mục <span className="text-red-500">*</span>
               </label>
               <select
                 value={categoryId}
@@ -180,7 +180,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
                 className="w-full px-3 py-2.5 bg-background-hover border border-border rounded-xl text-xs font-medium text-foreground focus:bg-background-card focus:border-primary focus:outline-none transition-all cursor-pointer"
               >
                 <option value="" disabled>
-                  Select Category
+                  Chọn danh mục
                 </option>
                 {categoryOptions.map((cat) => (
                   <option key={cat.id} value={cat.id}>
@@ -194,7 +194,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
           {/* Slug */}
           <div className="space-y-1">
             <label className="text-xs font-bold text-foreground-subtle">
-              Post Slug
+              Đường dẫn bài đăng
             </label>
             <input
               type="text"
@@ -208,11 +208,11 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
           {/* Content */}
           <div className="space-y-1">
             <label className="text-xs font-extrabold text-foreground uppercase tracking-wider">
-              Content <span className="text-red-500">*</span>
+              Nội dung <span className="text-red-500">*</span>
             </label>
             <textarea
               rows={6}
-              placeholder="Write your discussion details, questions, or notes here..."
+              placeholder="Nhập nội dung thảo luận, câu hỏi hoặc ghi chú tại đây..."
               value={content}
               onChange={(e) => setContent(e.target.value)}
               className="w-full p-3.5 bg-background-hover border border-border rounded-xl text-xs font-medium text-foreground placeholder:text-foreground-subtle focus:bg-background-card focus:border-primary focus:outline-none transition-all resize-none"
@@ -223,7 +223,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
           <div className="space-y-2">
             <label className="text-xs font-extrabold text-foreground uppercase tracking-wider flex items-center space-x-1.5">
               <Paperclip className="w-3.5 h-3.5 text-foreground-subtle" />
-              <span>Attachments (URL Links)</span>
+              <span>Tệp đính kèm (đường dẫn URL)</span>
             </label>
 
             <div className="flex space-x-2">
@@ -246,7 +246,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
                 className="px-3 py-2 bg-background-hover hover:bg-background-subtle-hover text-foreground rounded-xl text-xs font-bold transition-all flex items-center space-x-1 cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>Add</span>
+                <span>Thêm</span>
               </button>
             </div>
 
@@ -282,7 +282,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
             disabled={isSubmitting}
             className="px-4 py-2.5 rounded-xl border border-border text-xs font-bold text-foreground-muted hover:bg-background-hover transition-all cursor-pointer"
           >
-            Cancel
+            Hủy
           </button>
           <button
             type="button"
@@ -293,12 +293,12 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
             {isSubmitting ? (
               <>
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                <span>Posting...</span>
+                <span>Đang đăng...</span>
               </>
             ) : (
               <>
                 <Send className="w-3.5 h-3.5" />
-                <span>Publish Post</span>
+                <span>Đăng bài viết</span>
               </>
             )}
           </button>

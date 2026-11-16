@@ -267,14 +267,14 @@ export default function MatchWordGame({
       <div className="flex items-center justify-between relative z-30">
         <div>
           <span className="text-xs font-black uppercase text-brand tracking-wider">
-            Matching Practice
+            Luyện ghép từ
           </span>
           <h3 className="text-xl font-black text-foreground">
             {exercise.title}
           </h3>
         </div>
         <div className="text-xs font-extrabold px-3 py-1.5 rounded-full bg-brand/10 text-brand border border-brand/20">
-          {matchedPairs.length} / {exercise.pairs.length} Matched
+          {matchedPairs.length} / {exercise.pairs.length} Đã ghép
         </div>
       </div>
 
@@ -286,10 +286,10 @@ export default function MatchWordGame({
           </div>
           <div>
             <h4 className="text-xl font-black text-foreground">
-              All Vocabulary Matched!
+              Đã ghép tất cả từ vựng!
             </h4>
             <p className="text-sm text-foreground-subtle mt-1">
-              You've successfully mastered this key vocabulary set.
+              Bạn đã thành thạo bộ từ vựng này.
             </p>
           </div>
           <button
@@ -298,7 +298,7 @@ export default function MatchWordGame({
             className="px-6 py-3 rounded-2xl bg-brand text-white font-extrabold flex items-center justify-center space-x-2 mx-auto shadow-lg shadow-brand/20 hover:bg-brand-hover transition-all active:scale-98"
           >
             <RotateCcw className="w-4 h-4" />
-            <span>Practice Again</span>
+            <span>Luyện tập lại</span>
           </button>
         </div>
       ) : (
@@ -307,7 +307,7 @@ export default function MatchWordGame({
           {/* Words Column */}
           <div className="space-y-3">
             <h4 className="text-xs font-extrabold text-foreground-subtle uppercase tracking-wider px-1">
-              Words
+              Từ vựng
             </h4>
             {exercise.pairs.map(({ word }) => {
               const isMatched = matchedPairs.includes(word);
@@ -348,7 +348,7 @@ export default function MatchWordGame({
           {/* Definitions Column */}
           <div className="space-y-3">
             <h4 className="text-xs font-extrabold text-foreground-subtle uppercase tracking-wider px-1">
-              Definitions
+              Định nghĩa
             </h4>
             {shuffledMeanings.map((meaning) => {
               const matchingWord = exercise.pairs.find(

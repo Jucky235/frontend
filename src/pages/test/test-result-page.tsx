@@ -24,9 +24,9 @@ export default function ExamResultPage() {
     incorrectAnswers: 8,
     status: "Passed",
     domains: [
-      { name: "Memory Management & V8 Garbage Collection", percentage: 90 },
-      { name: "Event Loop & Asynchronous Task Queues", percentage: 85 },
-      { name: "Compilation & Runtime Optimizations", percentage: 75 },
+      { name: "Quản lý bộ nhớ và bộ thu gom rác V8", percentage: 90 },
+      { name: "Vòng lặp sự kiện và hàng đợi tác vụ bất đồng bộ", percentage: 85 },
+      { name: "Tối ưu hóa biên dịch và thời gian chạy", percentage: 75 },
     ],
   };
 
@@ -68,7 +68,7 @@ export default function ExamResultPage() {
             className="flex items-center space-x-1.5 text-sm font-semibold text-foreground-subtle hover:text-foreground transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span className="hidden sm:inline">Return to Test Hub</span>
+            <span className="hidden sm:inline">Quay lại danh sách bài thi</span>
           </button>
           <div className="h-4 w-px bg-border hidden sm:block" />
           <div className="flex items-center space-x-2">
@@ -76,7 +76,7 @@ export default function ExamResultPage() {
               J
             </div>
             <span className="font-bold text-lg text-foreground tracking-tight">
-              Report Card
+              Bảng điểm
             </span>
           </div>
         </div>
@@ -93,7 +93,7 @@ export default function ExamResultPage() {
             className="flex items-center space-x-1.5 text-sm font-semibold text-foreground-subtle hover:text-red-500 transition-colors px-2 py-1"
           >
             <LogOut className="w-4 h-4" />
-            <span className="hidden sm:inline">Logout</span>
+            <span className="hidden sm:inline">Đăng xuất</span>
           </button>
         </div>
       </header>
@@ -117,7 +117,7 @@ export default function ExamResultPage() {
                     : "bg-red-50 text-red-700"
                 }`}
               >
-                Assessment {performanceSummary.status}
+                Bài đánh giá {performanceSummary.status}
               </span>
               <h1 className="text-xl md:text-2xl font-extrabold text-foreground tracking-tight leading-tight max-w-xl">
                 {performanceSummary.examTitle}
@@ -125,12 +125,12 @@ export default function ExamResultPage() {
               <div className="flex flex-wrap gap-4 text-xs font-semibold text-foreground-subtle pt-1">
                 <span className="flex items-center space-x-1.5">
                   <Timer className="w-4 h-4" />
-                  <span>Duration: {performanceSummary.timeTaken}</span>
+                  <span>Thời lượng: {performanceSummary.timeTaken}</span>
                 </span>
                 <span className="flex items-center space-x-1.5">
                   <Award className="w-4 h-4" />
                   <span>
-                    Requirement: {performanceSummary.passingScore}% minimum
+                    Yêu cầu: {performanceSummary.passingScore}% tối thiểu
                   </span>
                 </span>
               </div>
@@ -143,7 +143,7 @@ export default function ExamResultPage() {
                   {performanceSummary.score}%
                 </p>
                 <p className="text-[10px] font-bold text-foreground-subtle uppercase tracking-widest mt-1.5">
-                  Final Grade
+                  Điểm cuối cùng
                 </p>
               </div>
             </div>
@@ -155,13 +155,13 @@ export default function ExamResultPage() {
           {/* Quick Itemized Metrics Box */}
           <div className="bg-background-card border border-border/80 p-5 rounded-2xl shadow-xs space-y-4">
             <h3 className="text-xs font-bold text-foreground-subtle uppercase tracking-wider">
-              Metrics Output
+              Kết quả thống kê
             </h3>
 
             <div className="flex items-center justify-between p-2.5 hover:bg-background rounded-xl transition-colors">
               <div className="flex items-center space-x-2 text-xs font-semibold text-foreground-muted">
                 <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                <span>Correct Items</span>
+                <span>Câu trả lời đúng</span>
               </div>
               <span className="text-sm font-extrabold text-foreground">
                 {performanceSummary.correctAnswers}
@@ -171,7 +171,7 @@ export default function ExamResultPage() {
             <div className="flex items-center justify-between p-2.5 hover:bg-background rounded-xl transition-colors">
               <div className="flex items-center space-x-2 text-xs font-semibold text-foreground-muted">
                 <XCircle className="w-4 h-4 text-red-500" />
-                <span>Incorrect Items</span>
+                <span>Câu trả lời sai</span>
               </div>
               <span className="text-sm font-extrabold text-foreground">
                 {performanceSummary.incorrectAnswers}
@@ -185,14 +185,14 @@ export default function ExamResultPage() {
               className="w-full bg-brand hover:bg-brand-hover text-brand-foreground font-bold text-xs px-4 py-3 rounded-xl tracking-wide shadow-xs transition-all flex items-center justify-center space-x-2 cursor-pointer active:scale-95"
             >
               <RefreshCw className="w-3.5 h-3.5" />
-              <span>Retake Practice</span>
+              <span>Làm lại bài luyện tập</span>
             </button>
           </div>
 
           {/* Sub-Domain Target Array Competencies */}
           <div className="md:col-span-2 bg-background-card border border-border/80 p-5 rounded-2xl shadow-xs space-y-5">
             <h3 className="text-xs font-bold text-foreground-subtle uppercase tracking-wider">
-              Knowledge Focus Areas
+              Các kỹ năng trọng tâm
             </h3>
 
             <div className="space-y-4">
@@ -225,7 +225,7 @@ export default function ExamResultPage() {
         {/* 4. Question-by-Question Itemized Evaluation Matrix Review */}
         <section className="space-y-4">
           <h2 className="text-base font-extrabold text-foreground tracking-tight">
-            Itemized Question Audit Log
+            Nhật ký chi tiết câu hỏi
           </h2>
 
           <div className="space-y-3">
@@ -250,7 +250,7 @@ export default function ExamResultPage() {
                         )}
                       </div>
                       <p className="text-xs sm:text-sm font-bold text-foreground leading-snug">
-                        Item #{item.id}: {item.question}
+                        Mục số{item.id}: {item.question}
                       </p>
                     </div>
 
@@ -269,7 +269,7 @@ export default function ExamResultPage() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3">
                         <div className="p-3 bg-background-card border border-border/60 rounded-xl">
                           <p className="text-[10px] font-bold text-foreground-subtle uppercase tracking-wider">
-                            Your Selection
+                            Lựa chọn của bạn
                           </p>
                           <p
                             className={`mt-1 font-bold ${item.status === "correct" ? "text-emerald-700" : "text-red-700"}`}
@@ -281,7 +281,7 @@ export default function ExamResultPage() {
                         {item.status !== "correct" && (
                           <div className="p-3 bg-background-card border border-border/60 rounded-xl">
                             <p className="text-[10px] font-bold text-foreground-subtle uppercase tracking-wider">
-                              Correct Resolution
+                              Cách giải đúng
                             </p>
                             <p className="mt-1 font-bold text-emerald-700">
                               {item.correctAnswer}
@@ -293,7 +293,7 @@ export default function ExamResultPage() {
                       {/* Diagnostic Explanatory Text Segment */}
                       <div className="p-4 bg-pink-50/50 border border-pink-100/60 rounded-xl space-y-1">
                         <h4 className="text-[10px] font-bold text-pink-700 uppercase tracking-wider">
-                          Architectural Rationale
+                          Cơ sở thiết kế
                         </h4>
                         <p className="text-foreground-muted leading-relaxed font-medium">
                           {item.explanation}
@@ -310,7 +310,7 @@ export default function ExamResultPage() {
 
       {/* 4. Footer Baseline Component Group */}
       <footer className="w-full bg-background-card border-t border-border py-6 text-center text-xs text-foreground-subtle font-medium">
-        &copy; 2026 Workspace System. All rights reserved.
+        &copy; 2026 Hệ thống Workspace. Bảo lưu mọi quyền.
       </footer>
     </div>
   );
