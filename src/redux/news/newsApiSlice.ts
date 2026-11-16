@@ -20,6 +20,7 @@ export interface NewsData {
     | "SYSTEM_UPDATE"
     | "FEATURED";
   status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+  likesCount: number;
   viewsCount: number;
   authorName?: string | null;
   publishedAt?: string | null;
@@ -77,6 +78,15 @@ export interface SingleNewsResponse {
   data: NewsData;
 }
 
+export interface LikeNewsResponse {
+  success: boolean;
+  data: {
+    id: string;
+    likesCount: number;
+    liked: boolean;
+  };
+}
+
 // RTK Query Endpoint Injection
 export const newsApiSlice = baseApiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -107,6 +117,15 @@ export const newsApiSlice = baseApiSlice.injectEndpoints({
         method: "GET",
       }),
       providesTags: (_result, _error, id) => [{ type: "News", id }],
+    }),
+
+    likeNews: builder.mutation<LikeNewsResponse, string>({
+      query: (id) => ({
+        url: `/news/${id}/like`,
+        method: "POST",
+      }),
+      // Refresh list counts without refetching the detail endpoint, which records a view.
+      invalidatesTags: [{ type: "News", id: "LIST" }],
     }),
 
     createNew: builder.mutation<SingleNewsResponse, CreateNewsPayload>({
@@ -151,6 +170,7 @@ export const newsApiSlice = baseApiSlice.injectEndpoints({
 export const {
   useGetNewsQuery,
   useGetNewsByIdQuery,
+  useLikeNewsMutation,
   useCreateNewMutation,
   useUpdateNewsMutation,
   useDeleteNewsMutation,

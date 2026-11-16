@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 
 export interface DropdownItem {
   label: string;
+  path?: string;
   icon?: React.ReactNode;
   onClick: () => void;
   danger?: boolean;

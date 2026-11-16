@@ -1,5 +1,5 @@
 import { useEffect, useRef, useMemo, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import {
   Search,
   MessageSquare,
@@ -165,6 +165,7 @@ export default function Header({
   onLanguageSelect,
 }: HeaderProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === "dark";
@@ -229,16 +230,18 @@ export default function Header({
       children: [
         {
           label: "Tin tức",
+          path: "/news",
           icon: <BookOpen className="w-3.5 h-3.5" />,
           onClick: () => navigate("/news"),
         },
         {
           label: "Nhóm học tập",
+          path: "/teams",
           icon: <FileText className="w-3.5 h-3.5" />,
           onClick: () => navigate("/teams"),
         },
       ],
-      active: true,
+      active: false,
       href: "/",
     },
     {
@@ -246,16 +249,19 @@ export default function Header({
       children: [
         {
           label: "Danh sách bài thi",
+          path: "/test",
           icon: <BookOpen className="w-3.5 h-3.5" />,
           onClick: () => navigate("/test"),
         },
         {
           label: "Danh sách khóa học",
+          path: "/exams/mock",
           icon: <FileText className="w-3.5 h-3.5" />,
           onClick: () => navigate("/exams/mock"),
         },
         {
           label: "Danh sách thẻ ghi nhớ",
+          path: "/flashcards-list",
           icon: <FileText className="w-3.5 h-3.5" />,
           onClick: () => navigate("/flashcards-list"),
         },
@@ -266,11 +272,13 @@ export default function Header({
       children: [
         {
           label: "Bảng xếp hạng toàn cầu",
+          path: "/rankings/global",
           icon: <Award className="w-3.5 h-3.5" />,
           onClick: () => navigate("/rankings/global"),
         },
         {
           label: "Giải đấu tháng",
+          path: "/rankings/monthly",
           icon: <Award className="w-3.5 h-3.5" />,
           onClick: () => navigate("/rankings/monthly"),
         },
@@ -281,11 +289,13 @@ export default function Header({
       children: [
         {
           label: "Diễn đàn",
+          path: "/forum",
           icon: <Users className="w-3.5 h-3.5" />,
           onClick: () => navigate("/forum"),
         },
         {
           label: "Trò chuyện",
+          path: "/chat",
           icon: <MessageSquare className="w-3.5 h-3.5" />,
           onClick: () => navigate("/chat"),
         },
@@ -296,16 +306,19 @@ export default function Header({
       children: [
         {
           label: "Câu hỏi thường gặp",
+          path: "/faq",
           icon: <HelpCircle className="w-3.5 h-3.5" />,
           onClick: () => navigate("/faq"),
         },
         {
           label: "Báo cáo",
+          path: "/help/faq",
           icon: <HelpCircle className="w-3.5 h-3.5" />,
           onClick: () => navigate("/help/faq"),
         },
         {
           label: "Quy định",
+          path: "/help/faq",
           icon: <HelpCircle className="w-3.5 h-3.5" />,
           onClick: () => navigate("/help/faq"),
         },
@@ -313,7 +326,18 @@ export default function Header({
     },
   ];
 
-  const activeNavItems = navItems || defaultNavItems;
+  const activeNavItems = (navItems || defaultNavItems).map((item) => {
+    if (navItems) return item;
+    const isActive =
+      Boolean(item.href && location.pathname === item.href) ||
+      Boolean(item.children?.some((child) =>
+        Boolean(child.path && (
+            child.path === location.pathname ||
+            (child.path !== "/" && location.pathname.startsWith(`${child.path}/`))
+          )),
+        ));
+    return { ...item, active: isActive };
+  });
 
   const profileMenuItems: DropdownItem[] = [
     {

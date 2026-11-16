@@ -68,6 +68,18 @@ export interface GetPostsResponse {
   pagination: PaginationInfo;
 }
 
+export interface SavedForumPost extends Omit<ForumPost, "categoryId" | "authorId"> {
+  savedAt: string;
+  viewsCount: number;
+  isPinned: boolean;
+  _count: { comments: number };
+}
+
+export interface GetSavedPostsResponse {
+  data: SavedForumPost[];
+  pagination: PaginationInfo;
+}
+
 export interface GetPostsQueryParams {
   page?: number;
   limit?: number;
@@ -134,6 +146,25 @@ export const forumApiSlice = baseApiSlice.injectEndpoints({
           : [{ type: "Post", id: "LIST" }],
     }),
 
+    // Get the current user's saved posts.
+    getSavedPosts: builder.query<
+      GetSavedPostsResponse,
+      { page?: number; limit?: number } | void
+    >({
+      query: (params) => ({
+        url: "/forum/posts/saved",
+        method: "GET",
+        params: params || undefined,
+      }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.data.map(({ id }) => ({ type: "Post" as const, id })),
+              { type: "Post", id: "SAVED_LIST" },
+            ]
+          : [{ type: "Post", id: "SAVED_LIST" }],
+    }),
+
     // 🟢 3. Lấy chi tiết 1 Post kèm Comments
     getPostById: builder.query<ForumPost, string>({
       query: (id) => ({
@@ -198,6 +229,7 @@ export const forumApiSlice = baseApiSlice.injectEndpoints({
       }),
       invalidatesTags: (_result, _error, postId) => [
         { type: "Post", id: postId },
+        { type: "Post", id: "SAVED_LIST" },
       ],
     }),
 
@@ -218,6 +250,7 @@ export const forumApiSlice = baseApiSlice.injectEndpoints({
 export const {
   useGetAllCategoriesQuery,
   useGetAllPostsQuery,
+  useGetSavedPostsQuery,
   useGetPostByIdQuery,
   useCreatePostMutation,
   useVotePostMutation,

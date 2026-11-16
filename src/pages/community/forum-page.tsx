@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/organism/common/Header";
 import Footer from "@/components/organism/common/Footer";
 import ForumBanner from "@/components/organism/forum/ForumBanner";
@@ -15,10 +16,11 @@ import {
   type ForumPost as ApiForumPost,
   type CreatePostPayload,
 } from "@/redux/forum/forumApiSlice";
-import { Loader2, AlertCircle, MessageSquareX } from "lucide-react";
+import { Loader2, AlertCircle, MessageSquareX, Bookmark } from "lucide-react";
 import CreatePostModal from "@/components/organism/forum/modal/CreatePostModal";
 
 export default function ForumPage() {
+  const navigate = useNavigate();
   const [selectedCategoryId, setSelectedCategoryId] =
     React.useState<string>("all");
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -118,6 +120,16 @@ export default function ForumPage() {
       <Header />
 
       <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={() => navigate("/forum/saved")}
+            className="inline-flex items-center gap-2 rounded-xl border border-border bg-background-card px-4 py-2 text-xs font-bold text-foreground-muted transition hover:bg-background-hover hover:text-primary"
+          >
+            <Bookmark className="h-4 w-4" />
+            Bài viết đã lưu
+          </button>
+        </div>
         <ForumBanner onNewDiscussionClick={() => setIsCreateModalOpen(true)} />
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">

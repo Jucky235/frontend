@@ -14,6 +14,20 @@ export interface CreateDictionaryWordPayload {
 
 export const dictionaryApiSlice = baseApiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    getAllDictionaryWords: builder.query<DictionaryWord[], void>({
+      query: () => ({
+        url: "/dictionary",
+        method: "GET",
+      }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: "Dictionary" as const, id })),
+              { type: "Dictionary", id: "LIST" },
+            ]
+          : [{ type: "Dictionary", id: "LIST" }],
+    }),
+
     createDictionaryWord: builder.mutation<
       DictionaryWord,
       CreateDictionaryWordPayload
@@ -40,6 +54,7 @@ export const dictionaryApiSlice = baseApiSlice.injectEndpoints({
 });
 
 export const {
+  useGetAllDictionaryWordsQuery,
   useCreateDictionaryWordMutation,
   useIncrementDictionaryWordSearchMutation,
 } = dictionaryApiSlice;

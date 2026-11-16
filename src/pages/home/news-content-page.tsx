@@ -19,6 +19,7 @@ import Footer from "@/components/organism/common/Footer";
 import {
   useGetNewsByIdQuery,
   useGetNewsQuery,
+  useLikeNewsMutation,
   type NewsData,
 } from "@/redux/news/newsApiSlice";
 
@@ -41,8 +42,9 @@ export default function NewsContentPage({
   const handleBack = propOnBack || (() => navigate("/news"));
 
   const [isBookmarked, setIsBookmarked] = React.useState(false);
-  const [likes, setLikes] = React.useState(24);
   const [hasLiked, setHasLiked] = React.useState(false);
+  const [likesCount, setLikesCount] = React.useState<number | undefined>();
+  const [likeNews, { isLoading: isLiking }] = useLikeNewsMutation();
   const [copied, setCopied] = React.useState(false);
 
   // Scroll to top on article navigation
@@ -57,6 +59,7 @@ export default function NewsContentPage({
     isError,
   } = useGetNewsByIdQuery(resolvedArticleId ?? "", {
     skip: !resolvedArticleId,
+    refetchOnMountOrArgChange: true,
   });
 
   // Fetch recent news for "Related Articles" section
@@ -66,6 +69,25 @@ export default function NewsContentPage({
   });
 
   const article: NewsData | undefined = articleResponse?.data;
+  const displayedLikesCount = likesCount ?? article?.likesCount ?? 0;
+
+  React.useEffect(() => {
+    if (article) {
+      setLikesCount(article.likesCount);
+    }
+  }, [article?.id, article?.likesCount]);
+
+  const handleLike = async () => {
+    if (!article || hasLiked || isLiking) return;
+
+    try {
+      const result = await likeNews(article.id).unwrap();
+      setHasLiked(result.data.liked);
+      setLikesCount(result.data.likesCount);
+    } catch (error) {
+      console.error("Failed to like news article:", error);
+    }
+  };
 
   // Calculate estimated reading time dynamically
   const readingTime = React.useMemo(() => {
@@ -80,15 +102,6 @@ export default function NewsContentPage({
     )
     .slice(0, 3);
 
-  const handleLike = () => {
-    if (hasLiked) {
-      setLikes((prev) => prev - 1);
-      setHasLiked(false);
-    } else {
-      setLikes((prev) => prev + 1);
-      setHasLiked(true);
-    }
-  };
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -215,10 +228,16 @@ export default function NewsContentPage({
                   </span>
                 </div>
 
-                <span className="flex items-center gap-1.5">
-                  <Eye className="w-3.5 h-3.5" />
-                  <span>{article.viewsCount} lượt xem</span>
-                </span>
+                <div className="flex items-center gap-4">
+                  <span className="flex items-center gap-1.5">
+                    <Eye className="w-3.5 h-3.5" />
+                    <span>{article.viewsCount} lượt xem</span>
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <ThumbsUp className="w-3.5 h-3.5" />
+                    <span>{displayedLikesCount} lượt thích</span>
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -267,14 +286,15 @@ export default function NewsContentPage({
                 <div className="flex items-center gap-3">
                   <button
                     onClick={handleLike}
-                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    disabled={hasLiked || isLiking}
+                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer disabled:cursor-default ${
                       hasLiked
                         ? "bg-brand text-white"
                         : "bg-background-hover text-muted-foreground hover:bg-brand/10 hover:text-brand"
                     }`}
                   >
                     <ThumbsUp className="w-3.5 h-3.5" />
-                    <span>{likes} Hữu ích</span>
+                    <span>{displayedLikesCount} Hữu ích</span>
                   </button>
                 </div>
 

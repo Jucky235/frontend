@@ -5,16 +5,29 @@ import DictionarySearch from "@/components/organism/dictionary/DictionarySearch"
 import DictionaryWordList from "@/components/organism/dictionary/DictionaryWordList";
 import DictionaryWordDetail from "@/components/organism/dictionary/DictionaryWordDetail";
 import { lookupWord, suggestWords, type DictionaryEntry, type DictionarySuggestion } from "@/components/organism/dictionary/dictionary-data";
-import { useCreateDictionaryWordMutation } from "@/redux/dictionary/dictionaryApiSlice";
+import {
+  useCreateDictionaryWordMutation,
+  useGetAllDictionaryWordsQuery,
+  useIncrementDictionaryWordSearchMutation,
+} from "@/redux/dictionary/dictionaryApiSlice";
 
 export default function DictionaryPage() {
   const [createDictionaryWord] = useCreateDictionaryWordMutation();
+  const [incrementWordSearch] = useIncrementDictionaryWordSearchMutation();
+  const { data: databaseWords = [], isLoading: loadingDatabaseWords } =
+    useGetAllDictionaryWordsQuery();
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<DictionarySuggestion[]>([]);
   const [entry, setEntry] = useState<DictionaryEntry>();
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const [loadingEntry, setLoadingEntry] = useState(false);
   const [error, setError] = useState("");
+  const visibleSuggestions: DictionarySuggestion[] = query.trim()
+    ? suggestions
+    : databaseWords.map(({ word }) => ({ word }));
+  const visibleLoading = query.trim()
+    ? loadingSuggestions
+    : loadingDatabaseWords;
 
   useEffect(() => {
     const trimmed = query.trim();
@@ -39,6 +52,34 @@ export default function DictionaryPage() {
     }, 250);
     return () => { window.clearTimeout(timer); controller.abort(); };
   }, [query]);
+
+  const selectWord = async (word: string) => {
+    const savedWord = databaseWords.find(
+      (item) => item.word.toLocaleLowerCase() === word.toLocaleLowerCase(),
+    );
+
+    if (savedWord) {
+      setQuery(savedWord.word);
+      setError("");
+      setEntry({
+        exists: true,
+        word: savedWord.word,
+        results: [
+          {
+            lang_code: "en",
+            lang_name: "English",
+            meanings: [{ definition: savedWord.definition }],
+          },
+        ],
+      });
+      void incrementWordSearch(savedWord.id)
+        .unwrap()
+        .catch(() => setError("The word was loaded, but its search count could not be saved."));
+      return;
+    }
+
+    await search(word);
+  };
 
   const search = async (word: string) => {
     const trimmed = word.trim();
@@ -97,7 +138,7 @@ export default function DictionaryPage() {
         </section>
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.9fr)]">
-          <DictionaryWordList words={suggestions} query={query} loading={loadingSuggestions} onSelect={(word) => { void search(word); }} />
+          <DictionaryWordList words={visibleSuggestions} query={query} loading={visibleLoading} onSelect={(word) => { void selectWord(word); }} />
           {loadingEntry ? <section className="flex min-h-72 items-center justify-center rounded-2xl border border-border bg-background-card p-8 text-sm text-foreground-subtle">Đang tra từ “{query}”…</section> : <DictionaryWordDetail entry={entry} />}
         </div>
         {error && <p role="status" className="rounded-xl border border-border bg-background-card p-4 text-sm text-foreground-subtle">{error}</p>}

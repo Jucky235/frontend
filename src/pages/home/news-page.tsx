@@ -8,8 +8,11 @@ import {
   BookOpen,
   Loader2,
   Eye,
+  ThumbsUp,
   ChevronLeft,
   ChevronRight,
+  Newspaper,
+  BookMarked,
 } from "lucide-react";
 import Header from "@/components/organism/common/Header";
 import Footer from "@/components/organism/common/Footer";
@@ -76,20 +79,39 @@ export default function NewsPage() {
       <Header />
 
       <main className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-10">
-        {/* Title Header Block */}
-        <div className="space-y-3">
-          <div className="inline-flex items-center space-x-2 bg-pink-50 dark:bg-pink-950/50 border border-pink-100 dark:border-pink-800/50 text-brand dark:text-pink-400 text-xs font-bold px-3 py-1 rounded-full">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Tin tức và bài viết mới nhất</span>
+        {/* Decorated news banner */}
+        <section className="relative isolate overflow-hidden rounded-3xl border border-pink-200/70 bg-gradient-to-br from-[#fff2f8] via-white to-violet-50 px-6 py-8 shadow-sm dark:border-pink-900/50 dark:from-[#28101e] dark:via-[#1b0d15] dark:to-[#171026] sm:px-10 sm:py-11">
+          <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-24 -z-10 h-72 w-72 rounded-full bg-pink-300/35 blur-3xl dark:bg-pink-600/15" />
+          <div aria-hidden="true" className="pointer-events-none absolute -bottom-28 right-1/4 -z-10 h-64 w-64 rounded-full bg-violet-300/30 blur-3xl dark:bg-violet-600/15" />
+          <div className="relative flex items-center justify-between gap-6">
+            <div className="max-w-2xl">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-pink-200 bg-white/70 px-3 py-1.5 text-xs font-bold text-brand shadow-sm dark:border-pink-900/60 dark:bg-black/20">
+                <Sparkles className="h-3.5 w-3.5" />
+                <span>Tin tức và bài viết mới nhất</span>
+              </div>
+              <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+                Trung tâm tin tức
+                <span className="block bg-gradient-to-r from-pink-600 via-fuchsia-600 to-violet-600 bg-clip-text text-transparent dark:from-pink-400 dark:via-fuchsia-400 dark:to-violet-400">
+                  và thông báo
+                </span>
+              </h1>
+              <p className="mt-4 max-w-xl text-sm font-medium leading-6 text-foreground-muted sm:text-base">
+                Cập nhật tính năng mới, mẹo ôn thi, câu chuyện cộng đồng và cảm hứng học tập từ S English.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3 text-xs font-semibold text-foreground-muted">
+                <span className="inline-flex items-center gap-2 rounded-lg border border-white/70 bg-white/60 px-3 py-2 dark:border-white/10 dark:bg-white/5"><Newspaper className="h-4 w-4 text-brand"/>Tin mới mỗi tuần</span>
+                <span className="inline-flex items-center gap-2 rounded-lg border border-white/70 bg-white/60 px-3 py-2 dark:border-white/10 dark:bg-white/5"><BookMarked className="h-4 w-4 text-violet-500"/>Mẹo học hữu ích</span>
+              </div>
+            </div>
+            <div aria-hidden="true" className="relative hidden h-40 w-40 shrink-0 items-center justify-center sm:flex lg:mr-8 lg:h-48 lg:w-48">
+              <div className="absolute inset-2 rotate-6 rounded-[2rem] bg-gradient-to-br from-pink-500 to-violet-600 opacity-15 blur-sm" />
+              <div className="relative grid h-32 w-32 -rotate-6 place-items-center rounded-[2rem] border border-white/80 bg-white/70 text-brand shadow-xl shadow-pink-900/10 backdrop-blur dark:border-white/10 dark:bg-white/5 lg:h-40 lg:w-40">
+                <Newspaper className="h-16 w-16 stroke-[1.4] lg:h-20 lg:w-20" />
+                <Sparkles className="absolute right-5 top-4 h-6 w-6 text-violet-500" />
+              </div>
+            </div>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-foreground dark:text-neutral-100 tracking-tight">
-            Trung tâm tin tức và thông báo
-          </h1>
-          <p className="text-sm text-foreground-subtle dark:text-foreground-subtle max-w-2xl font-medium leading-relaxed">
-            Stay tuned with our latest product releases, exam preparation
-            guides, community highlights, and study strategies.
-          </p>
-        </div>
+        </section>
 
         {/* Loading Spinner */}
         {isLoading && (
@@ -165,6 +187,10 @@ export default function NewsPage() {
                         <span className="flex items-center space-x-1">
                           <Eye className="w-3.5 h-3.5" />
                           <span>{featuredArticle.viewsCount} lượt xem</span>
+                        </span>
+                        <span className="flex items-center space-x-1">
+                          <ThumbsUp className="w-3.5 h-3.5" />
+                          <span>{featuredArticle.likesCount} lượt thích</span>
                         </span>
                       </div>
 
@@ -275,10 +301,16 @@ export default function NewsPage() {
                               : "Gần đây"}
                           </span>
                         </span>
-                        <span className="flex items-center space-x-1">
-                          <Eye className="w-3 h-3" />
-                          <span>{article.viewsCount} lượt xem</span>
-                        </span>
+                        <div className="flex items-center gap-3">
+                          <span className="flex items-center space-x-1">
+                            <Eye className="w-3 h-3" />
+                            <span>{article.viewsCount} lượt xem</span>
+                          </span>
+                          <span className="flex items-center space-x-1">
+                            <ThumbsUp className="w-3 h-3" />
+                            <span>{article.likesCount} lượt thích</span>
+                          </span>
+                        </div>
                       </div>
                     </article>
                   ))}

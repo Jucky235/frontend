@@ -21,6 +21,7 @@ import NewsContentPage from "@/pages/home/news-content-page";
 import ExamsManagementPage from "@/pages/dashboard/exams-management-page";
 import QuestionManagementPage from "@/pages/dashboard/question-management-page";
 import ForumPostDetailPage from "@/pages/community/post-page";
+import SavedForumPostsPage from "@/pages/community/saved-posts-page";
 import RankingPage from "@/pages/community/ranking-page";
 import RoadmapPage from "@/pages/community/roadmap-page";
 import ForgotPasswordPage from "@/pages/auth/forgot-password-page";
@@ -108,6 +109,10 @@ export const router = createBrowserRouter([
   {
     path: "/forum",
     element: <ForumPage />,
+  },
+  {
+    path: "/forum/saved",
+    element: <SavedForumPostsPage />,
   },
   {
     path: "/forum/:id",
